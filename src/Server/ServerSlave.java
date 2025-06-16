@@ -36,16 +36,38 @@ public class ServerSlave extends Thread{
                 if(operazione.equals("Fine")){
                     System.out.println("Chiusura connessione in corso...");
                     socket.close();
+                    con.close();
                 }
-                if(operazione.equals("GetListaNomi")){
-                    ResultSet risultatoQuery = stmt.executeQuery("SELECT nome FROM utente");
-                    ArrayList<String> listaNomi = new ArrayList<>();
+                else if(operazione.equals("GetListaUsernameUtente")){
+                    ResultSet risultatoQuery = stmt.executeQuery("SELECT username FROM utente");
+                    ArrayList<String> listaUsername = new ArrayList<>();
                     while(risultatoQuery.next()){
-                        listaNomi.add(risultatoQuery.getString("nome"));
+                        listaUsername.add(risultatoQuery.getString("username"));
                     }
-                    System.out.println(listaNomi.size());
+                    out.writeObject(listaUsername);
+                    out.flush();
                 }
-                //Lista operazioni.
+                else if(operazione.equals("GetListaPasswordUtente")){
+                    ResultSet risultatoQuery = stmt.executeQuery("SELECT password FROM utente");
+                    ArrayList<String> listaPassword = new ArrayList<>();
+                    while(risultatoQuery.next()){
+                        listaPassword.add(risultatoQuery.getString("password"));
+                    }
+                    out.writeObject(listaPassword);
+                    out.flush();
+                }
+                else if(operazione.equals("GetCF")){
+                    String username = (String)in.readObject();
+                    String password = (String)in.readObject();
+                    String sqlCommand = "SELECT cf FROM utente WHERE username=? and password=?";
+                    PreparedStatement ps = con.prepareStatement(sqlCommand);
+                    ps.setString(1,username);
+                    ps.setString(2,password);
+                    ResultSet risultatoQuery = ps.executeQuery();
+                    risultatoQuery.next();
+                    String cf = risultatoQuery.getString(1);
+                    out.writeObject(cf);
+                }
             }
         } catch (Exception e) {
         }

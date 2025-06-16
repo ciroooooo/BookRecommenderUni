@@ -45,7 +45,7 @@ public class HomeMainFrame {
  * @param listaLibri l'elenco dei libri da utilizzare nell'interfaccia
  * @param u l'utente corrente che ha effettuato l'accesso
  */
-public HomeMainFrame(int codice, ArrayList<Libro> listaLibri, Utente u) {
+public HomeMainFrame(int codice, ArrayList<Libro> listaLibri, String cf) {
     this.listaLibri = listaLibri;
     this.codice = codice;
     frame = new JFrame();
