@@ -26,6 +26,8 @@ public class Main {
         File file3=new File("file\\Librerie.txt");
         FileEsiste(file3);
         Proxy proxy = new Proxy();
+        proxy.getListaNomi();
+        proxy.fineComunicazione();
         ArrayList<Libro> listaLibri=new ArrayList<Libro>();
         try {
             FileInputStream fis = new FileInputStream(file2);
