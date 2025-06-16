@@ -24,6 +24,7 @@ public class LgMainFrame {
     private ArrayList<Libro> listaLibri = new ArrayList<>();
     private JButton mostraPassword;
     private JTextField nascondiPassword;
+    private Proxy proxy;
 
 /**
  * Costruisce il frame principale di login per l'applicazione.
@@ -32,7 +33,8 @@ public class LgMainFrame {
  * @param listaLibri un ArrayList contenente l'elenco dei libri.
  * 
  */
-    public LgMainFrame(ArrayList<Libro> listaLibri) {
+    public LgMainFrame(ArrayList<Libro> listaLibri, Proxy proxy) {
+        this.proxy = proxy;
         this.listaLibri = listaLibri;
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -150,7 +152,7 @@ public class LgMainFrame {
         ospiteLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                HomeMainFrame myframe = new HomeMainFrame(0, listaLibri,new Utente("prova","prova","prova@prova.com","prova","prova"));
+                HomeMainFrame myframe = new HomeMainFrame(0, listaLibri,new Utente("prova","prova","xyxyxy00x00x000x","prova@prova.com","prova","prova"));
                 myframe.initialize();
                 frame.dispose();
             }
