@@ -27,9 +27,9 @@ public class Libro implements Serializable,Cloneable {
      * @param dataPubblicazione La data di pubblicazione del libro.
      * @param prezzo Il prezzo del libro.
      */
-    public Libro(String titolo,String autore,String descrizione,String categoria,String editore,LocalDate dataPubblicazione,double prezzo){
+    public Libro(String titolo,Autore autore,String descrizione,String categoria,String editore,LocalDate dataPubblicazione,double prezzo){
         this.titolo=titolo;
-        this.autore=new Autore(autore);
+        this.autore= autore;
         this.descrizione=descrizione;
         this.categoria=categoria;
         this.editore=editore;
