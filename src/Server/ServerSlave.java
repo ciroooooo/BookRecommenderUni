@@ -1,8 +1,11 @@
 import java.io.*;
 import java.net.*;
 import java.sql.*;
+import java.sql.Date;
+
 import org.postgresql.*;
 import java.util.*;
+import java.time.LocalDate;
 
 public class ServerSlave extends Thread{
     private Socket socket;
@@ -68,8 +71,55 @@ public class ServerSlave extends Thread{
                     String cf = risultatoQuery.getString(1);
                     out.writeObject(cf);
                 }
+                else if(operazione.equals("AggiungiAutore")){
+                    String nomeAutore = (String)in.readObject();
+                    if(nomeAutore.length()>99){
+                        nomeAutore = nomeAutore.substring(0,98);
+                    }
+                    String sqlCommand = "SELECT nome FROM autore where nome=?";
+                    PreparedStatement ps = con.prepareStatement(sqlCommand);
+                    ps.setString(1,nomeAutore);
+                    ResultSet risultatoQuery = ps.executeQuery();
+                    if(!(risultatoQuery.next())){
+                        String comandoInsert = "INSERT INTO autore(nome) VALUES(?)";
+                        PreparedStatement psI = con.prepareStatement(comandoInsert);
+                        psI.setString(1,nomeAutore);
+                        psI.executeUpdate();
+                    }
+                }
+                else if(operazione.equals("AggiungiLibro")){
+                    String titolo = (String)in.readObject();
+                    String descrizione = (String)in.readObject();
+                    String categoria = (String)in.readObject();
+                    String editore = (String)in.readObject();
+                    LocalDate data= (LocalDate)in.readObject();
+                    Double prezzo = (Double)in.readObject();
+                    String autore = (String)in.readObject();
+                    Date dataPub = Date.valueOf(data);
+                    if(autore.length()>99){
+                        autore = autore.substring(0,98);
+                    }
+                    String comandoQuery = "SELECT idautore FROM autore WHERE nome=?";
+                    PreparedStatement psQ = con.prepareStatement(comandoQuery);
+                    psQ.setString(1,autore);
+                    ResultSet risultatoQuery = psQ.executeQuery();
+                    risultatoQuery.next();
+                    int fk = risultatoQuery.getInt("idautore");
+                    String comandoInsert = "INSERT INTO libro(titolo,descrizione,categoria,editore,datapubblicazione,prezzo,idautore) VALUES(?,?,?,?,?,?,?)";
+                    PreparedStatement ps = con.prepareStatement(comandoInsert);
+                    ps.setString(1,titolo);
+                    ps.setString(2,descrizione);
+                    ps.setString(3,categoria);
+                    ps.setString(4,editore);
+                    ps.setDate(5,dataPub);
+                    ps.setDouble(6,prezzo);
+                    ps.setInt(7,fk);
+                    ps.executeUpdate();
+                    System.out.println("wowie");
+                }
             }
         } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

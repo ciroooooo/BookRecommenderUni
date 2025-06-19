@@ -142,6 +142,7 @@ public class EstraiCsv {
      * @param args Gli argomenti della riga di comando.
      */
     public static void main(String[] args){
+        Proxy proxy = new Proxy();
         ArrayList<Libro> alLibri = new ArrayList<>();
         ArrayList<String> listaRiga;
         File file = new File("file\\Libri.txt");
@@ -168,7 +169,8 @@ public class EstraiCsv {
                 }else{
                     data = LocalDate.of(Integer.parseInt(dataPub.get(2)), numeroMese, Integer.parseInt(dataPub.get(1)));
                 }
-                alLibri.add(new Libro(listaRiga.get(0), listaRiga.get(1), listaRiga.get(2), listaRiga.get(3), listaRiga.get(4), data, n));
+                proxy.aggiungiAutore(listaRiga.get(1));
+                proxy.aggiungiLibro(listaRiga.get(0), listaRiga.get(2), listaRiga.get(3), listaRiga.get(4), data, n, listaRiga.get(1));
                 listaRiga.clear();
             }
             br.close();
