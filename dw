@@ -1,0 +1,93 @@
+[33mcommit b1c646758c9cf4bf3e61155f3612960d3cb4e2bc[m[33m ([m[1;31morigin/Prova[m[33m, [m[1;32mProva[m[33m)[m
+Author: git config --global user.name <cirillo773@gmail.com>
+Date:   Mon Jun 16 14:02:32 2025 +0200
+
+    Prova commit su Branch
+
+[1mdiff --git a/src/Main.java b/src/Main.java[m
+[1mindex 23b4693..61b0661 100644[m
+[1m--- a/src/Main.java[m
+[1m+++ b/src/Main.java[m
+[36m@@ -26,6 +26,8 @@[m [mpublic class Main {[m
+         File file3=new File("file\\Librerie.txt");[m
+         FileEsiste(file3);[m
+         Proxy proxy = new Proxy();[m
+[32m+[m[32m        proxy.getListaNomi();[m
+[32m+[m[32m        proxy.fineComunicazione();[m
+         ArrayList<Libro> listaLibri=new ArrayList<Libro>();[m
+         try {[m
+             FileInputStream fis = new FileInputStream(file2);[m
+
+[33mcommit 287db942f4b73287fd12b445b7e23536795445b8[m
+Author: git config --global user.name <cirillo773@gmail.com>
+Date:   Mon Jun 16 13:43:04 2025 +0200
+
+    Prova commit 2
+
+[1mdiff --git a/src/Main.java b/src/Main.java[m
+[1mindex eccc051..23b4693 100644[m
+[1m--- a/src/Main.java[m
+[1m+++ b/src/Main.java[m
+[36m@@ -26,7 +26,6 @@[m [mpublic class Main {[m
+         File file3=new File("file\\Librerie.txt");[m
+         FileEsiste(file3);[m
+         Proxy proxy = new Proxy();[m
+[31m-        proxy.getListaNomi();[m
+         ArrayList<Libro> listaLibri=new ArrayList<Libro>();[m
+         try {[m
+             FileInputStream fis = new FileInputStream(file2);[m
+
+[33mcommit 0c71746d950c402f2ac0e67369187a7cfd27a07e[m
+Author: git config --global user.name <cirillo773@gmail.com>
+Date:   Mon Jun 16 13:34:14 2025 +0200
+
+    Primo commit
+
+[1mdiff --git a/src/Main.java b/src/Main.java[m
+[1mnew file mode 100644[m
+[1mindex 0000000..eccc051[m
+[1m--- /dev/null[m
+[1m+++ b/src/Main.java[m
+[36m@@ -0,0 +1,41 @@[m
+[32m+[m[32m//Simone Cirillo 758727 (VA)[m
+[32m+[m[32m//Simone Diano Domenico 757775 (VA)[m
+[32m+[m[32m//Jacopo Loni 758223 (VA)[m
+[32m+[m[32m//Matteo Corda 757928 (VA)[m
+[32m+[m[32m//Gabriele Schioppa 756634 (VA)[m
+[32m+[m[32mimport java.io.File;[m
+[32m+[m[32mimport java.io.FileInputStream;[m
+[32m+[m[32mimport java.io.ObjectInputStream;[m
+[32m+[m[32mimport java.util.ArrayList;[m
+[32m+[m
+[32m+[m[32mpublic class Main {[m
+[32m+[m[32m    public static void FileEsiste(File file){[m
+[32m+[m[32m        if(!file.exists()){[m
+[32m+[m[32m            try{[m
+[32m+[m[32m                file.createNewFile();[m
+[32m+[m[32m            }catch(Exception e){[m
+[32m+[m[41m    [m
+[32m+[m[32m            }[m
+[32m+[m[32m        }[m
+[32m+[m[32m    }[m[41m [m
+[32m+[m[41m      [m
+[32m+[m[32m    public static void main(String[] args) {[m
+[32m+[m[32m        File file=new File("file\\utenti.txt");[m
+[32m+[m[32m        FileEsiste(file);[m
+[32m+[m[32m        File file2 = new File("file\\Libri.txt");[m
+[32m+[m[32m        File file3=new File("file\\Librerie.txt");[m
+[32m+[m[32m        FileEsiste(file3);[m
+[32m+[m[32m        Proxy proxy = new Proxy();[m
+[32m+[m[32m        proxy.getListaNomi();[m
+[32m+[m[32m        ArrayList<Libro> listaLibri=new ArrayList<Libro>();[m
+[32m+[m[32m        try {[m
+[32m+[m[32m            FileInputStream fis = new FileInputStream(file2);[m
+[32m+[m[32m            ObjectInputStream ois = new ObjectInputStream(fis);[m
+[32m+[m[32m            listaLibri = (ArrayList<Libro>) ois.readObject();[m
+[32m+[m[32m        } catch (Exception e) {[m
+[32m+[m[32m            e.printStackTrace();[m
+[32m+[m[32m        }[m
+[32m+[m[32m        LgMainFrame myFrame = new LgMainFrame(listaLibri,proxy);[m
+[32m+[m[32m        myFrame.initialize();[m
+[32m+[m[32m    }[m
+[32m+[m[32m}[m
+\ No newline at end of file[m

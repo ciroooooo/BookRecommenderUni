@@ -1,5 +1,6 @@
 import java.io.*;
 import java.net.*;
+import java.time.LocalDate;
 import java.util.*;
 public class Proxy{
     private InetAddress ip;
@@ -56,5 +57,37 @@ public class Proxy{
         } catch (Exception e) {
         }
         return cf;
+    }
+    public void aggiungiLibro(String titolo,String descrizione,String categoria,String editore,LocalDate dataPubblicazione,double prezzo,String autore){
+        try{
+            out.writeObject("AggiungiLibro");
+            out.flush();
+            out.writeObject(titolo);
+            out.flush();
+            out.writeObject(descrizione);
+            out.flush();
+            out.writeObject(categoria);
+            out.flush();
+            out.writeObject(editore);
+            out.flush();
+            out.writeObject(dataPubblicazione);
+            out.flush();
+            out.writeObject(prezzo);
+            out.flush();
+            out.writeObject(autore);
+            out.flush();
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+    }
+    public void aggiungiAutore(String nome){
+        try {
+            out.writeObject("AggiungiAutore");
+            out.flush();
+            out.writeObject(nome);
+            out.flush();
+        } catch (IOException e) {
+        }
+
     }
 }
