@@ -152,7 +152,7 @@ public class LgMainFrame {
         ospiteLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                HomeMainFrame myframe = new HomeMainFrame(0, listaLibri,new Utente("prova","prova","xyxyxy00x00x000x","prova@prova.com","prova","prova"));
+                HomeMainFrame myframe = new HomeMainFrame(0, listaLibri,"Ospite");
                 myframe.initialize();
                 frame.dispose();
             }
@@ -179,11 +179,10 @@ public class LgMainFrame {
                 } else {
                     password2 = nascondiPassword.getText();
                 }
-                int cont=autenticazione(username2, password2);
-                if (cont>=0) {
+                if (autenticazione(username2, password2)) {
                     JOptionPane.showMessageDialog(null, "Login avvenuto con successo");
-                    ArrayList<Utente>alU=leggiFile();
-                    HomeMainFrame hframe = new HomeMainFrame(1, listaLibri,alU.get(cont));
+                    String cf = proxy.getCF(username2,password2);
+                    HomeMainFrame hframe = new HomeMainFrame(1, listaLibri,cf);
                     hframe.initialize();
                     frame.dispose();
                 } else {
@@ -217,14 +216,15 @@ public class LgMainFrame {
  * @return l'indice dell'utente autenticato nell'elenco degli utenti se le credenziali sono corrette;
  *         -1 se le credenziali non sono valide.
  */
-    private int autenticazione(String username2, String password2) {
-        ArrayList<Utente> alU = leggiFile();
-        for (int cont = 0; cont < alU.size(); cont++) {
-            if (alU.get(cont).getUsername().equals(username2) && alU.get(cont).getPassword().equals(password2)) {
-                return cont;   
+    private boolean autenticazione(String username, String password) {
+        ArrayList<String> listaUsername = proxy.getListaUsernameUtente();
+        ArrayList<String> listaPassword = proxy.getListaPasswordUtente();
+        for(int i=0;i<listaUsername.size();i++){
+            if(listaUsername.get(i).equals(username) && listaPassword.get(i).equals(password)){
+                return true;
             }
         }
-        return -1;
+        return false;
     }
 
 /**

@@ -1,5 +1,6 @@
 import java.io.*;
 import java.net.*;
+import java.util.*;
 public class Proxy{
     private InetAddress ip;
     private Socket socket;
@@ -21,13 +22,39 @@ public class Proxy{
             socket.close();
         }catch(IOException e){}
     }
-    public void getListaNomi(){
+    public ArrayList<String> getListaUsernameUtente(){
+        ArrayList<String> listaUsername = null;
         try {
-            out.writeObject("GetListaNomi");
+            out.writeObject("GetListaUsernameUtente");
             out.flush();
+            listaUsername = (ArrayList<String>)in.readObject();
             
-        } catch (IOException e) {
+        } catch (Exception e) {
         }
-
+        return listaUsername;
+    }
+    public ArrayList<String> getListaPasswordUtente(){
+        ArrayList<String> listaPassword = null;
+        try {
+            out.writeObject("GetListaPasswordUtente");
+            out.flush();
+            listaPassword = (ArrayList)in.readObject();
+        } catch (Exception e) {
+        }
+        return listaPassword;
+    }
+    public String getCF(String username,String password){
+        String cf = "";
+        try {
+            out.writeObject("GetCF");
+            out.flush();
+            out.writeObject(username);
+            out.flush();
+            out.writeObject(password);
+            out.flush();
+            cf = (String)in.readObject();
+        } catch (Exception e) {
+        }
+        return cf;
     }
 }
