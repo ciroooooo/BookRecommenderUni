@@ -1,3 +1,6 @@
+package Server;
+
+import Parametri.*;
 import java.io.*;
 import java.net.*;
 import java.sql.*;
@@ -139,6 +142,32 @@ public class ServerSlave extends Thread{
                         System.out.println("Impossibile inserire l'utente");
                     }
                 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+                else if(operazione.equals("CercaPerTitolo")){
+                    String titolo= (String)in.readObject();
+                    ArrayList<Libro> listaLibri;
+
+                    String comandoQuery = "SELECT titolo FROM libro WHERE titolo LIKE '%?%'";
+                    PreparedStatement psQ = con.prepareStatement(comandoQuery);
+                    psQ.setString(1, titolo);
+                    ResultSet risultatoQuery = psQ.executeQuery();
+                    risultatoQuery.next();
+                    
+
+                }
+
             }
         } catch (Exception e) {
             e.printStackTrace();
