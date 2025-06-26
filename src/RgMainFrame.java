@@ -254,7 +254,7 @@ public class RgMainFrame {
         ospiteLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                HomeMainFrame myframe = new HomeMainFrame(0, listaLibri ,new Utente("prova","prova","xyxyxy00x00x000x","prova@","prova","prova"));
+                HomeMainFrame myframe = new HomeMainFrame(0, listaLibri ,"ospite");
                 myframe.initialize();
                 frame.dispose();
             }

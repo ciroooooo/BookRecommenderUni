@@ -29,7 +29,6 @@ public class Proxy{
             out.writeObject("GetListaUsernameUtente");
             out.flush();
             listaUsername = (ArrayList<String>)in.readObject();
-            
         } catch (Exception e) {
         }
         return listaUsername;
@@ -88,6 +87,15 @@ public class Proxy{
             out.flush();
         } catch (IOException e) {
         }
-
     }
+    public void getUsernameDaCF(String cf){
+        try {
+            out.writeObject("GetUsernameFromCF");
+            out.flush();
+            out.writeObject(cf);
+            out.flush();
+        } catch (Exception e) {
+        }
+    }
+
 }

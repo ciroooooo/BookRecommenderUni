@@ -42,7 +42,7 @@ public class ServerSlave extends Thread{
                     con.close();
                 }
                 else if(operazione.equals("GetListaUsernameUtente")){
-                    ResultSet risultatoQuery = stmt.executeQuery("SELECT username FROM utente");
+                    ResultSet risultatoQuery = stmt.executeQuery("SELECT username,nome FROM utente");
                     ArrayList<String> listaUsername = new ArrayList<>();
                     while(risultatoQuery.next()){
                         listaUsername.add(risultatoQuery.getString("username"));
@@ -70,6 +70,7 @@ public class ServerSlave extends Thread{
                     risultatoQuery.next();
                     String cf = risultatoQuery.getString(1);
                     out.writeObject(cf);
+                    out.flush();
                 }
                 else if(operazione.equals("AggiungiAutore")){
                     String nomeAutore = (String)in.readObject();
