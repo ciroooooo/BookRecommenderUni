@@ -4,9 +4,6 @@
 //Matteo Corda 757928 (VA)
 //Gabriele Schioppa 756634 (VA)
 
-package Parametri;
-
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.io.File;
@@ -206,7 +203,7 @@ public class Utente implements Serializable {
  * @param password La password da controllare.
  * @return true se una delle stringhe è vuota, false altrimenti.
  */
-    public static boolean stringheVuote(String nome, String cognome,String codiceFiscale, String email,String username, String password)
+    private boolean stringheVuote(String nome, String cognome,String codiceFiscale, String email,String username, String password)
     {   
         if(nome.length()==0 || cognome.length()==0 || codiceFiscale.length()==0 || email.length()==0 || username.length()==0 || password.length()==0){
             return true;
@@ -221,7 +218,7 @@ public class Utente implements Serializable {
  * @param email L'indirizzo email da controllare.
  * @return true se l'indirizzo email è valido, false altrimenti.
  */
-    public static boolean controlloEmail(String email){
+    public boolean controlloEmail(String email){
         boolean b=true;
         for(int i=0;i<email.length();i++){
             if(email.charAt(i)==64){
@@ -262,7 +259,7 @@ public class Utente implements Serializable {
  * @param email    Email da cercare.
  * @return true se l'email esiste nella lista degli utenti, false altrimenti.
  */
-    public static boolean emailEsistente(ArrayList<Utente> alUtente, String email){
+    public boolean emailEsistente(ArrayList<Utente> alUtente, String email){
         boolean b=false;
         for (int i = 0; i < alUtente.size() && !b; i++) {
             if (alUtente.get(i).getEmail().equals(email)) {
@@ -278,7 +275,7 @@ public class Utente implements Serializable {
  * @param username Username da cercare.
  * @return true se lo username esiste nella lista degli utenti, false altrimenti.
  */
-    public static boolean usernameEsistente(ArrayList<Utente> alUtente, String username)
+    public boolean usernameEsistente(ArrayList<Utente> alUtente, String username)
     {
         boolean b=false;
         for (int i = 0; i < alUtente.size() && !b; i++) {
@@ -288,7 +285,7 @@ public class Utente implements Serializable {
         }
         return b;
     }
-    public static boolean controlloCF(String cf){
+    public boolean controlloCF(String cf){
         if(cf.length()==16){
             String stringaTagliata=cf.substring(0,6);
             boolean corretto=true;

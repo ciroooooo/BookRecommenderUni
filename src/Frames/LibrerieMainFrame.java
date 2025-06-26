@@ -93,7 +93,7 @@ public class LibrerieMainFrame {
 
         bottoneHome.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e){
-                HomeMainFrame myFrame=new HomeMainFrame(1, listaLibri, u);
+                HomeMainFrame myFrame=new HomeMainFrame(1, listaLibri,"ospite");
                 frame.dispose();
                 myFrame.initialize();
             }

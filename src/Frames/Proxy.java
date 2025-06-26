@@ -1,9 +1,11 @@
 package Frames;
 
+import Parametri.*;
 import java.io.*;
 import java.net.*;
 import java.time.LocalDate;
 import java.util.*;
+
 public class Proxy{
     private InetAddress ip;
     private Socket socket;
@@ -31,7 +33,6 @@ public class Proxy{
             out.writeObject("GetListaUsernameUtente");
             out.flush();
             listaUsername = (ArrayList<String>)in.readObject();
-            
         } catch (Exception e) {
         }
         return listaUsername;
@@ -100,6 +101,44 @@ public class Proxy{
         }
     }
 
-
+    public void getUsernameDaCF(String cf){
+        try {
+            out.writeObject("GetUsernameFromCF");
+            out.flush();
+            out.writeObject(cf);
+            out.flush();
+        } catch (Exception e) {
+        }
+    }
+    public int aggiungiUtente(Utente u){
+        try {
+            out.writeObject("AggiungiUtente");
+            out.flush();
+            if(Utente.stringheVuote(u.getNome(), u.getCognome(), u.getCF(), u.getEmail(), u.getUsername(), u.getPassword())){
+                return 4;
+            }
+            else if(Utente.controlloEmail(u.getEmail())){
+                return 5;
+            }
+            else if(!(Utente.controlloCF(u.getCF()))){
+                return 10;
+            }
+            ArrayList<Utente> alUtente = (ArrayList<Utente>)in.readObject();
+            if(Utente.emailEsistente(alUtente, u.getEmail())){
+                return 0;
+            }
+            else if(u.usernameEsistente(alUtente, u.getUsername())){
+                return 1;
+            }
+            out.writeObject("Inserisci");
+            out.flush();
+            out.writeObject(u);
+            out.flush();
+            return 2; 
+        } catch (Exception e) {
+            return 9;
+        }
+        
+    }
 
 }
