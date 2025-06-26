@@ -1,0 +1,1090 @@
+//Simone Cirillo 758727 (VA)
+//Simone Diano Domenico 757775 (VA)
+//Jacopo Loni 758223 (VA)
+//Matteo Corda 757928 (VA)
+//Gabriele Schioppa 756634 (VA)
+
+
+package Frames;
+import Parametri.*;
+
+import java.awt.*;
+import java.awt.event.*;
+import java.io.File;
+import java.util.ArrayList;
+import javax.swing.*;
+
+public class LibrerieMainFrame {
+    private Libro libroCorrente;
+    private JFrame frame;
+    private JPanel topPanel;
+    private String nomeLib;
+    private JPanel resultsPanel;
+    private JScrollPane risultatoScrollPane;
+    private JScrollPane risultatoScrollPaneLib;
+    private JButton bottoneHome;
+    private JButton bottoneCLibrerie;
+    private ArrayList<Libro> listaLibri = new ArrayList<>();
+    private ArrayList<Boolean> libriVisibili = new ArrayList<>();
+    private ArrayList<Libro> libriDaAggiungere = new ArrayList<>();
+    private Utente u;
+    private ArrayList<Libro> alSuggerimenti = new ArrayList<>();
+    private int k=0;
+    private JScrollPane risultatoScrollPaneSugg;
+    private ArrayList<SuggerimentoLibro> alSugg=new ArrayList<>();
+    private JButton searchByTitleButton,searchByAuthorButton,searchByAuthorAndYearButton;
+    private JPanel OptionPanelCLib = new JPanel(new GridBagLayout());
+    private JPanel OptionPanel1 = new JPanel(new GridBagLayout());
+    private JTextField searchField;
+    private GridBagConstraints c=new GridBagConstraints();
+    private JLabel labelRicerca;
+    private boolean firstTime=true;
+
+/**
+ * Verifica l'esistenza di un file e lo crea se non esiste.
+ * Questo metodo controlla se il file specificato esiste. Se il file non esiste,
+ * tenta di crearlo.
+ *
+ * @param file il file da verificare e creare se non esiste.
+ * 
+ * @throws IOException se si verifica un errore durante la creazione del file.
+ */   
+    public static void FileEsiste(File file) {
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+/**
+ * Costruttore per la classe LibrerieMainFrame.
+ * Inizializza il frame principale per la gestione delle librerie di libri.
+ * Configura il layout, i pannelli e i bottoni necessari per l'interfaccia utente.
+ *
+ * @param listaLibri una lista di oggetti {@code Libro} da visualizzare e gestire.
+ * @param u l'utente corrente che ha effettuato l'accesso.
+ * 
+ * @throws IOException se si verifica un errore durante la lettura dei file di librerie o suggerimenti.
+ * @throws ClassNotFoundException se la classe degli oggetti letti dai file non viene trovata.
+ */
+    public LibrerieMainFrame(ArrayList<Libro> listaLibri, Utente u) {
+        this.listaLibri=listaLibri;
+        this.u=u;
+        ArrayList<Librerie> alLibrerie = Librerie.leggiFileLibrerie();
+        ArrayList<Librerie> alFiltrato = Librerie.filtraLibrerie(u);
+        alSugg=SuggerimentoLibro.leggiFileSugg();
+        
+        frame = new JFrame();
+        topPanel = new JPanel();
+        topPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
+        topPanel.setBackground(new Color(135, 206, 250));
+        topPanel.setOpaque(true);
+
+        bottoneHome = new JButton("Home");
+        bottoneCLibrerie = new JButton("Crea Librerie");
+        customizeButton(bottoneHome);
+        customizeButton(bottoneCLibrerie);
+
+        topPanel.add(bottoneHome);
+        topPanel.add(bottoneCLibrerie);
+
+        bottoneHome.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e){
+                HomeMainFrame myFrame=new HomeMainFrame(1, listaLibri, u);
+                frame.dispose();
+                myFrame.initialize();
+            }
+        });
+        
+        bottoneCLibrerie.addActionListener(new ActionListener() { 
+            public void actionPerformed(ActionEvent e) {
+                libriDaAggiungere.clear();
+                GridBagConstraints c=new GridBagConstraints();
+                c.insets = new Insets(10, 10, 10, 10);
+                
+                JLabel nomeLabel = new JLabel("Nome Libreria:");
+
+                c.gridx = 0;
+                c.gridy = 0;
+                c.gridwidth = 2;
+                OptionPanelCLib.add(nomeLabel, c);
+
+                JTextField nomeLibField= new JTextField(20);
+                nomeLib = nomeLibField.getText();
+
+                c.gridx = 2;
+                c.gridwidth = 2;
+                OptionPanelCLib.add(nomeLibField, c);
+
+                AggiungiBottoniECampoRicerca(OptionPanelCLib);
+                
+                JPanel risultatoRicercaLibrerie=new JPanel();
+                risultatoRicercaLibrerie.setBackground(Color.white);
+                risultatoRicercaLibrerie.setLayout(new BoxLayout(risultatoRicercaLibrerie, BoxLayout.Y_AXIS));
+                risultatoScrollPaneLib = new JScrollPane(risultatoRicercaLibrerie); 
+                risultatoScrollPaneLib.setPreferredSize(new Dimension(300, 200));
+                
+                c.gridx = 0;
+                c.gridy = 6;
+                c.gridwidth = 6;
+                c.fill = GridBagConstraints.BOTH;
+                OptionPanelCLib.add(risultatoScrollPaneLib, c);
+
+                JButton ApplicaButton=new JButton("Applica");
+                c.gridx=0;
+                c.gridy=8;
+                c.gridwidth=1;
+                OptionPanelCLib.add(ApplicaButton,c);
+                
+                JButton cancelButton=new JButton("Annulla");
+                c.gridx=3;
+                c.gridy=8;
+                OptionPanelCLib.add(cancelButton,c);
+                frame.add(OptionPanelCLib);
+
+                JOptionPane pane = new JOptionPane(
+                OptionPanelCLib,
+                JOptionPane.PLAIN_MESSAGE,
+                JOptionPane.DEFAULT_OPTION,
+                null,
+                new Object[]{},
+                null);
+                
+                searchByTitleButton.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        risultatoRicercaLibrerie.removeAll();
+                        String testo=searchField.getText();
+                        ArrayList<Libro>risultati=ricercaConTitolo(testo);
+                        mostraRisultati(risultati,0,risultatoRicercaLibrerie);
+                    }
+                });
+
+                searchByAuthorButton.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        risultatoRicercaLibrerie.removeAll();
+                        String testo=searchField.getText();
+                        ArrayList<Libro>risultati=ricercaConAutore(testo);
+                        mostraRisultati(risultati,0,risultatoRicercaLibrerie);
+                    }
+                });
+                
+                searchByAuthorAndYearButton.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        risultatoRicercaLibrerie.removeAll();
+                       String testo=searchField.getText();
+                       ArrayList<Libro>risultati=ricercaConAnnoAutore(testo);
+                       mostraRisultati(risultati, 0,risultatoRicercaLibrerie);
+                    }
+                });
+                JDialog dialog=pane.createDialog(frame,"Creazione Libreria");
+                ApplicaButton.addActionListener(new ActionListener() { 
+                    public void actionPerformed(ActionEvent e){
+                        String nomeLib=nomeLibField.getText();
+                        Librerie lib=new Librerie(nomeLib, u, libriDaAggiungere);
+                        boolean controlloLibrerie=true; 
+                        boolean nomeUguale=false;
+                        for(int i=0;i<alFiltrato.size() && controlloLibrerie;i++){
+                            if(alFiltrato.get(i).getNome().equals(lib.getNome())){
+                                controlloLibrerie=false;
+                                nomeUguale=true;
+                            }
+                        }
+                        if(nomeLib.length()==0){
+                            JOptionPane.showMessageDialog(frame,"Il nome della libreria non può essere vuoto");
+                        }
+                        else if(libriDaAggiungere.size()==0){
+                            JOptionPane.showMessageDialog(frame,"Aggiungere almeno un libro");
+                        }
+                        else if(controlloLibrerie){
+                            alFiltrato.add(lib);
+                            alLibrerie.add(lib);
+                            Librerie.scriviAlLibrerieFile(alLibrerie);
+                            listaLibrerie(alFiltrato);
+                            dialog.setVisible(false);
+                            dialog.dispose();
+                            risultatoRicercaLibrerie.removeAll();
+                            controlloLibrerie=false;
+                        }else if(controlloLibrerie || nomeUguale){
+                            JOptionPane.showMessageDialog(frame,"Esiste gia una libreria con questo nome");
+                        }                        
+                    }
+                });
+                cancelButton.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e){
+                        dialog.dispose();
+                        risultatoRicercaLibrerie.removeAll();
+                    }
+                });
+                dialog.pack();
+                dialog.setVisible(true);
+            }
+        });
+        resultsPanel = new JPanel(new GridBagLayout());
+        resultsPanel.setBackground(Color.white);
+        resultsPanel.repaint();
+        resultsPanel.validate();
+        risultatoScrollPane = new JScrollPane(resultsPanel);
+        risultatoScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        risultatoScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        risultatoScrollPane.setPreferredSize(new Dimension(400, 500));
+        listaLibrerie(alFiltrato);
+        frame.setLayout(new BorderLayout());
+        frame.add(risultatoScrollPane, BorderLayout.CENTER);
+        frame.add(topPanel, BorderLayout.NORTH);
+    }
+/**
+ * Visualizza l'elenco delle librerie dell'utente all'interno del pannello delle librerie.
+ * Questo metodo rimuove tutti i componenti esistenti dal pannello dei risultati
+ * e aggiunge un nuovo pannello per ciascuna libreria nella lista filtrata.
+ * Ogni pannello della libreria contiene un'etichetta con il nome della libreria e,
+ * quando viene cliccata, mostra o nasconde i libri appartenenti alla libreria.
+ *
+ * @param alFiltrato la lista delle librerie filtrate da visualizzare.
+ * 
+ * @throws NullPointerException se {@code alFiltrato} è null.
+ */
+private void listaLibrerie(ArrayList<Librerie> alFiltrato) {
+    resultsPanel.removeAll();
+
+    // Aggiungi il titolo sopra l'elenco delle librerie
+    JLabel titoloLabel = new JLabel("Elenco Librerie");
+    titoloLabel.setFont(new Font("Arial", Font.BOLD, 20));
+    titoloLabel.setForeground(new Color(70, 130, 180)); // Azzurro
+    titoloLabel.setHorizontalAlignment(SwingConstants.CENTER);
+    titoloLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 20, 0)); // Margini
+    resultsPanel.add(titoloLabel);
+
+    GridBagConstraints c = new GridBagConstraints();
+    c.fill = GridBagConstraints.HORIZONTAL;
+    c.insets = new Insets(10, 10, 10, 10);
+
+    for (int i = 0; i < alFiltrato.size(); i++) {
+        Librerie libreria = alFiltrato.get(i);
+        JPanel libreriaPanel = new JPanel();
+        libreriaPanel.setLayout(new BoxLayout(libreriaPanel, BoxLayout.Y_AXIS));
+        libreriaPanel.setBackground(Color.WHITE);
+        libreriaPanel.setBorder(BorderFactory.createLineBorder(new Color(169, 169, 169), 2, true));
+        libreriaPanel.setPreferredSize(new Dimension(350, 100));
+        libreriaPanel.setMaximumSize(new Dimension(350, 100));
+
+        JLabel libreriaLabel = new JLabel(libreria.getNome());
+        libreriaLabel.setForeground(new Color(0, 128, 128));
+        libreriaLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        libreriaLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        libreriaLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        libreriaLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
+        libreriaLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                apriTabLibreria(libreria);
+            }
+        });
+
+        libreriaPanel.add(libreriaLabel);
+        c.gridx = 0;
+        c.gridy = i + 1; // Sposta di 1 per lasciare spazio al titolo
+        resultsPanel.add(libreriaPanel, c);
+    }
+
+    resultsPanel.revalidate();
+    resultsPanel.repaint();
+}
+
+/**
+ * Apre un nuovo tab con l'elenco dei libri contenuti nella libreria selezionata.
+ * 
+ * @param libreria La libreria selezionata.
+ */
+private void apriTabLibreria(Librerie libreria) {
+    JTabbedPane tabbedPane = new JTabbedPane();
+    JPanel libriPanel = new JPanel();
+    libriPanel.setLayout(new BoxLayout(libriPanel, BoxLayout.Y_AXIS));
+    libriPanel.setBackground(Color.WHITE);
+
+    for (Libro libro : libreria.getAlLibri()) {
+        JPanel libroPanel = new JPanel(new BorderLayout());
+        libroPanel.setBackground(new Color(240, 248, 255)); // Colore di sfondo per il rettangolo
+        libroPanel.setBorder(BorderFactory.createLineBorder(new Color(169, 169, 169), 1, true));
+        libroPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
+
+        JLabel libroLabel = new JLabel(libro.getTitolo() + " - " + libro.getAutore() + " (" + libro.getDataPubblicazione().getYear() + ")");
+        libroLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+        libroLabel.setForeground(Color.BLACK);
+        libroLabel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+        libroLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+        libroLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                Opzioni(libro);
+            }
+        });
+
+        libroPanel.add(libroLabel, BorderLayout.CENTER);
+        libriPanel.add(libroPanel);
+        libriPanel.add(Box.createVerticalStrut(5)); // Spazio tra i rettangoli
+    }
+
+    // Aggiungi il tasto "Indietro" in basso a sinistra
+    JButton indietroButton = new JButton("Indietro");
+    customizeButton(indietroButton);
+    indietroButton.setPreferredSize(new Dimension(100, 40));
+    indietroButton.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            ((JFrame) SwingUtilities.getWindowAncestor(tabbedPane)).dispose();
+        }
+    });
+
+    JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+    bottomPanel.setBackground(Color.WHITE);
+    bottomPanel.add(indietroButton);
+
+    JPanel mainPanel = new JPanel(new BorderLayout());
+    mainPanel.add(new JScrollPane(libriPanel), BorderLayout.CENTER);
+    mainPanel.add(bottomPanel, BorderLayout.SOUTH);
+
+    tabbedPane.addTab(libreria.getNome(), mainPanel);
+
+    JFrame tabFrame = new JFrame(libreria.getNome());
+    tabFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    tabFrame.setSize(400, 600);
+    tabFrame.add(tabbedPane);
+    tabFrame.setLocationRelativeTo(null);
+    tabFrame.setVisible(true);
+}
+
+/**
+ * Personalizza l'aspetto di un pulsante.
+ * <p>
+ * Questo metodo imposta la dimensione, il font, i colori di sfondo e testo,
+ * e gestisce gli eventi del mouse per un pulsante specificato.
+ * </p>
+ *
+ * @param bottone il pulsante da personalizzare.
+ */
+    private void customizeButton(JButton bottone) { 
+        bottone.setFont(new Font("Arial", Font.BOLD, 14));
+        bottone.setBackground(new Color(135, 206, 250));
+        bottone.setForeground(Color.BLACK);
+        bottone.setPreferredSize(new Dimension(150, 50));
+        bottone.setBorderPainted(false);
+        bottone.setFocusPainted(false);
+        bottone.setContentAreaFilled(false);
+        bottone.setOpaque(true);
+        bottone.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                bottone.setBackground(new Color(135, 255, 255));
+            }
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                bottone.setBackground(new Color(135, 206, 250));
+            }
+        });
+    }
+/**
+ * Inizializza e visualizza il frame principale dell'applicazione Librerie.
+ * <p>
+ * Questo metodo imposta il titolo, le dimensioni, il comportamento di chiusura,
+ * e la posizione del frame principale. Infine, rende visibile il frame.
+ * </p>
+ */
+    public void initialize() {
+        frame.setTitle("Librerie");
+        frame.setSize(400, 600);
+        frame.setMinimumSize(new Dimension(400, 600));
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+    }
+  /**
+ * Mostra un dialogo per inserire o modificare le valutazioni di un libro da parte di un utente.
+ * 
+ * @param libro Il libro per il quale inserire o modificare le valutazioni.
+ */  
+    private void mostraInserimentoValutazioni(Libro libro) { 
+        String infoLibro=Libro.getInfoBase(libro);
+        JLabel infoLabel = new JLabel(infoLibro);
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.setBackground(Color.decode("#f0f0f0"));
+        GridBagConstraints c=new GridBagConstraints();
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.insets = new Insets(5, 5, 5, 5);
+        panel.add(infoLabel);
+
+        ArrayList<ValutazioniLibro> alVL=ValutazioniLibro.leggiFileVL();
+        ValutazioniLibro vl=new ValutazioniLibro(u, libro);
+        boolean controlloLibrerie=false;
+        for(int i=0;i<alVL.size() && !controlloLibrerie;i++){
+            if(alVL.get(i).getUtente().getUsername().equals(u.getUsername())){
+                if(alVL.get(i).getLibro().getTitolo().equals(libro.getTitolo())){
+                    vl=alVL.get(i);
+                    controlloLibrerie=true;
+                }
+            }
+        }
+
+        JFrame frame = new JFrame();
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        
+        String[] arrayPunteggio={"1","2","3","4","5"};
+        JComboBox<String> boxStile = new JComboBox<>(arrayPunteggio);
+
+        JComboBox<String> boxContenuto = new JComboBox<>(arrayPunteggio);
+
+        JComboBox<String> boxGradevolezza = new JComboBox<>(arrayPunteggio);
+
+        JComboBox<String> boxOriginalita = new JComboBox<>(arrayPunteggio);
+
+        JComboBox<String> boxEdizione = new JComboBox<>(arrayPunteggio);
+
+        JComboBox<String> boxVotoFinale = new JComboBox<>(arrayPunteggio);
+
+        JButton applicaButton=new JButton("Applica");
+        JButton cancelButton=new JButton("Annulla");
+
+        
+        
+        String info="Stile:";
+        JTextField aggiunteStile = new JTextField(20);
+        
+        c.gridwidth=1;
+        JLabel stileLabel=new JLabel(info);
+        c.gridx=0;
+        c.gridy=4;
+        panel.add(stileLabel,c);
+
+        c.gridx=1;
+        c.gridy=4;
+        panel.add(boxStile,c);
+
+        c.gridx=2;
+        panel.add(aggiunteStile,c);
+        
+        info="Contenuto:";
+        JLabel contenutoLabel=new JLabel(info);
+
+        c.gridx=0;
+        c.gridy=5;
+        panel.add(contenutoLabel,c);
+
+        c.gridx=1;
+        c.gridy=5;
+        panel.add(boxContenuto,c);
+
+        JTextField aggiunteContenuto=new JTextField(20);
+        c.gridx=2;
+        panel.add(aggiunteContenuto,c);
+
+        JLabel gradevolezzaLabel=new JLabel("gradevolezza");
+
+        c.gridx=0;
+        c.gridy=6;
+        panel.add(gradevolezzaLabel,c);
+
+        c.gridx=1;
+        c.gridy=6;
+        panel.add(boxGradevolezza,c);
+
+        JTextField aggiunteGradevolezza=new JTextField(20);
+        c.gridx=2;
+        panel.add(aggiunteGradevolezza,c);
+        JLabel originalitaLabel=new JLabel("Originalita:");
+
+        c.gridx=0;
+        c.gridy=7;
+        panel.add(originalitaLabel,c);
+
+        c.gridx=1;
+        c.gridy=7;
+        panel.add(boxOriginalita,c);
+        JTextField aggiunteOriginalita=new JTextField(20);
+        c.gridx=2;
+        panel.add(aggiunteOriginalita,c);
+        
+        JLabel edizioneLabel=new JLabel("Edizione:");
+
+        c.gridx=0;
+        c.gridy=8;
+        panel.add(edizioneLabel,c);
+
+        c.gridx=1;
+        c.gridy=8;
+        panel.add(boxEdizione,c);
+        JTextField aggiunteEdizione=new JTextField(20);
+        c.gridx=2;
+        
+        panel.add(aggiunteEdizione,c);
+
+        JLabel votoFinaleLabel=new JLabel("Voto finale:");
+
+        c.gridx=0;
+        c.gridy=9;
+        panel.add(votoFinaleLabel,c);
+
+        c.gridx=1;
+        c.gridy=9;
+        panel.add(boxVotoFinale,c);
+        JTextField aggiunteVotoFinale=new JTextField(20);
+        c.gridx=2;
+        
+        panel.add(aggiunteVotoFinale,c);
+
+        c.gridx=0;
+        c.gridy=10;
+        panel.add(cancelButton,c);
+
+        c.gridx=1;
+        c.gridy=10;
+        panel.add(applicaButton,c);
+
+        if(controlloLibrerie){ 
+            boxStile.setSelectedIndex(vl.getStile()-1);
+            boxContenuto.setSelectedIndex(vl.getContenuto()-1);
+            boxGradevolezza.setSelectedIndex(vl.getGradevolezza()-1);
+            boxOriginalita.setSelectedIndex(vl.getOriginalita()-1);
+            boxEdizione.setSelectedIndex(vl.getEdizione()-1);
+            boxVotoFinale.setSelectedIndex(vl.getVotoFinale()-1);
+            aggiunteStile.setText(vl.getNoteStile());
+            aggiunteContenuto.setText(vl.getNoteContenuto());
+            aggiunteGradevolezza.setText(vl.getNoteGradevolezza());
+            aggiunteOriginalita.setText(vl.getNoteOriginalita());
+            aggiunteEdizione.setText(vl.getNoteEdizione());
+            aggiunteVotoFinale.setText(vl.getNoteVotoFinale());
+        }
+        frame.add(panel);
+        JOptionPane provaPane = new JOptionPane(
+                panel,
+                JOptionPane.PLAIN_MESSAGE,
+                JOptionPane.DEFAULT_OPTION,
+                null,
+                new Object[]{},
+                null);
+        JDialog provaDialog=provaPane.createDialog(frame,"Valutazioni");
+        applicaButton.addActionListener(new ActionListener() { 
+            public void actionPerformed(ActionEvent e){
+                int votoStile=Integer.parseInt(boxStile.getSelectedItem().toString());
+                int votoContenuto=Integer.parseInt(boxContenuto.getSelectedItem().toString());
+                int votoGradevolezza=Integer.parseInt(boxGradevolezza.getSelectedItem().toString());
+                int votoOriginalita=Integer.parseInt(boxOriginalita.getSelectedItem().toString());
+                int votoEdizione=Integer.parseInt(boxEdizione.getSelectedItem().toString());
+                int votoFinale=Integer.parseInt(boxVotoFinale.getSelectedItem().toString());
+                String noteStile=aggiunteStile.getText();
+                String noteContenuto=aggiunteContenuto.getText();
+                String noteGradevolezza=aggiunteGradevolezza.getText();
+                String noteOriginalita=aggiunteOriginalita.getText();
+                String noteEdizione=aggiunteEdizione.getText();
+                String noteVotoFinale=aggiunteVotoFinale.getText();
+                ValutazioniLibro valLibro=new ValutazioniLibro(u, libro);
+                if(noteStile.length()>255){
+                    JOptionPane.showMessageDialog(frame,"La lunghezza delle note stile non può essere più lunga di 255 caratteri");
+                }else if(noteContenuto.length()>255){
+                    JOptionPane.showMessageDialog(frame,"La lunghezza delle note contenuto non può essere più lunga di 255 caratteri");
+                }else if(noteGradevolezza.length()>255){
+                    JOptionPane.showMessageDialog(frame,"La lunghezza delle note gradevolezza non può essere più lunga di 255 caratteri");
+                }else if(noteOriginalita.length()>255){
+                    JOptionPane.showMessageDialog(frame,"La lunghezza delle note originalità non può essere più lunga di 255 caratteri");
+                }else if(noteEdizione.length()>255){
+                    JOptionPane.showMessageDialog(frame,"La lunghezza delle note edizione non può essere più lunga di 255 caratteri");
+                }else if(noteVotoFinale.length()>255){
+                    JOptionPane.showMessageDialog(frame,"La lunghezza delle note sul voto finale non può essere più lunga di 255 caratteri");
+                }else{
+                    valLibro.inserisciValutazioneLibro(votoStile, noteStile, votoContenuto, noteContenuto, votoGradevolezza, noteGradevolezza, votoOriginalita, noteOriginalita, votoEdizione, noteEdizione, votoFinale, noteVotoFinale);
+                    boolean controlloLibrerie=true;
+                    int k=0;
+                    for(int i=0;i<alVL.size() && controlloLibrerie;i++){
+                        if(alVL.get(i).getLibro().getTitolo().equals(valLibro.getLibro().getTitolo()) && alVL.get(i).getUtente().getUsername().equals(valLibro.getUtente().getUsername())){
+                            controlloLibrerie=false;
+                            k=i;
+                        }
+                    }
+                    if(controlloLibrerie){
+                        alVL.add(valLibro);
+                        ValutazioniLibro.scriviFileVL(alVL);
+                    }else{
+                        alVL.set(k,valLibro);
+                        ValutazioniLibro.scriviFileVL(alVL);
+                    }
+                    provaDialog.dispose();
+                }
+            }
+        });
+        cancelButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e){
+                provaDialog.dispose();
+            }
+        });
+        provaDialog.pack();
+        provaDialog.setVisible(true);
+    }
+  /**
+ * Mostra i risultati della ricerca dei libri all'interno di un pannello.
+ * 
+ * @param risultati ArrayList dei libri da mostrare come risultato della ricerca.
+ * @param n Indica il contesto in cui vengono mostrati i risultati:
+ *          - 0 per la visualizzazione nella lista delle librerie.
+ *          - 1 per la visualizzazione in un altro contesto.
+ * @param panel Il pannello su cui aggiungere i risultati della ricerca.
+ */  
+    private void mostraRisultati(ArrayList<Libro> risultati,int n,JPanel panel) {
+        panel.removeAll();
+        for (Libro libro : risultati) {
+            JPanel libroPanel = new JPanel(new BorderLayout());
+            JLabel libroLabel = new JLabel(Libro.getTitolo(libro)+" "+Libro.getAutore(libro)+" "+Libro.getAnno(libro));
+            libroLabel.setForeground(Color.BLUE.darker());
+            libroLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            libroLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); 
+            libroPanel.add(libroLabel, BorderLayout.CENTER);
+            libroPanel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY)); 
+            libroLabel.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    if(n==0){
+                        mostraInfoInLibrerie(libro,0);
+                    }else if(n==1){
+                        mostraInfoInLibrerie(libro,1);
+                    }
+                }
+            });
+            
+                panel.add(libroPanel);
+                panel.add(Box.createVerticalStrut(5));
+                panel.revalidate();
+                panel.repaint();
+        }
+    }
+/**
+ * Mostra le informazioni dettagliate di un libro in un pannello.
+ * Consente all'utente di aggiungere il libro alla propria collezione o ai suggerimenti.
+ * 
+ * @param libro Il libro di cui mostrare le informazioni dettagliate.
+ * @param n Indica il contesto in cui viene mostrata l'informazione:
+ *          - 0 per la visualizzazione nelle librerie dell'utente.
+ *          - 1 per la visualizzazione nei suggerimenti.
+ */
+    private void mostraInfoInLibrerie(Libro libro,int n) {
+        String infoLibro=Libro.getInfoBase(libro);
+        GridBagConstraints c=new GridBagConstraints();
+        JPanel panel = new JPanel(new GridBagLayout());
+        JLabel infoLabel=new JLabel(infoLibro);
+        panel.setBackground(Color.decode("#f0f0f0"));
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.insets = new Insets(5, 5, 5, 5);
+        panel.add(infoLabel);
+        JButton AggiungiLibro = new JButton("✔️");
+        JLabel pulsanteLabel=new JLabel("<html><b>Aggiungi:<b><html>");
+        c.gridx=0;
+        c.gridy=3;
+        panel.add(pulsanteLabel,c);
+
+        c.gridx=1;
+        c.gridy=3;
+
+        panel.add(AggiungiLibro,c);
+        frame.add(panel);
+        
+        JOptionPane pane = new JOptionPane(
+                panel,
+                JOptionPane.PLAIN_MESSAGE,
+                JOptionPane.DEFAULT_OPTION,
+                null,
+                new Object[]{},
+                null);
+        JDialog dialog=pane.createDialog(frame,"");
+        if(n==0){
+            AggiungiLibro.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e){
+                    boolean libroAggiunto=true;
+                    firstTime=true;
+                    if(libriDaAggiungere.size()==0){
+                        libriDaAggiungere.add(libro);
+                        dialog.dispose();
+                        libroAggiunto=false;
+                        firstTime=false;
+                    }else{
+                        for(int i=0;i<libriDaAggiungere.size() && libroAggiunto;i++){
+                            if(libriDaAggiungere.get(i).getTitolo().equals(libro.getTitolo())){
+                                libroAggiunto=false;
+                            }
+                        }
+                    }
+                    if(libroAggiunto){
+                        libriDaAggiungere.add(libro);
+                        dialog.dispose();
+                    }else if(!libroAggiunto && firstTime){
+                        JOptionPane.showMessageDialog(frame,"Libro gia inserito");
+                    }
+                }  
+            });
+        }else if(n==1){
+            AggiungiLibro.addActionListener(new ActionListener() { 
+                public void actionPerformed(ActionEvent e){
+                    boolean aggiunto=true;
+                    firstTime=true;
+                    boolean controlloLibrerie=true;
+                    if(alSuggerimenti.size()==0){
+                        alSuggerimenti.add(libro);
+                        aggiunto=false;
+                        firstTime=false;
+                        dialog.dispose();
+                    }else if(aggiunto){
+                        if(alSuggerimenti.size()<3){
+                            for(int i=0;i<alSuggerimenti.size();i++){
+                                if(alSuggerimenti.get(i).getTitolo().equals(libro.getTitolo())){
+                                    aggiunto=false;
+                                }
+                            }
+                        }else{
+                            aggiunto=false;
+                            JOptionPane.showMessageDialog(frame,"Hai inserito il numero massimo di libri");
+                            controlloLibrerie=false;
+                        }
+                    }
+                        boolean sameLib=true;
+                        if(libro.getTitolo().equals(libroCorrente.getTitolo())){
+                            sameLib=false;
+                        }
+                        if(aggiunto && sameLib){
+                            alSuggerimenti.add(libro);
+                            aggiunto=false;
+                            dialog.dispose();
+                        }
+                        else if(!sameLib){
+                            JOptionPane.showMessageDialog(frame,"non puoi suggerire lo stesso libro di cui stai inserendo suggerimenti");
+                        }else if(!aggiunto && firstTime){
+                            if(alSuggerimenti.size()<=3){
+                                if(controlloLibrerie){
+                                    JOptionPane.showMessageDialog(frame,"Libro gia inserito");
+                                }
+                            }
+                        }
+                    
+                }
+            });
+        }
+        dialog.pack();
+        dialog.setVisible(true);
+    }
+/**
+ * Cerca libri nella lista specificata in base al titolo parziale fornito.
+ * Restituisce una lista di libri il cui titolo contiene la stringa specificata.
+ * 
+ * @param titolo Il titolo parziale da cercare nei libri.
+ * @param listaLibri La lista di libri in cui effettuare la ricerca.
+ * @return Una ArrayList di libri il cui titolo contiene la stringa specificata.
+ */
+    private ArrayList<Libro> cercaLibro(String titolo,ArrayList<Libro>listaLibri) { 
+        ArrayList<Libro> tmp = new ArrayList<>();
+        for (Libro libro : listaLibri) {
+            if (libro.getTitolo().contains(titolo)) {
+                tmp.add(libro);
+            }
+        }
+        return tmp;
+    }
+/**
+ * Cerca libri nella lista specificata dell'autore fornito.
+ * Restituisce una lista di libri scritti dall'autore specificato.
+ * 
+ * @param autore L'autore di cui cercare i libri.
+ * @param listaLibri La lista di libri in cui effettuare la ricerca.
+ * @return Una ArrayList di libri scritti dall'autore specificato.
+ */
+    private ArrayList<Libro> cercaLibro(Autore autore,ArrayList<Libro>listaLibri) { 
+        ArrayList<Libro> tmp = new ArrayList<>();
+        for (Libro libro : listaLibri) {
+            if (libro.getAutore().contains(autore.getNome())) {
+                tmp.add(libro);
+            }
+        }
+        return tmp;
+    }
+/**
+ * Cerca libri nella lista specificata dell'autore e dell'anno di pubblicazione forniti.
+ * Restituisce una lista di libri scritti dall'autore specificato e pubblicati nell'anno specificato.
+ * 
+ * @param autore L'autore di cui cercare i libri.
+ * @param anno L'anno di pubblicazione dei libri da cercare.
+ * @param listaLibri La lista di libri in cui effettuare la ricerca.
+ * @return Una ArrayList di libri scritti dall'autore specificato e pubblicati nell'anno specificato.
+ */   
+    private ArrayList<Libro> cercaLibro(Autore autore, int anno,ArrayList<Libro>listaLibri) { 
+        ArrayList<Libro> tmp = new ArrayList<>();
+        for (Libro libro : listaLibri) {
+            if (libro.getAutore().contains(autore.getNome()) && libro.getDataPubblicazione().getYear() == anno) {
+                tmp.add(libro);
+            }
+        }
+        return tmp;
+    }
+    
+/**
+ * Mostra l'interfaccia utente per inserire suggerimenti per un libro specifico.
+ * 
+ * @param libro Il libro per il quale si vogliono inserire i suggerimenti.
+ */    
+    private void Suggerimenti(Libro libro){
+        libroCorrente=libro;
+        alSuggerimenti.clear();
+        AggiungiBottoniECampoRicerca(OptionPanel1);
+       
+       
+        JPanel risultatoRicercaSuggerimenti=new JPanel();
+        risultatoRicercaSuggerimenti.setBackground(Color.white);
+        risultatoRicercaSuggerimenti.setLayout(new BoxLayout(risultatoRicercaSuggerimenti, BoxLayout.Y_AXIS));
+        risultatoScrollPaneSugg=new JScrollPane(risultatoRicercaSuggerimenti);
+        risultatoScrollPaneSugg = new JScrollPane(risultatoRicercaSuggerimenti);
+        risultatoScrollPaneSugg.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        risultatoScrollPaneSugg.setPreferredSize(new Dimension(300, 200));
+        
+        c.gridx = 0;
+        c.gridy = 6;
+        c.gridwidth = 6;
+        c.fill = GridBagConstraints.BOTH;
+        OptionPanel1.add(risultatoScrollPaneSugg,c);
+
+        JButton ApplicaButton=new JButton("Applica");
+        c.gridx=0;
+        c.gridy=8;
+        c.gridwidth=1;
+        OptionPanel1.add(ApplicaButton,c);
+        
+        JButton cancelButton=new JButton("Annulla");
+        c.gridx=3;
+        c.gridy=8;
+        OptionPanel1.add(cancelButton,c);
+        frame.add(OptionPanel1);
+
+        searchByTitleButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                risultatoRicercaSuggerimenti.removeAll();
+                String testo=searchField.getText();
+                ArrayList<Libro>risultati=ricercaConTitolo(testo);
+                mostraRisultati(risultati,1,risultatoRicercaSuggerimenti);
+            }
+        });
+
+        searchByAuthorButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                risultatoRicercaSuggerimenti.removeAll();
+                String testo=searchField.getText();
+                ArrayList<Libro>risultati=ricercaConAutore(testo);
+                mostraRisultati(risultati,1,risultatoRicercaSuggerimenti);
+            }
+        });
+        
+        searchByAuthorAndYearButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                risultatoRicercaSuggerimenti.removeAll();
+                String testo=searchField.getText();
+                ArrayList<Libro>risultati=ricercaConAnnoAutore(testo);
+                mostraRisultati(risultati,1,risultatoRicercaSuggerimenti);
+            }
+        }); 
+
+        JOptionPane pane = new JOptionPane(
+        OptionPanel1,
+        JOptionPane.PLAIN_MESSAGE,
+        JOptionPane.DEFAULT_OPTION,
+        null,
+        new Object[]{},
+        null);
+        JDialog dialog=pane.createDialog(frame,"Suggerimenti Libri");
+        ApplicaButton.addActionListener(new ActionListener() { 
+            public void actionPerformed(ActionEvent e){  
+                if(alSuggerimenti.size()>0){
+                    SuggerimentoLibro sl = new SuggerimentoLibro(libro,u); 
+                    sl.inserisciSuggerimento(alSuggerimenti);
+                    boolean controlloLibrerie=true;
+                    for(int i=0;i<alSugg.size();i++){
+                        if(alSugg.get(i).getLibro().getTitolo().equals(libro.getTitolo()) && u.getUsername().equals(alSugg.get(i).getUtente().getUsername())){
+                            controlloLibrerie=false;
+                        }
+                    }
+                    if(controlloLibrerie){
+                        alSugg.add(sl);
+                        SuggerimentoLibro.scriviFileSugg(alSugg);
+                        risultatoRicercaSuggerimenti.removeAll();
+                        dialog.dispose();
+                    }else{
+                        JOptionPane.showMessageDialog(frame,"Esiste gia un suggerimento per questo libro");
+                    }
+                }else{
+                    JOptionPane.showMessageDialog(frame,"Inserire almeno un libro suggerito");
+                }              
+            }
+        });
+        cancelButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e){
+                dialog.dispose();
+                risultatoRicercaSuggerimenti.removeAll();
+            }
+        });
+        dialog.pack();
+        dialog.setVisible(true);
+    }
+/**
+ * Mostra una serie di opzioni per un libro, tra cui valutazioni e suggerimenti.
+ * 
+ * @param libro Il libro per il quale si vogliono visualizzare le opzioni.
+ */
+private void Opzioni(Libro libro){  
+    JPanel panel = new JPanel(new GridBagLayout());
+    panel.setBackground(Color.decode("#f0f0f0"));
+    GridBagConstraints c=new GridBagConstraints();
+    c.fill = GridBagConstraints.HORIZONTAL;
+    c.insets = new Insets(10, 10, 10, 10);
+    JButton valutazioni=new JButton("<html><b>Valutazioni<b></html>");
+    JButton consigli=new JButton("<html><b>Consigli<b></html>");
+    JButton cancel=new JButton("<html><b>Annulla<b></html>");
+    c.gridx=0;
+    c.gridy=0;
+    c.gridwidth=1;
+    panel.add(valutazioni,c);
+    c.gridy=2;
+    panel.add(consigli,c);
+    c.gridy=4;
+    panel.add(cancel,c);
+
+    JOptionPane provaPane = new JOptionPane(
+            panel,
+            JOptionPane.PLAIN_MESSAGE,
+            JOptionPane.DEFAULT_OPTION,
+            null,
+            new Object[]{},
+            null);
+    JDialog dialog=provaPane.createDialog(frame,"Opzioni");
+    valutazioni.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e){
+            mostraInserimentoValutazioni(libro);
+            dialog.dispose();
+        }
+    });
+    cancel.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e){
+            dialog.dispose();
+        }
+    });
+    
+    consigli.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e){
+            Suggerimenti(libro);
+            dialog.dispose();
+        }
+    });
+    dialog.pack();
+    dialog.setVisible(true);
+}
+/**
+ * Esegue una ricerca di libri nel database basata sul nome dell'autore.
+ * 
+ * @param testo Il testo da utilizzare per la ricerca dell'autore.
+ * @return ArrayList di Libro contenente i libri trovati corrispondenti al nome dell'autore.
+ */
+    private ArrayList<Libro>  ricercaConAutore(String testo){
+        ArrayList<Libro>tmp=new ArrayList<>();
+        if(testo.length()>0)
+        {
+            tmp = cercaLibro(new Autore(testo),listaLibri);
+            return tmp;
+        }
+        else{
+            JOptionPane.showMessageDialog(frame,"Non hai inserito nessun carattere");
+            return tmp;
+        } 
+    }
+/**
+ * Esegue una ricerca di libri nel database basata sul nome dell'autore e sull'anno di pubblicazione.
+ * Il formato accettato per il parametro 'testo' è 'Autore, Anno'.
+ * 
+ * @param testo Il testo da utilizzare per la ricerca dell'autore e dell'anno.
+ * @return ArrayList di Libro contenente i libri trovati corrispondenti all'autore e all'anno di pubblicazione.
+ */    
+    private ArrayList<Libro> ricercaConAnnoAutore(String testo){
+        String[] parti = testo.split(",");
+        ArrayList<Libro>tmp=new ArrayList<>();
+        if(testo.length()>0) 
+        {
+            if (parti.length == 2) 
+            {
+                try {
+                    String autore = parti[0].trim();
+                    int anno = Integer.parseInt(parti[1].trim());
+                    tmp = cercaLibro(new Autore(autore), anno,listaLibri);
+                    return tmp;
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(frame, "Formato anno non valido. Usare 'Autore, Anno'.", "Errore", JOptionPane.ERROR_MESSAGE);
+                    return tmp;
+                }
+            } else 
+            {
+                JOptionPane.showMessageDialog(frame, "Formato input non valido. Usare 'Autore, Anno'.", "Errore", JOptionPane.ERROR_MESSAGE);
+                return tmp;
+            }
+        }
+        else{
+            JOptionPane.showMessageDialog(null, "Non hai inserito nessun carattere");
+            return tmp;
+        }
+    }       
+/**
+ * Esegue una ricerca di libri nel database basata sul titolo.
+ * 
+ * @param testo Il testo da utilizzare per la ricerca del titolo.
+ * @return ArrayList di Libro contenente i libri trovati corrispondenti al titolo.
+ */    
+    private ArrayList<Libro> ricercaConTitolo(String testo){ 
+        ArrayList<Libro>tmp=new ArrayList<>();
+        if(testo.length()>0){
+            tmp= cercaLibro(testo,listaLibri);
+            return tmp;
+        }
+        else{
+            JOptionPane.showMessageDialog(null, "Non hai inserito nessun carattere");
+            return tmp;
+        }
+    }
+/**
+ * Aggiunge i componenti grafici per la ricerca (bottone Titolo, Autore, Autore e Anno e campo di testo) al pannello specificato.
+ * I componenti sono aggiunti solo alla prima chiamata.
+ * 
+ * @param panel Il pannello a cui aggiungere i componenti grafici.
+ */
+    private void AggiungiBottoniECampoRicerca(JPanel panel){
+        if(k==0){
+            searchByTitleButton = new JButton("Titolo");
+            searchByAuthorButton = new JButton("Autore");
+            searchByAuthorAndYearButton = new JButton("Autore e Anno");
+            searchField = new JTextField(20);
+            labelRicerca=new JLabel("Ricerca:");
+            k++;
+        }
+        c.insets=new Insets(20, 20,20,20);
+        searchField.setText("");
+        c.gridwidth=2;
+        c.gridx=0;
+        c.gridy=1;
+        panel.add(labelRicerca,c);
+        
+        c.gridx = 2;
+        panel.add(searchField, c);
+        
+        c.gridwidth = 1;
+        c.gridy = 4;
+        c.gridx = 0;        
+        panel.add(searchByTitleButton, c);
+
+        c.gridx = 2;
+        panel.add(searchByAuthorButton, c);
+        c.gridx = 3;
+        panel.add(searchByAuthorAndYearButton, c);
+        
+    }
+    
+}
