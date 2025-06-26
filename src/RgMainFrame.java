@@ -18,7 +18,6 @@ import java.util.*;
 import javax.swing.*;
 
 public class RgMainFrame {
-    private ArrayList<Utente> alProva = new ArrayList<>();
     private JTextField nome;
     private JTextField cognome;
     private JButton bottoneRG;
@@ -31,15 +30,13 @@ public class RgMainFrame {
     private JLabel nomeLabel, cognomeLabel, cfLabel, emailLabel, usernameLabel, passwordLabel;
     private JLabel erroreLabel;
     private JTextField nascondiPasswordField;
-    private ArrayList<Libro>listaLibri=new ArrayList<>();
 
 /**
  * Costruttore per la finestra di registrazione utente.
  * 
  * @param listaLibri La lista dei libri disponibili nel sistema.
  */
-    public RgMainFrame(ArrayList<Libro>listaLibri) {
-        this.listaLibri=listaLibri;
+    public RgMainFrame(Proxy proxy) {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception e) {
@@ -201,24 +198,11 @@ public class RgMainFrame {
                 }
                 Utente u = new Utente(nome.getText(), cognome.getText(),cf.getText(), email.getText(), username.getText(),textPassword);
                 if (u.getCode() == 2) {
-                    try {
-                        if (alProva.size() == 0) {
-                            alProva = leggiFile();
-                        }
-                        alProva.add(u);
-                        FileOutputStream fos = new FileOutputStream(file);
-                        ObjectOutputStream oos = new ObjectOutputStream(fos);
-                        oos.writeObject(alProva);
-                        oos.flush();
-                        oos.close();
-                        fos.close();
-                        JOptionPane.showMessageDialog(null, "Registrazione avvenuta con successo");
-                        LgMainFrame myframe2 = new LgMainFrame(listaLibri,new Proxy());
-                        myframe2.initialize();
-                        frame.dispose();
-                    } catch (Exception k) {
-                        k.printStackTrace();
-                    }
+                    proxy.aggiungiUtente(u);
+                    JOptionPane.showMessageDialog(null, "Registrazione avvenuta con successo");
+                    LgMainFrame myframe2 = new LgMainFrame(listaLibri,new Proxy());
+                    myframe2.initialize();
+                    frame.dispose();
                 } else if (u.getCode() == 0) {
                     erroreLabel.setText("Email già esistente.");
                 } else if (u.getCode() == 1) {

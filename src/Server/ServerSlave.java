@@ -42,7 +42,7 @@ public class ServerSlave extends Thread{
                     con.close();
                 }
                 else if(operazione.equals("GetListaUsernameUtente")){
-                    ResultSet risultatoQuery = stmt.executeQuery("SELECT username,nome FROM utente");
+                    ResultSet risultatoQuery = stmt.executeQuery("SELECT username FROM utente");
                     ArrayList<String> listaUsername = new ArrayList<>();
                     while(risultatoQuery.next()){
                         listaUsername.add(risultatoQuery.getString("username"));
@@ -55,7 +55,7 @@ public class ServerSlave extends Thread{
                     ArrayList<String> listaPassword = new ArrayList<>();
                     while(risultatoQuery.next()){
                         listaPassword.add(risultatoQuery.getString("password"));
-                    }
+                    }   
                     out.writeObject(listaPassword);
                     out.flush();
                 }
@@ -70,7 +70,6 @@ public class ServerSlave extends Thread{
                     risultatoQuery.next();
                     String cf = risultatoQuery.getString(1);
                     out.writeObject(cf);
-                    out.flush();
                 }
                 else if(operazione.equals("AggiungiAutore")){
                     String nomeAutore = (String)in.readObject();
@@ -116,7 +115,29 @@ public class ServerSlave extends Thread{
                     ps.setDouble(6,prezzo);
                     ps.setInt(7,fk);
                     ps.executeUpdate();
-                    System.out.println("wowie");
+                }
+                else if(operazione.equals("AggiungiUtente")){
+                    ResultSet risultatoQuery = stmt.executeQuery("SELECT * FROM Utente");
+                    ArrayList<Utente> alUtente = new ArrayList<>();
+                    while(risultatoQuery.next()){
+                        alUtente.add(new Utente(risultatoQuery.getString("nome"), risultatoQuery.getString("cognome"),risultatoQuery.getString("cf"), risultatoQuery.getString("email"), risultatoQuery.getString("username"), risultatoQuery.getString("password")));
+                    }
+                    out.writeObject(alUtente);
+                    out.flush();
+                    if(((String)in.readObject()).equals("Inserisci")){
+                        Utente u = (Utente)in.readObject();
+                        String query = "INSERT INTO utente(cf,nome,cognome,email,username,password) VALUES(?,?,?,?,?,?)";
+                        PreparedStatement ps = con.prepareStatement(query);
+                        ps.setString(1,u.getCF());
+                        ps.setString(2,u.getNome());
+                        ps.setString(3,u.getCognome());
+                        ps.setString(4,u.getEmail());
+                        ps.setString(5,u.getUsername());
+                        ps.setString(6,u.getPassword());
+                        ps.executeUpdate();
+                    }else if(((String)in.readObject()).equals("Fine")){
+                        System.out.println("Impossibile inserire l'utente");
+                    }
                 }
             }
         } catch (Exception e) {
