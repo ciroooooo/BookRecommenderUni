@@ -199,6 +199,8 @@ public HomeMainFrame(int codice, ArrayList<Libro> listaLibri, String cf) {
     titoloLabel.setForeground(new Color(70, 70, 70)); // Colore neutro
     titoloLabel.setHorizontalAlignment(SwingConstants.CENTER);
     titoloLabel.setBorder(BorderFactory.createEmptyBorder(20, 20, 10, 20)); // Padding laterale e abbassamento
+    titoloLabel.setOpaque(true);
+    titoloLabel.setBackground(new Color(236, 240, 241)); // Sfondo grigio chiaro come sotto
 
     centerPanel.add(titoloLabel, BorderLayout.NORTH);
 
