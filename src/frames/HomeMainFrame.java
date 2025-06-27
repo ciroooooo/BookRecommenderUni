@@ -194,6 +194,8 @@ public HomeMainFrame(Proxy proxy,String cf) {
     titoloLabel.setForeground(new Color(70, 70, 70)); // Colore neutro
     titoloLabel.setHorizontalAlignment(SwingConstants.CENTER);
     titoloLabel.setBorder(BorderFactory.createEmptyBorder(20, 20, 10, 20)); // Padding laterale e abbassamento
+    titoloLabel.setOpaque(true);
+    titoloLabel.setBackground(new Color(236, 240, 241));
 
     centerPanel.add(titoloLabel, BorderLayout.NORTH);
 

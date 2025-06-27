@@ -186,11 +186,26 @@ public class LibrerieMainFrame {
                 JDialog dialog=pane.createDialog(frame,"Creazione Libreria");
                 ApplicaButton.addActionListener(new ActionListener() { 
                     public void actionPerformed(ActionEvent e){
-                        String nomeLibrearia = nomeLibField.getText();
-                        if(nomeLibrearia.length()==0){
+                        String nomeLibreria = nomeLibField.getText();
+                        if(nomeLibreria.length()==0){
                             JOptionPane.showMessageDialog(frame,"Inserire il nome della libreria");
+                            return;
                         }                     
                         ArrayList<String> librerieUtente = proxy.getNomiLibreriaDaUtente(cf);
+                        for(int i = 0;i<librerieUtente.size();i++){
+                            if(librerieUtente.get(i).equals(nomeLibreria)){
+                                JOptionPane.showMessageDialog(frame,"Esiste gia' una libreria con questo nome");
+                                return;
+                            }
+                        }
+                        if(libriDaAggiungere.isEmpty()){
+                            JOptionPane.showMessageDialog(frame,"Inserire almeno un libro");
+                            return;
+                        }
+                        Utente u = proxy.getUtenteDaCF(cf);
+                        System.out.println(u.getNome());
+                        Librerie libreria = new Librerie(nomeLibreria, u, libriDaAggiungere);
+                        
                     }
                 });
                 cancelButton.addActionListener(new ActionListener() {
