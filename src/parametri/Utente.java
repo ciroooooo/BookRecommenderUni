@@ -22,8 +22,8 @@ public class Utente implements Serializable {
     private String email;
     private String username;
     private String password;
-    private int codice;
     private String cf;
+    private int codice;
     ArrayList<Utente> alUtente = new ArrayList<Utente>();
 
 /**
@@ -40,38 +40,12 @@ public class Utente implements Serializable {
  * @throws EmailNonValidaException Se l'email non è nel formato corretto.
  */
     public Utente(String nome, String cognome,String codiceFiscale, String email, String username, String password) {
-        if(stringheVuote(nome, cognome,codiceFiscale, email, username, password)){
-            this.codice=4;
-            return;
-        }
-        if(controlloEmail(email)){
-            this.codice=5;
-            return;
-        }
-        if(!(controlloCF(codiceFiscale))){
-            this.codice=10;
-            return;
-        }
-        this.cf=codiceFiscale;
-        
-        alUtente.clear();
-        alUtente=leggiFile();
-
         this.nome = nome;
         this.cognome = cognome;
-        if(emailEsistente(alUtente,email)){
-            this.codice=0;
-            return;
-        }
+        this.cf = codiceFiscale;
         this.email = email;
-        if(usernameEsistente(alUtente,username)){
-            this.codice=1;
-            return;
-        }
         this.username = username;
         this.password = password;
-        
-        this.codice = 2;
     }
 /**
  * Restituisce il nome dell'utente.
@@ -328,6 +302,15 @@ public class Utente implements Serializable {
         }else{
             return false;
         }
+    }
+    public static boolean CodiceFiscaleEsistente(ArrayList<Utente> alUtente, String codiceFiscale){
+        boolean esiste = false;
+        for(int i=0;i<alUtente.size() && !esiste;i++){
+            if(alUtente.get(i).getCF().equals(codiceFiscale)){
+                esiste = true;
+            }
+        }
+        return esiste;
     }
      
 }

@@ -129,7 +129,8 @@ public class ServerSlave extends Thread{
                     }
                     out.writeObject(alUtente);
                     out.flush();
-                    if(((String)in.readObject()).equals("Inserisci")){
+                    String aggiungo = (String)in.readObject();
+                    if(aggiungo.equals("Inserisci")){
                         Utente u = (Utente)in.readObject();
                         String query = "INSERT INTO utente(cf,nome,cognome,email,username,password) VALUES(?,?,?,?,?,?)";
                         PreparedStatement ps = con.prepareStatement(query);
@@ -140,7 +141,7 @@ public class ServerSlave extends Thread{
                         ps.setString(5,u.getUsername());
                         ps.setString(6,u.getPassword());
                         ps.executeUpdate();
-                    }else if(((String)in.readObject()).equals("Fine")){
+                    }else if(aggiungo.equals("Fine")){
                         System.out.println("Impossibile inserire l'utente");
                     }
                 }
