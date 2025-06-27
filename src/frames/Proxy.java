@@ -202,5 +202,17 @@ public class Proxy{
         }
         return nomiLibrerie;
     }
-
+    public Utente getUtenteDaCF(String cf){
+        Utente u;
+        try {
+            out.writeObject("GetUtenteDaCF");
+            out.flush();
+            out.writeObject(cf);
+            out.flush();
+            u =(Utente)in.readObject();
+            return u;
+        } catch (IOException | ClassNotFoundException e) {
+            return null;
+        }
+    }
 }

@@ -12,6 +12,7 @@ import java.sql.Date;
 import org.postgresql.*;
 import java.util.*;
 import java.time.LocalDate;
+import parametri.Librerie;
 
 public class ServerSlave extends Thread{
     private Socket socket;
@@ -201,6 +202,24 @@ public class ServerSlave extends Thread{
                     }
                     out.writeObject(alNomi);
                     out.flush();
+                }
+                else if(operazione.equals("GetUtenteDaCF")){
+                    String codiceFiscale = (String)in.readObject();
+                    String comandoQuery = "SELECT nome, cognome, cf, email, username, password FROM utente WHERE cf = ?";
+                    PreparedStatement ps = con.prepareStatement(comandoQuery);
+                    ps.setString(1,codiceFiscale);
+                    ResultSet risultatoQuery = ps.executeQuery();
+                    Utente utente = null;
+                    while(risultatoQuery.next()){
+                        utente= new Utente(risultatoQuery.getString(1), risultatoQuery.getString(2), risultatoQuery.getString(3), risultatoQuery.getString(4), risultatoQuery.getString(5), risultatoQuery.getString(6));
+                    }
+                    out.writeObject(utente);
+                    out.flush();
+                }
+
+                else if(operazione.equals("AggiungiLibreria")){
+                    Librerie libreria = (Librerie)in.readObject();
+                    String comandoQuery = "INSERT INTO Libreria(nome,cf) VALUES (?,?)";
                 }
 
             }
