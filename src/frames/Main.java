@@ -5,12 +5,11 @@
 //Gabriele Schioppa 756634 (VA)
 
 package frames;
-import parametri.*;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
+import parametri.*;
 
 public class Main {
     public static void FileEsiste(File file){
@@ -38,7 +37,7 @@ public class Main {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        LgMainFrame myFrame = new LgMainFrame(listaLibri,proxy);
+        LgMainFrame myFrame = new LgMainFrame(proxy);
         myFrame.initialize();
     }
 }

@@ -35,7 +35,7 @@ public class LgMainFrame {
  * @param listaLibri un ArrayList contenente l'elenco dei libri.
  * 
  */
-    public LgMainFrame(ArrayList<Libro> listaLibri, Proxy proxy) {
+    public LgMainFrame(Proxy proxy) {
         this.proxy = proxy;
         this.listaLibri = listaLibri;
         try {
@@ -154,7 +154,7 @@ public class LgMainFrame {
         ospiteLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                HomeMainFrame myframe = new HomeMainFrame(0, listaLibri,"Ospite");
+                HomeMainFrame myframe = new HomeMainFrame(proxy, "Ospite");
                 myframe.initialize();
                 frame.dispose();
             }
@@ -184,7 +184,7 @@ public class LgMainFrame {
                 if (autenticazione(username2, password2)) {
                     JOptionPane.showMessageDialog(null, "Login avvenuto con successo");
                     String cf = proxy.getCF(username2,password2);
-                    HomeMainFrame hframe = new HomeMainFrame(1, listaLibri,cf);
+                    HomeMainFrame hframe = new HomeMainFrame(proxy,cf);
                     hframe.initialize();
                     frame.dispose();
                 } else {

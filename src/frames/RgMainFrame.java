@@ -4,9 +4,7 @@
 //Matteo Corda 757928 (VA)
 //Gabriele Schioppa 756634 (VA)
 
-package Frames;
-import Parametri.*;
-
+package frames;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,11 +12,10 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.*;
 import javax.swing.*;
+import parametri.*;
 
 public class RgMainFrame {
     private JTextField nome;
@@ -203,7 +200,7 @@ public class RgMainFrame {
                 if (u.getCode() == 2) {
                     proxy.aggiungiUtente(u);
                     JOptionPane.showMessageDialog(null, "Registrazione avvenuta con successo");
-                    LgMainFrame myframe2 = new LgMainFrame(listaLibri,new Proxy());
+                    LgMainFrame myframe2 = new LgMainFrame(proxy);
                     myframe2.initialize();
                     frame.dispose();
                 } else if (u.getCode() == 0) {
@@ -229,7 +226,7 @@ public class RgMainFrame {
         accessoLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                LgMainFrame myframe2 = new LgMainFrame(listaLibri,new Proxy());
+                LgMainFrame myframe2 = new LgMainFrame(proxy);
                 myframe2.initialize();
                 frame.dispose();
             }
@@ -241,7 +238,7 @@ public class RgMainFrame {
         ospiteLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                HomeMainFrame myframe = new HomeMainFrame(0, listaLibri ,"ospite");
+                HomeMainFrame myframe = new HomeMainFrame(proxy,"Ospite");
                 myframe.initialize();
                 frame.dispose();
             }

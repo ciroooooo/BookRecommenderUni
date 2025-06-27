@@ -5,8 +5,6 @@
 //Gabriele Schioppa 756634 (VA)
 
 package frames;
-import parametri.*;
-
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
@@ -14,6 +12,7 @@ import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import javax.swing.*;
+import parametri.*;
 
 public class HomeMainFrame {
     private int k;
@@ -48,7 +47,7 @@ public class HomeMainFrame {
  * @param listaLibri l'elenco dei libri da utilizzare nell'interfaccia
  * @param u l'utente corrente che ha effettuato l'accesso
  */
-public HomeMainFrame(int codice, ArrayList<Libro> listaLibri, String cf) {
+public HomeMainFrame(Proxy proxy,String cf) {
     this.listaLibri = listaLibri;
     this.codice = codice;
     frame = new JFrame();
@@ -115,7 +114,7 @@ public HomeMainFrame(int codice, ArrayList<Libro> listaLibri, String cf) {
                 JOptionPane.showMessageDialog(null, "Impossibile effettuare questa operazione come ospite");
             } else if (codice == 1) {
                 Utente upass=u;
-                LibrerieMainFrame myframe = new LibrerieMainFrame(listaLibri,upass);
+                LibrerieMainFrame myframe = new LibrerieMainFrame(proxy,cf);
                 myframe.initialize();
                 frame.dispose();
             }
@@ -626,7 +625,7 @@ private void mostraValUtente(Utente u, Libro l) {
     c.fill = GridBagConstraints.HORIZONTAL;
     c.insets = new Insets(10, 10, 10, 10);
 
-    ArrayList<ValutazioniLibro> tmp = ValutazioniLibro.leggiFileVL();
+    ArrayList<ValutazioniLibro> tmp = new ArrayList(); // qui si leggeva il file valutazioniLibro
     ValutazioniLibro valLibro = new ValutazioniLibro(u, l);
     boolean valTrovata = false;
 
