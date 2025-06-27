@@ -4,7 +4,7 @@
 //Matteo Corda 757928 (VA)
 //Gabriele Schioppa 756634 (VA)
 
-package Parametri;
+package parametri;
 
 
 import java.io.Serializable;
@@ -14,7 +14,7 @@ import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.io.EOFException;
 import java.io.IOException;
-import java.sql.*;
+
 public class Utente implements Serializable {
 
     private String nome;

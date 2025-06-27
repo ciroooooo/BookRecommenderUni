@@ -5,7 +5,7 @@
 //Gabriele Schioppa 756634 (VA)
 
 
-package Parametri;
+package parametri;
 
 import java.io.Serializable;
 public class Autore implements Serializable{

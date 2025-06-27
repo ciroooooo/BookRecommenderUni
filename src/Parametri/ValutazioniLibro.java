@@ -5,15 +5,14 @@
 //Gabriele Schioppa 756634 (VA)
 
 
-package Parametri;
-import Frames.*;
+package parametri;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+
+
 
 public class ValutazioniLibro implements Serializable{
     private int stile;
@@ -209,20 +208,4 @@ public class ValutazioniLibro implements Serializable{
  * @throws IOException            Se si verifica un errore di input/output durante la lettura dal file.
  * @throws ClassNotFoundException Se la classe delle valutazioni di libri non viene trovata durante la deserializzazione.
  */
-    public static ArrayList<ValutazioniLibro> leggiFileVL(){
-        ArrayList<ValutazioniLibro> tmp=new ArrayList<>();
-        File file=new File("file\\Valutazioni.txt");
-        LibrerieMainFrame.FileEsiste(file);
-        if(file.length()!=0){
-            try {
-                FileInputStream fis=new FileInputStream(file);
-                ObjectInputStream ois=new ObjectInputStream(fis);
-                tmp=(ArrayList<ValutazioniLibro>)ois.readObject();
-                fis.close();
-                ois.close();
-            } catch (Exception e) {
-            }
-        }
-        return tmp;
-    }
 }

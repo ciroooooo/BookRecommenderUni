@@ -1,10 +1,10 @@
-package Frames;
+package frames;
 
-import Parametri.*;
 import java.io.*;
 import java.net.*;
 import java.time.LocalDate;
 import java.util.*;
+import parametri.*;
 
 public class Proxy{
     private InetAddress ip;

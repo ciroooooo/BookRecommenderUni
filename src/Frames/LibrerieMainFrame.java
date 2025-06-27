@@ -5,8 +5,8 @@
 //Gabriele Schioppa 756634 (VA)
 
 
-package Frames;
-import Parametri.*;
+package frames;
+import parametri.*;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -417,7 +417,7 @@ private void apriTabLibreria(Librerie libreria) {
         c.insets = new Insets(5, 5, 5, 5);
         panel.add(infoLabel);
 
-        ArrayList<ValutazioniLibro> alVL=ValutazioniLibro.leggiFileVL();
+        ArrayList<ValutazioniLibro> alVL=new ArrayList(); // qui si leggeva il file sulle valutazioni
         ValutazioniLibro vl=new ValutazioniLibro(u, libro);
         boolean controlloLibrerie=false;
         for(int i=0;i<alVL.size() && !controlloLibrerie;i++){
@@ -909,7 +909,7 @@ private void apriTabLibreria(Librerie libreria) {
                     }
                     if(controlloLibrerie){
                         alSugg.add(sl);
-                        SuggerimentoLibro.scriviFileSugg(alSugg);
+                        //qui si scriveva sul file tutto l'arrayList
                         risultatoRicercaSuggerimenti.removeAll();
                         dialog.dispose();
                     }else{
