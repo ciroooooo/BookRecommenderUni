@@ -10,10 +10,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.ObjectInputStream;
-import java.util.*;
 import javax.swing.*;
 import parametri.*;
 
@@ -270,41 +266,6 @@ public void initialize() {
     frame.setVisible(true); 
 }
 
-/**
- * Legge gli utenti da un file e restituisce un'ArrayList di Utente.
- * Se il file non contiene dati o non esiste, restituisce un ArrayList vuoto.
- * 
- * @return ArrayList di Utente letto dal file.
- */
-public ArrayList<Utente> leggiFile() {
-    ArrayList<Utente> alU = new ArrayList<>();
-    File file = new File("file\\utenti.txt");
-
-    // Verifica se il file ha dati da leggere
-    if (file.length() != 0) {
-        try {
-            // Apre lo stream di input per leggere il file
-            FileInputStream fis = new FileInputStream(file);
-            ObjectInputStream ois = new ObjectInputStream(fis);
-
-            // Legge l'oggetto ArrayList di Utente dal file
-            alU = (ArrayList<Utente>) ois.readObject();
-
-            // Chiude gli stream di input
-            ois.close();
-            fis.close();
-        } catch (Exception e) {
-            // Gestisce le eccezioni ma non fa nulla con l'eccezione stessa
-        }
-    }
-    return alU;
-}
-
-/**
- * Ottiene la password inserita nel campo di testo protetto e la restituisce come una stringa.
- * 
- * @return La password inserita nel campo di testo protetto come una stringa.
- */
 public String getPassword() {
     String testoPassword = "";
     char[] charPass = password.getPassword();

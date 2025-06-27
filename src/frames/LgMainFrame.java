@@ -10,9 +10,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import javax.swing.*;
 import parametri.*;
@@ -37,7 +34,6 @@ public class LgMainFrame {
  */
     public LgMainFrame(Proxy proxy) {
         this.proxy = proxy;
-        this.listaLibri = listaLibri;
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception e) {
@@ -243,32 +239,5 @@ public class LgMainFrame {
             testoPassword = testoPassword + charPass[i];
         }
         return testoPassword;
-    }
-
-/**
- * Legge l'elenco degli utenti da un file.
- * Questo metodo legge un file serializzato contenente un elenco di oggetti 
- * e li restituisce come un ArrayList. Se il file è vuoto, restituisce una lista vuota.
- *
- * @return una ArrayList di oggetti {@code Utente} letti dal file.
- * 
- * @throws IOException se si verifica un errore durante la lettura del file.
- * @throws ClassNotFoundException se la classe degli oggetti letti non viene trovata.
- */
-    public ArrayList<Utente> leggiFile(){
-        ArrayList<Utente>alUtemp=new ArrayList<>();
-        File file = new File("file\\utenti.txt");
-        if (file.length() != 0) {
-            try {
-                FileInputStream fis = new FileInputStream(file);
-                ObjectInputStream ois = new ObjectInputStream(fis);
-                alUtemp = (ArrayList<Utente>) ois.readObject();
-                fis.close();
-                ois.close();
-            }catch(Exception e){
-                e.printStackTrace();
-            }
-        }
-        return alUtemp;
     }
 }

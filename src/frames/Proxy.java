@@ -148,7 +148,59 @@ public class Proxy{
             e.printStackTrace();
             return 9;
         }
-        
+    }
+    public ArrayList<Libro> ricercaPerTitolo(String titolo){
+        ArrayList<Libro> alLibro = new ArrayList<>();
+        try {
+            out.writeObject("CercaPerTitolo");
+            out.flush();
+            out.writeObject(titolo);
+            out.flush();
+            alLibro = (ArrayList<Libro>)in.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+        }
+        return alLibro;
+    }
+    public ArrayList<Libro> ricercaPerAutore(Autore autore){
+        ArrayList<Libro> alLibri = new ArrayList<>();
+        try {
+            out.writeObject("CercaPerAutore");
+            out.flush();
+            out.writeObject(autore);
+            out.flush();
+            alLibri = (ArrayList<Libro>)in.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            return alLibri;
+        }
+        return alLibri;
+    }
+    public ArrayList<Libro> ricercaPerAutoreEAnno(Autore autore,int anno){
+        ArrayList<Libro> alLibri = new ArrayList<>();
+        try {
+            out.writeObject("CercaPerAutore&Anno");
+            out.flush();
+            out.writeObject(autore);
+            out.flush();
+            out.writeObject(anno);
+            out.flush();
+            alLibri = (ArrayList<Libro>)in.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            return alLibri;
+        }
+        return alLibri;
+    }
+    public ArrayList<String> getNomiLibreriaDaUtente(String cf){
+        ArrayList<String> nomiLibrerie = new ArrayList();
+        try{
+            out.writeObject("GetNomiLibreriaDaUtente");
+            out.flush();
+            out.writeObject(cf);
+            out.flush();
+            nomiLibrerie = (ArrayList<String>)in.readObject();
+        }catch(IOException | ClassNotFoundException e){
+            return nomiLibrerie;
+        }
+        return nomiLibrerie;
     }
 
 }
