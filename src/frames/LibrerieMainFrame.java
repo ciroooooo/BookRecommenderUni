@@ -70,7 +70,7 @@ public class LibrerieMainFrame {
  * @throws IOException se si verifica un errore durante la lettura dei file di librerie o suggerimenti.
  * @throws ClassNotFoundException se la classe degli oggetti letti dai file non viene trovata.
  */
-    public LibrerieMainFrame(ArrayList<Libro> listaLibri, Utente u) {
+    public LibrerieMainFrame(Proxy proxy, String cf) {
         this.listaLibri=listaLibri;
         this.u=u;
         ArrayList<Librerie> alLibrerie = Librerie.leggiFileLibrerie();
@@ -93,7 +93,7 @@ public class LibrerieMainFrame {
 
         bottoneHome.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e){
-                HomeMainFrame myFrame=new HomeMainFrame(1, listaLibri,"ospite");
+                HomeMainFrame myFrame=new HomeMainFrame(proxy,cf);
                 frame.dispose();
                 myFrame.initialize();
             }
