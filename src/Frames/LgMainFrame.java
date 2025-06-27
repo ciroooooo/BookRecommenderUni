@@ -4,9 +4,7 @@
 //Matteo Corda 757928 (VA)
 //Gabriele Schioppa 756634 (VA)
 
-package Frames;
-import Parametri.*;
-
+package frames;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,6 +15,7 @@ import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import javax.swing.*;
+import parametri.*;
 
 public class LgMainFrame {
     private JButton accesso;
@@ -143,7 +142,7 @@ public class LgMainFrame {
         registerLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                RgMainFrame myframe2 = new RgMainFrame(listaLibri);
+                RgMainFrame myframe2 = new RgMainFrame(proxy);
                 myframe2.initialize();
                 frame.dispose();
             }

@@ -4,7 +4,7 @@
 //Matteo Corda 757928 (VA)
 //Gabriele Schioppa 756634 (VA)
 
-package Parametri;
+package parametri;
 
 import java.io.File;
 import java.io.FileInputStream;

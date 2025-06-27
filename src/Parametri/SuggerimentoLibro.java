@@ -4,16 +4,13 @@
 //Matteo Corda 757928 (VA)
 //Gabriele Schioppa 756634 (VA)
 
-package Parametri;
-import Frames.*;
-
+package parametri;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+
 
 public class SuggerimentoLibro implements Serializable{
     private ArrayList<Libro>suggerimenti;
@@ -43,19 +40,7 @@ public class SuggerimentoLibro implements Serializable{
  *
  * @param alSugg L'ArrayList di SuggerimentoLibro da scrivere sul file.
  * @throws Exception Se si verificano errori durante la scrittura del file.
- */
-    public static void scriviFileSugg(ArrayList<SuggerimentoLibro> alSugg){
-        File file=new File("file\\Suggerimenti.txt");
-        LibrerieMainFrame.FileEsiste(file);
-        try {
-            FileOutputStream fos=new FileOutputStream(file);
-            ObjectOutputStream oos=new ObjectOutputStream(fos);
-            oos.writeObject(alSugg);
-            fos.close();
-            oos.close();
-        } catch (Exception e) {
-        }
-    }
+
 /**
  * Legge un ArrayList di SuggerimentoLibro dal file "Suggerimenti.txt".
  *
@@ -64,7 +49,6 @@ public class SuggerimentoLibro implements Serializable{
  */
     public static ArrayList<SuggerimentoLibro> leggiFileSugg(){
         File file=new File("file\\Suggerimenti.txt");
-        LibrerieMainFrame.FileEsiste(file);
         ArrayList<SuggerimentoLibro> tmp=new ArrayList<>();
         if(file.length()!=0){
             try {

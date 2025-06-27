@@ -4,8 +4,8 @@
 //Matteo Corda 757928 (VA)
 //Gabriele Schioppa 756634 (VA)
 
-package Frames;
-import Parametri.*;
+package frames;
+import parametri.*;
 
 import java.awt.*;
 import java.awt.event.*;
