@@ -6,13 +6,12 @@
 
 
 package frames;
-import parametri.*;
-
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.util.ArrayList;
 import javax.swing.*;
+import parametri.*;
 
 public class LibrerieMainFrame {
     private Libro libroCorrente;
@@ -39,6 +38,7 @@ public class LibrerieMainFrame {
     private GridBagConstraints c=new GridBagConstraints();
     private JLabel labelRicerca;
     private boolean firstTime=true;
+    private Proxy proxy;
 
 /**
  * Verifica l'esistenza di un file e lo crea se non esiste.
@@ -71,6 +71,7 @@ public class LibrerieMainFrame {
  * @throws ClassNotFoundException se la classe degli oggetti letti dai file non viene trovata.
  */
     public LibrerieMainFrame(Proxy proxy, String cf) {
+        this.proxy = proxy;
         this.listaLibri=listaLibri;
         this.u=u;
         ArrayList<Librerie> alLibrerie = Librerie.leggiFileLibrerie();
@@ -157,7 +158,7 @@ public class LibrerieMainFrame {
                     public void actionPerformed(ActionEvent e) {
                         risultatoRicercaLibrerie.removeAll();
                         String testo=searchField.getText();
-                        ArrayList<Libro>risultati=ricercaConTitolo(testo);
+                        ArrayList<Libro>risultati=proxy.ricercaPerTitolo(testo);
                         mostraRisultati(risultati,0,risultatoRicercaLibrerie);
                     }
                 });
@@ -166,7 +167,7 @@ public class LibrerieMainFrame {
                     public void actionPerformed(ActionEvent e) {
                         risultatoRicercaLibrerie.removeAll();
                         String testo=searchField.getText();
-                        ArrayList<Libro>risultati=ricercaConAutore(testo);
+                        ArrayList<Libro>risultati=proxy.ricercaPerAutore(new Autore(testo));
                         mostraRisultati(risultati,0,risultatoRicercaLibrerie);
                     }
                 });
@@ -175,41 +176,21 @@ public class LibrerieMainFrame {
                     public void actionPerformed(ActionEvent e) {
                         risultatoRicercaLibrerie.removeAll();
                        String testo=searchField.getText();
-                       ArrayList<Libro>risultati=ricercaConAnnoAutore(testo);
+                       String[] testoSplit = testo.split(",");
+                       String nomeAutore = testoSplit[0].trim();
+                       int anno = Integer.parseInt(testoSplit[1].trim());
+                       ArrayList<Libro>risultati=proxy.ricercaPerAutoreEAnno(new Autore(nomeAutore), anno);
                        mostraRisultati(risultati, 0,risultatoRicercaLibrerie);
                     }
                 });
                 JDialog dialog=pane.createDialog(frame,"Creazione Libreria");
                 ApplicaButton.addActionListener(new ActionListener() { 
                     public void actionPerformed(ActionEvent e){
-                        String nomeLib=nomeLibField.getText();
-                        Librerie lib=new Librerie(nomeLib, u, libriDaAggiungere);
-                        boolean controlloLibrerie=true; 
-                        boolean nomeUguale=false;
-                        for(int i=0;i<alFiltrato.size() && controlloLibrerie;i++){
-                            if(alFiltrato.get(i).getNome().equals(lib.getNome())){
-                                controlloLibrerie=false;
-                                nomeUguale=true;
-                            }
-                        }
-                        if(nomeLib.length()==0){
-                            JOptionPane.showMessageDialog(frame,"Il nome della libreria non può essere vuoto");
-                        }
-                        else if(libriDaAggiungere.size()==0){
-                            JOptionPane.showMessageDialog(frame,"Aggiungere almeno un libro");
-                        }
-                        else if(controlloLibrerie){
-                            alFiltrato.add(lib);
-                            alLibrerie.add(lib);
-                            Librerie.scriviAlLibrerieFile(alLibrerie);
-                            listaLibrerie(alFiltrato);
-                            dialog.setVisible(false);
-                            dialog.dispose();
-                            risultatoRicercaLibrerie.removeAll();
-                            controlloLibrerie=false;
-                        }else if(controlloLibrerie || nomeUguale){
-                            JOptionPane.showMessageDialog(frame,"Esiste gia una libreria con questo nome");
-                        }                        
+                        String nomeLibrearia = nomeLibField.getText();
+                        if(nomeLibrearia.length()==0){
+                            JOptionPane.showMessageDialog(frame,"Inserire il nome della libreria");
+                        }                     
+                        ArrayList<String> librerieUtente = proxy.getNomiLibreriaDaUtente(cf);
                     }
                 });
                 cancelButton.addActionListener(new ActionListener() {
@@ -701,12 +682,12 @@ private void apriTabLibreria(Librerie libreria) {
             AggiungiLibro.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e){
                     boolean libroAggiunto=true;
-                    firstTime=true;
-                    if(libriDaAggiungere.size()==0){
+                    firstTime = true;
+                    if(libriDaAggiungere.isEmpty()){
                         libriDaAggiungere.add(libro);
                         dialog.dispose();
                         libroAggiunto=false;
-                        firstTime=false;
+                        firstTime = false;
                     }else{
                         for(int i=0;i<libriDaAggiungere.size() && libroAggiunto;i++){
                             if(libriDaAggiungere.get(i).getTitolo().equals(libro.getTitolo())){
@@ -771,58 +752,6 @@ private void apriTabLibreria(Librerie libreria) {
         dialog.pack();
         dialog.setVisible(true);
     }
-/**
- * Cerca libri nella lista specificata in base al titolo parziale fornito.
- * Restituisce una lista di libri il cui titolo contiene la stringa specificata.
- * 
- * @param titolo Il titolo parziale da cercare nei libri.
- * @param listaLibri La lista di libri in cui effettuare la ricerca.
- * @return Una ArrayList di libri il cui titolo contiene la stringa specificata.
- */
-    private ArrayList<Libro> cercaLibro(String titolo,ArrayList<Libro>listaLibri) { 
-        ArrayList<Libro> tmp = new ArrayList<>();
-        for (Libro libro : listaLibri) {
-            if (libro.getTitolo().contains(titolo)) {
-                tmp.add(libro);
-            }
-        }
-        return tmp;
-    }
-/**
- * Cerca libri nella lista specificata dell'autore fornito.
- * Restituisce una lista di libri scritti dall'autore specificato.
- * 
- * @param autore L'autore di cui cercare i libri.
- * @param listaLibri La lista di libri in cui effettuare la ricerca.
- * @return Una ArrayList di libri scritti dall'autore specificato.
- */
-    private ArrayList<Libro> cercaLibro(Autore autore,ArrayList<Libro>listaLibri) { 
-        ArrayList<Libro> tmp = new ArrayList<>();
-        for (Libro libro : listaLibri) {
-            if (libro.getAutore().contains(autore.getNome())) {
-                tmp.add(libro);
-            }
-        }
-        return tmp;
-    }
-/**
- * Cerca libri nella lista specificata dell'autore e dell'anno di pubblicazione forniti.
- * Restituisce una lista di libri scritti dall'autore specificato e pubblicati nell'anno specificato.
- * 
- * @param autore L'autore di cui cercare i libri.
- * @param anno L'anno di pubblicazione dei libri da cercare.
- * @param listaLibri La lista di libri in cui effettuare la ricerca.
- * @return Una ArrayList di libri scritti dall'autore specificato e pubblicati nell'anno specificato.
- */   
-    private ArrayList<Libro> cercaLibro(Autore autore, int anno,ArrayList<Libro>listaLibri) { 
-        ArrayList<Libro> tmp = new ArrayList<>();
-        for (Libro libro : listaLibri) {
-            if (libro.getAutore().contains(autore.getNome()) && libro.getDataPubblicazione().getYear() == anno) {
-                tmp.add(libro);
-            }
-        }
-        return tmp;
-    }
     
 /**
  * Mostra l'interfaccia utente per inserire suggerimenti per un libro specifico.
@@ -865,7 +794,7 @@ private void apriTabLibreria(Librerie libreria) {
             public void actionPerformed(ActionEvent e) {
                 risultatoRicercaSuggerimenti.removeAll();
                 String testo=searchField.getText();
-                ArrayList<Libro>risultati=ricercaConTitolo(testo);
+                ArrayList<Libro>risultati= proxy.ricercaPerTitolo(testo);
                 mostraRisultati(risultati,1,risultatoRicercaSuggerimenti);
             }
         });
@@ -874,7 +803,7 @@ private void apriTabLibreria(Librerie libreria) {
             public void actionPerformed(ActionEvent e) {
                 risultatoRicercaSuggerimenti.removeAll();
                 String testo=searchField.getText();
-                ArrayList<Libro>risultati=ricercaConAutore(testo);
+                ArrayList<Libro>risultati=proxy.ricercaPerTitolo(testo);
                 mostraRisultati(risultati,1,risultatoRicercaSuggerimenti);
             }
         });
@@ -883,7 +812,10 @@ private void apriTabLibreria(Librerie libreria) {
             public void actionPerformed(ActionEvent e) {
                 risultatoRicercaSuggerimenti.removeAll();
                 String testo=searchField.getText();
-                ArrayList<Libro>risultati=ricercaConAnnoAutore(testo);
+                String[] testoSplit = testo.split(",");
+                String nomeAutore = testoSplit[0].trim();
+                int anno = Integer.parseInt(testoSplit[1].trim());
+                ArrayList<Libro>risultati= proxy.ricercaPerAutoreEAnno(new Autore(nomeAutore), anno);
                 mostraRisultati(risultati,1,risultatoRicercaSuggerimenti);
             }
         }); 
@@ -980,76 +912,7 @@ private void Opzioni(Libro libro){
     });
     dialog.pack();
     dialog.setVisible(true);
-}
-/**
- * Esegue una ricerca di libri nel database basata sul nome dell'autore.
- * 
- * @param testo Il testo da utilizzare per la ricerca dell'autore.
- * @return ArrayList di Libro contenente i libri trovati corrispondenti al nome dell'autore.
- */
-    private ArrayList<Libro>  ricercaConAutore(String testo){
-        ArrayList<Libro>tmp=new ArrayList<>();
-        if(testo.length()>0)
-        {
-            tmp = cercaLibro(new Autore(testo),listaLibri);
-            return tmp;
-        }
-        else{
-            JOptionPane.showMessageDialog(frame,"Non hai inserito nessun carattere");
-            return tmp;
-        } 
-    }
-/**
- * Esegue una ricerca di libri nel database basata sul nome dell'autore e sull'anno di pubblicazione.
- * Il formato accettato per il parametro 'testo' è 'Autore, Anno'.
- * 
- * @param testo Il testo da utilizzare per la ricerca dell'autore e dell'anno.
- * @return ArrayList di Libro contenente i libri trovati corrispondenti all'autore e all'anno di pubblicazione.
- */    
-    private ArrayList<Libro> ricercaConAnnoAutore(String testo){
-        String[] parti = testo.split(",");
-        ArrayList<Libro>tmp=new ArrayList<>();
-        if(testo.length()>0) 
-        {
-            if (parti.length == 2) 
-            {
-                try {
-                    String autore = parti[0].trim();
-                    int anno = Integer.parseInt(parti[1].trim());
-                    tmp = cercaLibro(new Autore(autore), anno,listaLibri);
-                    return tmp;
-                } catch (NumberFormatException ex) {
-                    JOptionPane.showMessageDialog(frame, "Formato anno non valido. Usare 'Autore, Anno'.", "Errore", JOptionPane.ERROR_MESSAGE);
-                    return tmp;
-                }
-            } else 
-            {
-                JOptionPane.showMessageDialog(frame, "Formato input non valido. Usare 'Autore, Anno'.", "Errore", JOptionPane.ERROR_MESSAGE);
-                return tmp;
-            }
-        }
-        else{
-            JOptionPane.showMessageDialog(null, "Non hai inserito nessun carattere");
-            return tmp;
-        }
-    }       
-/**
- * Esegue una ricerca di libri nel database basata sul titolo.
- * 
- * @param testo Il testo da utilizzare per la ricerca del titolo.
- * @return ArrayList di Libro contenente i libri trovati corrispondenti al titolo.
- */    
-    private ArrayList<Libro> ricercaConTitolo(String testo){ 
-        ArrayList<Libro>tmp=new ArrayList<>();
-        if(testo.length()>0){
-            tmp= cercaLibro(testo,listaLibri);
-            return tmp;
-        }
-        else{
-            JOptionPane.showMessageDialog(null, "Non hai inserito nessun carattere");
-            return tmp;
-        }
-    }
+}      
 /**
  * Aggiunge i componenti grafici per la ricerca (bottone Titolo, Autore, Autore e Anno e campo di testo) al pannello specificato.
  * I componenti sono aggiunti solo alla prima chiamata.

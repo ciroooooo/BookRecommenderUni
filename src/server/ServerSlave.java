@@ -2,6 +2,7 @@ package server;
 
 import parametri.Utente;
 import parametri.Libro;
+import parametri.Autore;
 
 import java.io.*;
 import java.net.*;
@@ -145,30 +146,61 @@ public class ServerSlave extends Thread{
                         System.out.println("Impossibile inserire l'utente");
                     }
                 }
-
-
-
-
-
-
-
-
-
-
-
-
-
                 else if(operazione.equals("CercaPerTitolo")){
-                    String titolo= (String)in.readObject();
-                    ArrayList<Libro> listaLibri;
-
-                    String comandoQuery = "SELECT titolo FROM libro WHERE titolo LIKE '%?%'";
-                    PreparedStatement psQ = con.prepareStatement(comandoQuery);
-                    psQ.setString(1, titolo);
-                    ResultSet risultatoQuery = psQ.executeQuery();
-                    risultatoQuery.next();
-                    
-
+                    String titolo= ((String)in.readObject()).toLowerCase();
+                    ArrayList<Libro> listaLibri = new ArrayList<>();
+                    String comandoQuery = "SELECT titolo,autore.nome, descrizione, categoria, editore, datapubblicazione, prezzo FROM libro JOIN autore on(Libro.idautore = Autore.idautore) WHERE LOWER(titolo) LIKE ?";
+                    PreparedStatement ps = con.prepareStatement(comandoQuery);
+                    ps.setString(1, "%"+titolo+"%");
+                    ResultSet risultatoQuery = ps.executeQuery();
+                    while(risultatoQuery.next()){
+                        listaLibri.add(new Libro(risultatoQuery.getString(1),new Autore(risultatoQuery.getString(2)),risultatoQuery.getString(3),risultatoQuery.getString(4),risultatoQuery.getString(5),risultatoQuery.getDate(6).toLocalDate(),risultatoQuery.getDouble(7)));
+                    }
+                    out.writeObject(listaLibri);
+                    out.flush();
+                }
+                else if(operazione.equals("CercaPerAutore")){
+                    ArrayList<Libro> alLibro = new ArrayList();
+                    Autore autore = (Autore)in.readObject();
+                    String nomeAutore = autore.getNome().toLowerCase();
+                    String comandoQuery = "SELECT titolo,autore.nome, descrizione, categoria, editore, datapubblicazione, prezzo FROM libro JOIN autore on(Libro.idautore = Autore.idautore) WHERE LOWER(autore.nome) LIKE ?";
+                    PreparedStatement ps = con.prepareStatement(comandoQuery);
+                    ps.setString(1,"%"+nomeAutore+"%");
+                    ResultSet risultatoQuery = ps.executeQuery();
+                    while(risultatoQuery.next()){
+                        alLibro.add(new Libro(risultatoQuery.getString(1),new Autore(risultatoQuery.getString(2)),risultatoQuery.getString(3),risultatoQuery.getString(4),risultatoQuery.getString(5),risultatoQuery.getDate(6).toLocalDate(),risultatoQuery.getDouble(7)));
+                    }
+                    out.writeObject(alLibro);
+                    out.flush();    
+                }
+                else if(operazione.equals("CercaPerAutore&Anno")){
+                    ArrayList<Libro> alLibro = new ArrayList();
+                    Autore autore = (Autore)in.readObject();
+                    int anno = (int)in.readObject();
+                    String nomeAutore = autore.getNome().toLowerCase();
+                    String comandoQuery = "SELECT titolo,autore.nome, descrizione, categoria, editore, datapubblicazione, prezzo FROM libro JOIN autore on(Libro.idautore = Autore.idautore) WHERE LOWER(autore.nome) LIKE ? and EXTRACT(YEAR FROM datapubblicazione) = ?";
+                    PreparedStatement ps = con.prepareStatement(comandoQuery);
+                    ps.setString(1,"%"+nomeAutore+"%");
+                    ps.setInt(2,anno);
+                    ResultSet risultatoQuery = ps.executeQuery();
+                    while(risultatoQuery.next()){
+                        alLibro.add(new Libro(risultatoQuery.getString(1),new Autore(risultatoQuery.getString(2)),risultatoQuery.getString(3),risultatoQuery.getString(4),risultatoQuery.getString(5),risultatoQuery.getDate(6).toLocalDate(),risultatoQuery.getDouble(7)));
+                    }
+                    out.writeObject(alLibro);
+                    out.flush();
+                }
+                else if(operazione.equals("GetNomiLibreriaDaUtente")){
+                    String codiceFiscale = (String)in.readObject();
+                    String comandoQuery = "SELECT nome FROM libreria WHERE cf = ?";
+                    PreparedStatement ps = con.prepareStatement(comandoQuery);
+                    ps.setString(1,codiceFiscale);
+                    ResultSet risultatoQuery = ps.executeQuery();
+                    ArrayList<String> alNomi = new ArrayList<>();
+                    while(risultatoQuery.next()){
+                        alNomi.add(risultatoQuery.getString(1));
+                    }
+                    out.writeObject(alNomi);
+                    out.flush();
                 }
 
             }

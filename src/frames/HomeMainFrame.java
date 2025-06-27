@@ -16,7 +16,6 @@ import parametri.*;
 
 public class HomeMainFrame {
     private int k;
-    private int codice;
     private JFrame frame;
     private JPanel topPanel;
     private JPanel searchPanel;
@@ -28,7 +27,6 @@ public class HomeMainFrame {
     private JButton logout;
     private JButton bottoneLibreria;
     private JButton bottoneProfilo;
-    private ArrayList<Libro> listaLibri = new ArrayList<>();
     private Utente u;
     private double mediaStile=0;
     private double mediaContenuto=0;
@@ -43,16 +41,12 @@ public class HomeMainFrame {
 /**
  * Costruttore della classe HomeMainFrame.
  * 
- * @param codice il codice che indica il tipo di utente (0 per ospite, 1 per utente registrato)
- * @param listaLibri l'elenco dei libri da utilizzare nell'interfaccia
- * @param u l'utente corrente che ha effettuato l'accesso
+ * @param proxy utilizzato per la connessione al Server
+ * @param cf indica il codice fiscale della persona che ha effettuato l'accesso, altrimenti indica "Ospite" se si è entrati come ospite.
  */
 public HomeMainFrame(Proxy proxy,String cf) {
-    this.listaLibri = listaLibri;
-    this.codice = codice;
     frame = new JFrame();
 
-    // Inizializzazione dei componenti grafici
     topPanel = new JPanel();
     topPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
     topPanel.setBackground(new Color(52, 152, 219)); // Light blue
@@ -110,10 +104,9 @@ public HomeMainFrame(Proxy proxy,String cf) {
     // Aggiunta dell'azione al bottone Libreria
     bottoneLibreria.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-            if (codice == 0) {
+            if (cf.equals("Ospite")) {
                 JOptionPane.showMessageDialog(null, "Impossibile effettuare questa operazione come ospite");
-            } else if (codice == 1) {
-                Utente upass=u;
+            } else{
                 LibrerieMainFrame myframe = new LibrerieMainFrame(proxy,cf);
                 myframe.initialize();
                 frame.dispose();
@@ -122,9 +115,9 @@ public HomeMainFrame(Proxy proxy,String cf) {
     });
     bottoneProfilo.addActionListener(new ActionListener(){
         public void actionPerformed(ActionEvent e){
-            if(codice==0){
+            if(cf.equals("Ospite")){
                 JOptionPane.showMessageDialog(null, "Impossibile effettuare questa operazione come ospite");
-            }else if(codice==1){
+            }else{
                 boolean primaVolta=true;
                 GridBagConstraints menuGrid=new GridBagConstraints();
                 menuGrid.gridx=0;
@@ -235,7 +228,7 @@ public HomeMainFrame(Proxy proxy,String cf) {
         public void actionPerformed(ActionEvent e) {
             String searchText = searchField.getText();
             if (searchText.length() > 0) {
-                ArrayList<Libro> risultati = cercaLibro(searchText);
+                ArrayList<Libro> risultati = proxy.ricercaPerTitolo(searchText);
                 if (risultati.isEmpty()) {
                     JOptionPane.showMessageDialog(frame, "Non esiste nessun libro con questo titolo");
                 } else {
@@ -251,7 +244,7 @@ public HomeMainFrame(Proxy proxy,String cf) {
         public void actionPerformed(ActionEvent e) {
             String searchText = searchField.getText();
             if (searchText.length() > 0) {
-                ArrayList<Libro> risultati = cercaLibro(new Autore(searchText));
+                ArrayList<Libro> risultati = proxy.ricercaPerAutore(new Autore(searchText));
                 if (risultati.isEmpty()) {
                     JOptionPane.showMessageDialog(frame, "Non esiste nessun libro di questo autore");
                 } else {
@@ -266,13 +259,13 @@ public HomeMainFrame(Proxy proxy,String cf) {
     searchByAuthorAndYearButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
             String searchText = searchField.getText();
-            String[] parts = searchText.split(",");
+            String[] parts = searchText.split("z,");
             if (searchText.length() > 0) {
                 if (parts.length == 2) {
                     try {
                         String autore = parts[0].trim();
                         int anno = Integer.parseInt(parts[1].trim());
-                        ArrayList<Libro> risultati = cercaLibro(new Autore(autore), anno);
+                        ArrayList<Libro> risultati = proxy.ricercaPerAutoreEAnno(new Autore(autore), anno);
                         if (risultati.isEmpty()) {
                             JOptionPane.showMessageDialog(frame, "Non esiste nessun libro con questo autore e anno");
                         } else {
@@ -355,60 +348,6 @@ public void initialize() {
     frame.setVisible(true);
 }
 
-  
-/**
- * Cerca libri nella lista per il titolo specificato, ignorando maiuscole e minuscole.
- * Restituisce un ArrayList contenente tutti i libri il cui titolo contiene la stringa specificata.
- *
- * @param titolo Il titolo da cercare nei libri.
- * @return Un ArrayList di Libri contenente i libri che corrispondono al criterio di ricerca.
- */
-private ArrayList<Libro> cercaLibro(String titolo) {
-    ArrayList<Libro> tmp = new ArrayList<>();
-    for (Libro libro : listaLibri) {
-        if (libro.getTitolo().toLowerCase().contains(titolo.toLowerCase())) {
-            tmp.add(libro);
-        }
-    }
-    return tmp;
-}
-
-    
-/**
- * Cerca libri nella lista per l'autore specificato, ignorando maiuscole e minuscole.
- * Restituisce un ArrayList contenente tutti i libri scritti dall'autore specificato.
- *
- * @param autore L'Autore da utilizzare come criterio di ricerca.
- * @return Un ArrayList di Libri contenente i libri scritti dall'autore specificato.
- */
-private ArrayList<Libro> cercaLibro(Autore autore) {
-    ArrayList<Libro> tmp = new ArrayList<>();
-    for (Libro libro : listaLibri) {
-        if (libro.getAutore().toLowerCase().contains(autore.getNome().toLowerCase())) {
-            tmp.add(libro);
-        }
-    }
-    return tmp;
-}
-
-/**
- * Cerca libri nella lista in base al nome dell'autore e all'anno di pubblicazione.
- * Ignora le differenze tra maiuscole e minuscole nel nome dell'autore.
- * 
- * @param autore Nome dell'autore per la ricerca.
- * @param anno Anno di pubblicazione dei libri da cercare.
- * @return Un ArrayList di Libri contenente i libri scritti dall'autore specificato
- *         e pubblicati nell'anno indicato.
- */
-private ArrayList<Libro> cercaLibro(Autore autore, int anno) {
-    ArrayList<Libro> tmp = new ArrayList<>();
-    for (Libro libro : listaLibri) {
-        if (libro.getAutore().toLowerCase().contains(autore.getNome().toLowerCase()) && libro.getDataPubblicazione().getYear() == anno) {
-            tmp.add(libro);
-        }
-    }
-    return tmp;
-}
 /**
  * Mostra i risultati della ricerca dei libri in un pannello.
  * Rimuove tutti i componenti dal pannello dei risultati e aggiunge un pannello separato per ogni libro trovato.
