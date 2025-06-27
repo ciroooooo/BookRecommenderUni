@@ -190,29 +190,32 @@ public class RgMainFrame {
         bottoneRG.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String textPassword;
-                File file = new File("file\\utenti.txt");
                 if(password.isVisible()){
                     textPassword=getPassword();
                 }else{
                     textPassword=nascondiPasswordField.getText();
                 }
                 Utente u = new Utente(nome.getText(), cognome.getText(),cf.getText(), email.getText(), username.getText(),textPassword);
-                if (u.getCode() == 2) {
-                    proxy.aggiungiUtente(u);
+                int codice = proxy.aggiungiUtente(u);
+                if (codice == 2) {
                     JOptionPane.showMessageDialog(null, "Registrazione avvenuta con successo");
                     LgMainFrame myframe2 = new LgMainFrame(proxy);
                     myframe2.initialize();
                     frame.dispose();
-                } else if (u.getCode() == 0) {
+                } else if (codice == 0) {
                     erroreLabel.setText("Email già esistente.");
-                } else if (u.getCode() == 1) {
+                } else if (codice == 1) {
                     erroreLabel.setText("Username già in uso.");
-                } else if (u.getCode() == 4) {
+                } else if (codice == 4) {
                     erroreLabel.setText("Attenzione! compilare tutti i campi");
-                } else if (u.getCode() == 5) {
+                } else if (codice == 5) {
                     erroreLabel.setText("formato Email non valido.");
-                } else if(u.getCode()==10){
+                } else if(codice == 10){
                     erroreLabel.setText("CodiceFiscale errato");
+                } else if(codice == 9){
+                    erroreLabel.setText("Errore di Connessione");
+                } else if(codice == 7){
+                    erroreLabel.setText("Codice Fiscale esistente");
                 }
             }
         });

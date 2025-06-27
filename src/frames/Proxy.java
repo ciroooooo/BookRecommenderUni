@@ -112,8 +112,6 @@ public class Proxy{
     }
     public int aggiungiUtente(Utente u){
         try {
-            out.writeObject("AggiungiUtente");
-            out.flush();
             if(Utente.stringheVuote(u.getNome(), u.getCognome(), u.getCF(), u.getEmail(), u.getUsername(), u.getPassword())){
                 return 4;
             }
@@ -123,12 +121,23 @@ public class Proxy{
             else if(!(Utente.controlloCF(u.getCF()))){
                 return 10;
             }
+            out.writeObject("AggiungiUtente");
+            out.flush();
             ArrayList<Utente> alUtente = (ArrayList<Utente>)in.readObject();
             if(Utente.emailEsistente(alUtente, u.getEmail())){
+                out.writeObject("Fine");
+                out.flush();
                 return 0;
             }
-            else if(u.usernameEsistente(alUtente, u.getUsername())){
+            else if(Utente.usernameEsistente(alUtente, u.getUsername())){
+                out.writeObject("Fine");
+                out.flush();
                 return 1;
+            }
+            else if(Utente.CodiceFiscaleEsistente(alUtente, u.getCF())){
+                out.writeObject("Fine");
+                out.flush();
+                return 7;
             }
             out.writeObject("Inserisci");
             out.flush();
@@ -136,6 +145,7 @@ public class Proxy{
             out.flush();
             return 2; 
         } catch (Exception e) {
+            e.printStackTrace();
             return 9;
         }
         
