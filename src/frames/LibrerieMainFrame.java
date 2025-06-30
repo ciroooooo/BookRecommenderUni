@@ -8,7 +8,6 @@
 package frames;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.File;
 import java.util.ArrayList;
 import javax.swing.*;
 import parametri.*;
@@ -27,38 +26,19 @@ public class LibrerieMainFrame {
     private ArrayList<Boolean> libriVisibili = new ArrayList<>();
     private ArrayList<Libro> libriDaAggiungere = new ArrayList<>();
     private Utente u;
+    private String cf;
     private ArrayList<Libro> alSuggerimenti = new ArrayList<>();
     private int k=0;
     private JScrollPane risultatoScrollPaneSugg;
     private ArrayList<SuggerimentoLibro> alSugg=new ArrayList<>();
     private JButton searchByTitleButton,searchByAuthorButton,searchByAuthorAndYearButton;
-    private JPanel OptionPanelCLib = new JPanel(new GridBagLayout());
     private JPanel OptionPanel1 = new JPanel(new GridBagLayout());
     private JTextField searchField;
     private GridBagConstraints c=new GridBagConstraints();
     private JLabel labelRicerca;
     private boolean firstTime=true;
     private Proxy proxy;
-
-/**
- * Verifica l'esistenza di un file e lo crea se non esiste.
- * Questo metodo controlla se il file specificato esiste. Se il file non esiste,
- * tenta di crearlo.
- *
- * @param file il file da verificare e creare se non esiste.
- * 
- * @throws IOException se si verifica un errore durante la creazione del file.
- */   
-    public static void FileEsiste(File file) {
-        if (!file.exists()) {
-            try {
-                file.createNewFile();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
+    private ArrayList<Librerie> listaLibrerieUtente;
 /**
  * Costruttore per la classe LibrerieMainFrame.
  * Inizializza il frame principale per la gestione delle librerie di libri.
@@ -72,12 +52,8 @@ public class LibrerieMainFrame {
  */
     public LibrerieMainFrame(Proxy proxy, String cf) {
         this.proxy = proxy;
-        this.listaLibri=listaLibri;
-        this.u=u;
-        ArrayList<Librerie> alLibrerie = Librerie.leggiFileLibrerie();
-        ArrayList<Librerie> alFiltrato = Librerie.filtraLibrerie(u);
-        alSugg=SuggerimentoLibro.leggiFileSugg();
-        
+        this.cf = cf;
+        listaLibrerieUtente = proxy.getLibrerieUtente(cf);
         frame = new JFrame();
         topPanel = new JPanel();
         topPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
@@ -102,6 +78,7 @@ public class LibrerieMainFrame {
         
         bottoneCLibrerie.addActionListener(new ActionListener() { 
             public void actionPerformed(ActionEvent e) {
+                JPanel OptionPanelCLib = new JPanel(new GridBagLayout());
                 libriDaAggiungere.clear();
                 GridBagConstraints c=new GridBagConstraints();
                 c.insets = new Insets(10, 10, 10, 10);
@@ -127,7 +104,6 @@ public class LibrerieMainFrame {
                 risultatoRicercaLibrerie.setLayout(new BoxLayout(risultatoRicercaLibrerie, BoxLayout.Y_AXIS));
                 risultatoScrollPaneLib = new JScrollPane(risultatoRicercaLibrerie); 
                 risultatoScrollPaneLib.setPreferredSize(new Dimension(300, 200));
-                
                 c.gridx = 0;
                 c.gridy = 6;
                 c.gridwidth = 6;
@@ -144,7 +120,6 @@ public class LibrerieMainFrame {
                 c.gridx=3;
                 c.gridy=8;
                 OptionPanelCLib.add(cancelButton,c);
-                frame.add(OptionPanelCLib);
 
                 JOptionPane pane = new JOptionPane(
                 OptionPanelCLib,
@@ -191,9 +166,9 @@ public class LibrerieMainFrame {
                             JOptionPane.showMessageDialog(frame,"Inserire il nome della libreria");
                             return;
                         }                     
-                        ArrayList<String> librerieUtente = proxy.getNomiLibreriaDaUtente(cf);
-                        for(int i = 0;i<librerieUtente.size();i++){
-                            if(librerieUtente.get(i).equals(nomeLibreria)){
+                        ArrayList<String> nomiLibrerieUtente = proxy.getNomiLibreriaDaUtente(cf);
+                        for(int i = 0;i<nomiLibrerieUtente.size();i++){
+                            if(nomiLibrerieUtente.get(i).equals(nomeLibreria)){
                                 JOptionPane.showMessageDialog(frame,"Esiste gia' una libreria con questo nome");
                                 return;
                             }
@@ -203,9 +178,17 @@ public class LibrerieMainFrame {
                             return;
                         }
                         Utente u = proxy.getUtenteDaCF(cf);
-                        System.out.println(u.getNome());
                         Librerie libreria = new Librerie(nomeLibreria, u, libriDaAggiungere);
-                        
+                        proxy.aggiungiLibreria(libreria);
+                        JOptionPane.showMessageDialog(frame, "Libreria Creata con successo");
+                        searchField.setText("");
+                        nomeLibField.setText("");
+                        risultatoRicercaLibrerie.removeAll();
+                        risultatoRicercaLibrerie.revalidate();
+                        risultatoRicercaLibrerie.repaint();
+                        listaLibrerieUtente = proxy.getLibrerieUtente(cf);
+                        listaLibrerie(listaLibrerieUtente);
+                        dialog.dispose();
                     }
                 });
                 cancelButton.addActionListener(new ActionListener() {
@@ -226,7 +209,7 @@ public class LibrerieMainFrame {
         risultatoScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         risultatoScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         risultatoScrollPane.setPreferredSize(new Dimension(400, 500));
-        listaLibrerie(alFiltrato);
+        listaLibrerie(listaLibrerieUtente);
         frame.setLayout(new BorderLayout());
         frame.add(risultatoScrollPane, BorderLayout.CENTER);
         frame.add(topPanel, BorderLayout.NORTH);
@@ -238,13 +221,12 @@ public class LibrerieMainFrame {
  * Ogni pannello della libreria contiene un'etichetta con il nome della libreria e,
  * quando viene cliccata, mostra o nasconde i libri appartenenti alla libreria.
  *
- * @param alFiltrato la lista delle librerie filtrate da visualizzare.
+ * @param listaLibrerieUtente la lista delle librerie filtrate da visualizzare.
  * 
- * @throws NullPointerException se {@code alFiltrato} è null.
+ * @throws NullPointerException se {@code listaLibrerieUtente} è null.
  */
-private void listaLibrerie(ArrayList<Librerie> alFiltrato) {
+private void listaLibrerie(ArrayList<Librerie> listaLibrerieUtente) {
     resultsPanel.removeAll();
-
     // Aggiungi il titolo sopra l'elenco delle librerie
     JLabel titoloLabel = new JLabel("Elenco Librerie");
     titoloLabel.setFont(new Font("Arial", Font.BOLD, 20));
@@ -257,8 +239,8 @@ private void listaLibrerie(ArrayList<Librerie> alFiltrato) {
     c.fill = GridBagConstraints.HORIZONTAL;
     c.insets = new Insets(10, 10, 10, 10);
 
-    for (int i = 0; i < alFiltrato.size(); i++) {
-        Librerie libreria = alFiltrato.get(i);
+    for (int i = 0; i < listaLibrerieUtente.size(); i++) {
+        String nomeLibreria = listaLibrerieUtente.get(i).getNome();
         JPanel libreriaPanel = new JPanel();
         libreriaPanel.setLayout(new BoxLayout(libreriaPanel, BoxLayout.Y_AXIS));
         libreriaPanel.setBackground(Color.WHITE);
@@ -266,7 +248,7 @@ private void listaLibrerie(ArrayList<Librerie> alFiltrato) {
         libreriaPanel.setPreferredSize(new Dimension(350, 100));
         libreriaPanel.setMaximumSize(new Dimension(350, 100));
 
-        JLabel libreriaLabel = new JLabel(libreria.getNome());
+        JLabel libreriaLabel = new JLabel(nomeLibreria);
         libreriaLabel.setForeground(new Color(0, 128, 128));
         libreriaLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         libreriaLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -276,6 +258,10 @@ private void listaLibrerie(ArrayList<Librerie> alFiltrato) {
         libreriaLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                Utente u = proxy.getUtenteDaCF(cf);
+                String nomeCurrentLibreria = nomeLibreria;
+                Librerie libreria = null;
+                libreria = proxy.getLibreriaUtenteDaNome(u,nomeLibreria);
                 apriTabLibreria(libreria);
             }
         });
@@ -299,7 +285,7 @@ private void apriTabLibreria(Librerie libreria) {
     JTabbedPane tabbedPane = new JTabbedPane();
     JPanel libriPanel = new JPanel();
     libriPanel.setLayout(new BoxLayout(libriPanel, BoxLayout.Y_AXIS));
-    libriPanel.setBackground(Color.WHITE);
+    libriPanel.setBackground(Color.WHITE);  
 
     for (Libro libro : libreria.getAlLibri()) {
         JPanel libroPanel = new JPanel(new BorderLayout());
@@ -803,7 +789,6 @@ private void apriTabLibreria(Librerie libreria) {
         c.gridx=3;
         c.gridy=8;
         OptionPanel1.add(cancelButton,c);
-        frame.add(OptionPanel1);
 
         searchByTitleButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {

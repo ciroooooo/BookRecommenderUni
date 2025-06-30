@@ -215,4 +215,39 @@ public class Proxy{
             return null;
         }
     }
+    public void aggiungiLibreria(Librerie libreria){
+        try {
+            out.writeObject("AggiungiLibreria");
+            out.flush();
+            out.writeObject(libreria);
+            out.flush();
+        } catch (IOException e) {
+        }
+    }
+    public ArrayList<Librerie> getLibrerieUtente(String cf){
+        ArrayList<Librerie> librerieUtente = new ArrayList<>();
+        try {
+            out.writeObject("GetLibrerieDaCf");
+            out.flush();
+            out.writeObject(cf);
+            out.flush();
+            librerieUtente = (ArrayList<Librerie>)in.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+        }
+        return librerieUtente;
+    }
+    public Librerie getLibreriaUtenteDaNome(Utente u,String nomeLibreria){
+        Librerie libreria = null;
+        try {
+            out.writeObject("GetLibreriaUtenteDaNome");
+            out.flush();
+            out.writeObject(u);
+            out.flush();
+            out.writeObject(nomeLibreria);
+            out.flush();
+            libreria = (Librerie)in.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+        }
+        return libreria;
+    }
 }
