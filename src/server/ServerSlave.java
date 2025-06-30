@@ -216,11 +216,109 @@ public class ServerSlave extends Thread{
                     out.writeObject(utente);
                     out.flush();
                 }
-
                 else if(operazione.equals("AggiungiLibreria")){
                     Librerie libreria = (Librerie)in.readObject();
+                    String nomeLibreria = libreria.getNome();
+                    String cf = libreria.getUtente().getCF();
                     String comandoQuery = "INSERT INTO Libreria(nome,cf) VALUES (?,?)";
+                    PreparedStatement ps = con.prepareStatement(comandoQuery,Statement.RETURN_GENERATED_KEYS);
+                    ps.setString(1, nomeLibreria);
+                    ps.setString(2,cf);
+                    ps.executeUpdate();
+                    ResultSet rs = ps.getGeneratedKeys();
+                    rs.next();
+                    int chiaveLibreria = rs.getInt(1);
+                    ArrayList<Libro> alLibro = libreria.getAlLibri();
+                    comandoQuery = "INSERT INTO libroinlibreria(idlibreria,idlibro) VALUES (?,?)";
+                    ps = con.prepareStatement(comandoQuery);
+                    String queryGetIdLibro = "SELECT idlibro FROM libro JOIN autore on(libro.idautore = autore.idautore) WHERE titolo = ? AND descrizione = ? and categoria = ? and editore = ? and datapubblicazione = ? and prezzo = ? and autore.nome = ?";
+                    PreparedStatement psQueryLibro = con.prepareStatement(queryGetIdLibro);
+                    for(int i=0;i<alLibro.size();i++){
+                        ps.setInt(1,chiaveLibreria);
+                        psQueryLibro.setString(1,alLibro.get(i).getTitolo());
+                        psQueryLibro.setString(2,alLibro.get(i).getDescrizione());
+                        psQueryLibro.setString(3,alLibro.get(i).getCategoria());
+                        psQueryLibro.setString(4,alLibro.get(i).getEditore());
+                        psQueryLibro.setDate(5,Date.valueOf(alLibro.get(i).getDataPubblicazione()));
+                        psQueryLibro.setDouble(6,alLibro.get(i).getPrezzo());
+                        psQueryLibro.setString(7,alLibro.get(i).getAutore());
+                        ResultSet risultato = psQueryLibro.executeQuery();
+                        risultato.next();
+                        int chiaveLibro = risultato.getInt(1);
+                        ps.setInt(2,chiaveLibro);
+                        ps.executeUpdate();
+                    }
                 }
+                else if(operazione.equals("GetLibrerieDaCf")){
+                    try {
+                        ArrayList<Librerie> librerieUtente = new ArrayList<>();
+                        String cf = (String)in.readObject();
+                        String comandoQuery = "Select l.nome as nome_libreria, l.idlibreria as idlib, u.*, li.*,a.nome as nome_autore FROM libreria l JOIN utente u on(l.cf = u.cf) JOIN libroinlibreria on(l.idlibreria = libroinlibreria.idlibreria) JOIN libro li on(libroinlibreria.idlibro = li.idlibro) JOIN autore a on(a.idautore = li.idautore) WHERE l.cf = ? ORDER BY idlib asc";
+                        PreparedStatement ps = con.prepareStatement(comandoQuery);
+                        ps.setString(1, cf);
+                        ResultSet risultatoQuery = ps.executeQuery();
+                        if(risultatoQuery.next()){
+                            String nomeUtente = risultatoQuery.getString("nome");
+                            String cognome = risultatoQuery.getString("cognome");
+                            String email = risultatoQuery.getString("email");
+                            String username = risultatoQuery.getString("username");
+                            String password = risultatoQuery.getString("password");
+                            Utente u = new Utente(nomeUtente,cognome,cf,email,username,password);
+                            String nomeLibreria = risultatoQuery.getString("nome_libreria");
+                            int idLibreria = risultatoQuery.getInt("idlib");
+                            ArrayList<Libro> libri = new ArrayList();
+                            do { 
+                                String titolo = risultatoQuery.getString("titolo");
+                                String descrizione = risultatoQuery.getString("descrizione");
+                                String categoria = risultatoQuery.getString("categoria");
+                                String editore = risultatoQuery.getString("editore");
+                                LocalDate dataPub = risultatoQuery.getDate("datapubblicazione").toLocalDate();
+                                double prezzo = risultatoQuery.getDouble("prezzo");
+                                Autore autore = new Autore(risultatoQuery.getString("nome_autore"));
+                                Libro l = new Libro(titolo,autore,descrizione,categoria,editore,dataPub,prezzo);
+                                if(idLibreria==risultatoQuery.getInt("idlib")){
+                                    libri.add(l);
+                                }else{
+                                    Librerie lib = new Librerie(nomeLibreria,u,libri);
+                                    librerieUtente.add(lib);
+                                    libri.clear();
+                                    idLibreria = risultatoQuery.getInt("idlib");
+                                    nomeLibreria = risultatoQuery.getString("nome_libreria");
+                                }
+                            } while (risultatoQuery.next());     
+                            Librerie ultimaLib = new Librerie(nomeLibreria,u,libri);
+                            librerieUtente.add(ultimaLib);
+                        }
+                        out.writeObject(librerieUtente);
+                        out.flush();
+                    } catch (IOException | ClassNotFoundException e) {
+                    }
+                }
+                else if(operazione.equals("GetLibreriaUtenteDaNome")){
+                    Utente u = (Utente)in.readObject();
+                    String nomeLibreria = (String)in.readObject();
+                    String cf = u.getCF();
+                    String comandoQuery = "Select li.*,a.nome as nome_autore FROM libreria l JOIN libroinlibreria ll on (l.idlibreria = ll.idlibreria) JOIN libro li ON (li.idlibro = ll.idlibro) JOIN autore a ON (a.idautore = li.idautore) WHERE l.cf = ? AND l.nome = ?";
+                    PreparedStatement ps = con.prepareStatement(comandoQuery);
+                    ps.setString(1,cf);
+                    ps.setString(2,nomeLibreria);
+                    ResultSet risultatoQuery = ps.executeQuery();
+                    ArrayList<Libro> listaLibri = new ArrayList();
+                    while(risultatoQuery.next()){
+                        String titolo = risultatoQuery.getString("titolo");
+                        String descrizione = risultatoQuery.getString("descrizione");
+                        String categoria = risultatoQuery.getString("categoria");
+                        String editore = risultatoQuery.getString("editore");
+                        LocalDate dataPub = risultatoQuery.getDate("datapubblicazione").toLocalDate();
+                        double prezzo = risultatoQuery.getDouble("prezzo");
+                        Autore autore = new Autore(risultatoQuery.getString("nome_autore")); 
+                        Libro l = new Libro(titolo,autore,descrizione,categoria,editore,dataPub,prezzo);
+                        listaLibri.add(l);
+                    }
+                    Librerie libreria = new Librerie(nomeLibreria,u,listaLibri);
+                    out.writeObject(libreria);
+                    out.flush();
+                }   
 
             }
         } catch (Exception e) {
