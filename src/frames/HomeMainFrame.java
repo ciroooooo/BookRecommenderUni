@@ -49,10 +49,10 @@ public HomeMainFrame(Proxy proxy,String cf) {
 
     topPanel = new JPanel();
     topPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
-    topPanel.setBackground(new Color(52, 152, 219)); // Light blue
+    topPanel.setBackground(new Color(41, 128, 185)); // Cambiato: ora uguale ai bottoni
     topPanel.setOpaque(true);
 
-    bottoneHome = new JButton("Home");
+    bottoneHome = new JButton("Logout"); // Cambiato da "Home" a "Logout"
     bottoneLibreria = new JButton("Libreria");
     bottoneProfilo=new JButton("Profilo");
     customizeButton(bottoneHome);
@@ -65,6 +65,14 @@ public HomeMainFrame(Proxy proxy,String cf) {
     bottoneHome.setForeground(Color.WHITE);
     bottoneLibreria.setForeground(Color.WHITE);
     bottoneProfilo.setForeground(Color.WHITE);
+     // Azione per il tasto Logout
+    bottoneHome.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+            LgMainFrame loginFrame = new LgMainFrame(proxy);
+            loginFrame.initialize();
+            frame.dispose();
+        }
+    });
 
     bottoneHome.addMouseListener(new MouseAdapter() {
         @Override
@@ -186,10 +194,10 @@ public HomeMainFrame(Proxy proxy,String cf) {
     // Pannello per il testo esplicativo e il box di ricerca
     JPanel centerPanel = new JPanel();
     centerPanel.setLayout(new BorderLayout());
-    centerPanel.setBackground(Color.WHITE);
+     centerPanel.setBackground(new Color(236, 240, 241)); // Cambiato: grigio chiaro come la parte sottostante
 
     // Titolo esplicativo sopra il box di ricerca
-    JLabel titoloLabel = new JLabel("<html><div style='text-align: center;'>Inserisci un Titolo di un libro, un Autore, oppure Autore ed anno<br>e clicca il pulsante corrispondente per effettuare la ricerca</div></html>");
+    JLabel titoloLabel = new JLabel("<html><div style='text-align: center;'><b>Inserisci un Titolo di un libro, un Autore, oppure Autore ed anno<br>e clicca il pulsante corrispondente per effettuare la ricerca</b></div></html>");
     titoloLabel.setFont(new Font("Arial", Font.PLAIN, 13)); // Font leggermente più piccolo
     titoloLabel.setForeground(new Color(70, 70, 70)); // Colore neutro
     titoloLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -361,24 +369,50 @@ public void initialize() {
 private void mostraRisultati(ArrayList<Libro> risultati) {
     resultsPanel.removeAll();
     for (Libro libro : risultati) {
-        JPanel libroPanel = new JPanel(new BorderLayout());
-        JLabel libroLabel = new JLabel(Libro.getTitolo(libro) + " " + Libro.getAutore(libro) + " " + Libro.getAnno(libro));
-        libroLabel.setForeground(Color.BLUE.darker());
-        libroLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        libroLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        JPanel libroPanel = new JPanel(new BorderLayout()) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                // Bordo arrotondato
+                Graphics2D g2 = (Graphics2D) g;
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(new Color(245, 250, 255));
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 18, 18);
+            }
+        };
+        libroPanel.setOpaque(false);
+        libroPanel.setBorder(BorderFactory.createEmptyBorder(8, 12, 8, 12));
 
-        libroPanel.add(libroLabel, BorderLayout.CENTER);
-        libroPanel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+        JLabel libroLabel = new JLabel(
+            "<html><b>" + Libro.getTitolo(libro) + "</b><br>"
+            + "<span style='color:#555;'>" + Libro.getAutore(libro) + " &middot; " + Libro.getAnno(libro) + "</span></html>"
+        );
+        libroLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+        libroLabel.setForeground(new Color(33, 97, 140));
+        libroLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        libroLabel.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
 
         libroLabel.addMouseListener(new MouseAdapter() {
+            Color orig = libroLabel.getForeground();
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                libroLabel.setForeground(new Color(21, 67, 96));
+                libroPanel.setBorder(BorderFactory.createLineBorder(new Color(93, 173, 226), 2, true));
+            }
+            @Override
+            public void mouseExited(MouseEvent e) {
+                libroLabel.setForeground(orig);
+                libroPanel.setBorder(BorderFactory.createEmptyBorder(8, 12, 8, 12));
+            }
             @Override
             public void mouseClicked(MouseEvent e) {
                 mostraDettagliLibro(libro, 1);
             }
         });
 
+        libroPanel.add(libroLabel, BorderLayout.CENTER);
         resultsPanel.add(libroPanel);
-        resultsPanel.add(Box.createVerticalStrut(5));
+        resultsPanel.add(Box.createVerticalStrut(8));
     }
 
     resultsPanel.revalidate();
@@ -498,8 +532,8 @@ private void mostraDettagliLibro(Libro libro, int n) {
     dialog.pack();
     dialog.setVisible(true);
 }
-    
-/**
+
+/** 
  * Calcola le medie delle valutazioni degli utenti per un determinato libro e 
  * aggiorna le variabili di media, le liste di utenti e suggerimenti associati.
  *

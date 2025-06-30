@@ -10,9 +10,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import javax.swing.*;
 import parametri.*;
+import javax.imageio.ImageIO;
+import frames.BackGroundPanel;
 
 public class LgMainFrame {
     private JButton accesso;
@@ -39,8 +43,15 @@ public class LgMainFrame {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        JPanel contentPanel = new JPanel(new GridBagLayout());
-        contentPanel.setBackground(Color.white);
+        Image sfondo = null;
+        try {
+            sfondo = ImageIO.read(new File("C://Users/matte/Documents/GitHub/BookRecommenderUni/sfondo5.jpg")); // cambia path se necessario
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        BackGroundPanel contentPanel = new BackGroundPanel(sfondo);
+        contentPanel.setLayout(new GridBagLayout());
+        contentPanel.setOpaque(false); // trasparente per vedere lo sfondo
 
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -73,6 +84,7 @@ public class LgMainFrame {
         password = new JPasswordField();
         password.setColumns(15);
         nascondiPassword = new JTextField();
+        passwordPanel.setOpaque(false);
         nascondiPassword.setVisible(false);
         passwordPanel.add(password, "passwordField");
         passwordPanel.add(nascondiPassword, "hiddenPasswordField");
