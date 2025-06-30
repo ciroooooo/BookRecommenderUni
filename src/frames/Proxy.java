@@ -250,4 +250,60 @@ public class Proxy{
         }
         return libreria;
     }
+    public void aggiungiValutazione(ValutazioniLibro valLibro){
+        try {
+            Libro l = valLibro.getLibro();
+            out.writeObject("GetIdDelLibro");
+            out.flush();
+            out.writeObject(l);
+            out.flush();
+            int idLibro = (int)in.readObject();
+            out.writeObject("AggiungiValutazione");
+            out.flush();
+            out.writeObject(valLibro);
+            out.flush();
+            out.writeObject(idLibro);
+            out.flush();
+        } catch (IOException | ClassNotFoundException  e) {
+        }
+    }
+    public ValutazioniLibro getValutazioneLibro(Utente u,Libro libro){
+        ValutazioniLibro valLibro = null;
+        try {
+            out.writeObject("GetIdDelLibro");
+            out.flush();
+            out.writeObject(libro);
+            out.flush();
+            int idLibro =(int)in.readObject();
+            out.writeObject("GetValutazioneLibro");
+            out.flush();
+            out.writeObject(u);
+            out.flush();
+            out.writeObject(idLibro);
+            out.flush();
+            out.writeObject(libro);
+            out.flush();
+            valLibro = (ValutazioniLibro)in.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+        }
+        return valLibro;
+    }
+    public boolean esisteValutazioneLibroUtente(Utente u,Libro l){
+        boolean esiste = false;
+        try {
+            out.writeObject("GetIdDelLibro");
+            out.flush();
+            out.writeObject(l);
+            int idLibro = (int)in.readObject();
+            out.writeObject("EsisteValutazioneLibroUtente");
+            out.flush();
+            out.writeObject(u);
+            out.flush();
+            out.writeObject(idLibro);
+            out.flush();
+            esiste = (boolean)in.readObject();
+        } catch (Exception e) {
+        }
+        return esiste;
+    }
 }

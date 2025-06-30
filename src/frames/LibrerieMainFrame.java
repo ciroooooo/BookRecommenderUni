@@ -45,13 +45,13 @@ public class LibrerieMainFrame {
  * Configura il layout, i pannelli e i bottoni necessari per l'interfaccia utente.
  *
  * @param listaLibri una lista di oggetti {@code Libro} da visualizzare e gestire.
- * @param u l'utente corrente che ha effettuato l'accesso.
  * 
  * @throws IOException se si verifica un errore durante la lettura dei file di librerie o suggerimenti.
  * @throws ClassNotFoundException se la classe degli oggetti letti dai file non viene trovata.
  */
     public LibrerieMainFrame(Proxy proxy, String cf) {
         this.proxy = proxy;
+        u = proxy.getUtenteDaCF(cf);
         this.cf = cf;
         listaLibrerieUtente = proxy.getLibrerieUtente(cf);
         frame = new JFrame();
@@ -177,7 +177,6 @@ public class LibrerieMainFrame {
                             JOptionPane.showMessageDialog(frame,"Inserire almeno un libro");
                             return;
                         }
-                        Utente u = proxy.getUtenteDaCF(cf);
                         Librerie libreria = new Librerie(nomeLibreria, u, libriDaAggiungere);
                         proxy.aggiungiLibreria(libreria);
                         JOptionPane.showMessageDialog(frame, "Libreria Creata con successo");
@@ -258,7 +257,6 @@ private void listaLibrerie(ArrayList<Librerie> listaLibrerieUtente) {
         libreriaLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                Utente u = proxy.getUtenteDaCF(cf);
                 String nomeCurrentLibreria = nomeLibreria;
                 Librerie libreria = null;
                 libreria = proxy.getLibreriaUtenteDaNome(u,nomeLibreria);
@@ -399,18 +397,8 @@ private void apriTabLibreria(Librerie libreria) {
         c.insets = new Insets(5, 5, 5, 5);
         panel.add(infoLabel);
 
-        ArrayList<ValutazioniLibro> alVL=new ArrayList(); // qui si leggeva il file sulle valutazioni
-        ValutazioniLibro vl=new ValutazioniLibro(u, libro);
-        boolean controlloLibrerie=false;
-        for(int i=0;i<alVL.size() && !controlloLibrerie;i++){
-            if(alVL.get(i).getUtente().getUsername().equals(u.getUsername())){
-                if(alVL.get(i).getLibro().getTitolo().equals(libro.getTitolo())){
-                    vl=alVL.get(i);
-                    controlloLibrerie=true;
-                }
-            }
-        }
-
+        
+        Boolean esisteValutazione = proxy.esisteValutazioneLibroUtente(u, libro);
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -526,7 +514,8 @@ private void apriTabLibreria(Librerie libreria) {
         c.gridy=10;
         panel.add(applicaButton,c);
 
-        if(controlloLibrerie){ 
+        if(esisteValutazione){ 
+            ValutazioniLibro vl = proxy.getValutazioneLibro(u,libro);
             boxStile.setSelectedIndex(vl.getStile()-1);
             boxContenuto.setSelectedIndex(vl.getContenuto()-1);
             boxGradevolezza.setSelectedIndex(vl.getGradevolezza()-1);
@@ -578,21 +567,7 @@ private void apriTabLibreria(Librerie libreria) {
                     JOptionPane.showMessageDialog(frame,"La lunghezza delle note sul voto finale non può essere più lunga di 255 caratteri");
                 }else{
                     valLibro.inserisciValutazioneLibro(votoStile, noteStile, votoContenuto, noteContenuto, votoGradevolezza, noteGradevolezza, votoOriginalita, noteOriginalita, votoEdizione, noteEdizione, votoFinale, noteVotoFinale);
-                    boolean controlloLibrerie=true;
-                    int k=0;
-                    for(int i=0;i<alVL.size() && controlloLibrerie;i++){
-                        if(alVL.get(i).getLibro().getTitolo().equals(valLibro.getLibro().getTitolo()) && alVL.get(i).getUtente().getUsername().equals(valLibro.getUtente().getUsername())){
-                            controlloLibrerie=false;
-                            k=i;
-                        }
-                    }
-                    if(controlloLibrerie){
-                        alVL.add(valLibro);
-                        ValutazioniLibro.scriviFileVL(alVL);
-                    }else{
-                        alVL.set(k,valLibro);
-                        ValutazioniLibro.scriviFileVL(alVL);
-                    }
+                    proxy.aggiungiValutazione(valLibro);
                     provaDialog.dispose();
                 }
             }

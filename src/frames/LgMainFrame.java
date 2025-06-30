@@ -13,10 +13,9 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import parametri.*;
-import javax.imageio.ImageIO;
-import frames.BackGroundPanel;
 
 public class LgMainFrame {
     private JButton accesso;
@@ -44,8 +43,12 @@ public class LgMainFrame {
             e.printStackTrace();
         }
         Image sfondo = null;
+        File fileSfondo = new File(".");
+        String pathSfondo = fileSfondo.getAbsolutePath().substring(0,fileSfondo.getAbsolutePath().length()-1);
+        pathSfondo = pathSfondo+"src\\immagini\\sfondoLG.jpg";
+        System.out.println(pathSfondo);
         try {
-            sfondo = ImageIO.read(new File("C://Users/matte/Documents/GitHub/BookRecommenderUni/sfondo5.jpg")); // cambia path se necessario
+            sfondo = ImageIO.read(new File(pathSfondo)); // cambia path se necessario
         } catch (IOException e) {
             e.printStackTrace();
         }
