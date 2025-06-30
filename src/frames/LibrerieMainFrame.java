@@ -57,13 +57,41 @@ public class LibrerieMainFrame {
         frame = new JFrame();
         topPanel = new JPanel();
         topPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
-        topPanel.setBackground(new Color(135, 206, 250));
+        topPanel.setBackground(new Color(41, 128, 185)); // Stesso colore di HomeMainFrame
         topPanel.setOpaque(true);
 
         bottoneHome = new JButton("Home");
         bottoneCLibrerie = new JButton("Crea Librerie");
         customizeButton(bottoneHome);
         customizeButton(bottoneCLibrerie);
+
+        // Imposta colore dei bottoni come HomeMainFrame
+        bottoneHome.setBackground(new Color(41, 128, 185));
+        bottoneCLibrerie.setBackground(new Color(41, 128, 185));
+        bottoneHome.setForeground(Color.WHITE);
+        bottoneCLibrerie.setForeground(Color.WHITE);
+
+        // Effetto hover come HomeMainFrame
+        bottoneHome.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                bottoneHome.setBackground(new Color(93, 173, 226));
+            }
+            @Override
+            public void mouseExited(MouseEvent e) {
+                bottoneHome.setBackground(new Color(41, 128, 185));
+            }
+        });
+        bottoneCLibrerie.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                bottoneCLibrerie.setBackground(new Color(93, 173, 226));
+            }
+            @Override
+            public void mouseExited(MouseEvent e) {
+                bottoneCLibrerie.setBackground(new Color(41, 128, 185));
+            }
+        });
 
         topPanel.add(bottoneHome);
         topPanel.add(bottoneCLibrerie);
@@ -208,7 +236,7 @@ public class LibrerieMainFrame {
         risultatoScrollPane = new JScrollPane(resultsPanel);
         risultatoScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         risultatoScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        risultatoScrollPane.setPreferredSize(new Dimension(400, 500));
+        risultatoScrollPane.setPreferredSize(new Dimension(300, 200)); // Allineato a HomeMainFrame
         listaLibrerie(listaLibrerieUtente);
         frame.setLayout(new BorderLayout());
         frame.add(risultatoScrollPane, BorderLayout.CENTER);
@@ -232,7 +260,7 @@ private void listaLibrerie(ArrayList<Librerie> listaLibrerieUtente) {
     titoloLabel.setFont(new Font("Arial", Font.BOLD, 20));
     titoloLabel.setForeground(new Color(70, 130, 180)); // Azzurro
     titoloLabel.setHorizontalAlignment(SwingConstants.CENTER);
-    titoloLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 20, 0)); // Margini
+    titoloLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 20, 0));
     resultsPanel.add(titoloLabel);
 
     GridBagConstraints c = new GridBagConstraints();
@@ -245,11 +273,11 @@ private void listaLibrerie(ArrayList<Librerie> listaLibrerieUtente) {
         libreriaPanel.setLayout(new BoxLayout(libreriaPanel, BoxLayout.Y_AXIS));
         libreriaPanel.setBackground(Color.WHITE);
         libreriaPanel.setBorder(BorderFactory.createLineBorder(new Color(169, 169, 169), 2, true));
-        libreriaPanel.setPreferredSize(new Dimension(350, 100));
-        libreriaPanel.setMaximumSize(new Dimension(350, 100));
+        libreriaPanel.setPreferredSize(new Dimension(260, 80));
+        libreriaPanel.setMaximumSize(new Dimension(260, 80));
 
         JLabel libreriaLabel = new JLabel(nomeLibreria);
-        libreriaLabel.setForeground(new Color(0, 128, 128));
+        libreriaLabel.setForeground(new Color(41, 128, 185)); // Stesso colore del top panel
         libreriaLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         libreriaLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         libreriaLabel.setFont(new Font("Arial", Font.BOLD, 16));
@@ -268,7 +296,7 @@ private void listaLibrerie(ArrayList<Librerie> listaLibrerieUtente) {
 
         libreriaPanel.add(libreriaLabel);
         c.gridx = 0;
-        c.gridy = i + 1; // Sposta di 1 per lasciare spazio al titolo
+        c.gridy = i + 1;
         resultsPanel.add(libreriaPanel, c);
     }
 
@@ -282,61 +310,98 @@ private void listaLibrerie(ArrayList<Librerie> listaLibrerieUtente) {
  * @param libreria La libreria selezionata.
  */
 private void apriTabLibreria(Librerie libreria) {
-    JTabbedPane tabbedPane = new JTabbedPane();
-    JPanel libriPanel = new JPanel();
-    libriPanel.setLayout(new BoxLayout(libriPanel, BoxLayout.Y_AXIS));
-    libriPanel.setBackground(Color.WHITE);  
+    // Colori coerenti con il top panel
+    Color topPanelColor = new Color(41, 128, 185);
+    Color hoverColor = new Color(93, 173, 226);
+    Color libroBg = new Color(240, 248, 255);
+
+    JFrame tabFrame = new JFrame(libreria.getNome()); // Titolo della finestra con il nome della libreria
+    tabFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    tabFrame.setSize(350, 500); // stessa size di LibrerieMainFrame
+    tabFrame.setMinimumSize(new Dimension(300, 400));
+    tabFrame.setLocationRelativeTo(null);
+
+    JPanel mainPanel = new JPanel(new BorderLayout());
+    mainPanel.setBackground(Color.WHITE);
+
+    // Lista libri
+    JPanel listaLibriPanel = new JPanel();
+    listaLibriPanel.setLayout(new BoxLayout(listaLibriPanel, BoxLayout.Y_AXIS));
+    listaLibriPanel.setBackground(Color.WHITE);
 
     for (Libro libro : libreria.getAlLibri()) {
         JPanel libroPanel = new JPanel(new BorderLayout());
-        libroPanel.setBackground(new Color(240, 248, 255)); // Colore di sfondo per il rettangolo
-        libroPanel.setBorder(BorderFactory.createLineBorder(new Color(169, 169, 169), 1, true));
-        libroPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
+        libroPanel.setBackground(libroBg);
+        libroPanel.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createEmptyBorder(0, 10, 0, 10),
+            BorderFactory.createLineBorder(topPanelColor, 1, true)
+        ));
+        libroPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 48));
+        libroPanel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
-        JLabel libroLabel = new JLabel(libro.getTitolo() + " - " + libro.getAutore() + " (" + libro.getDataPubblicazione().getYear() + ")");
-        libroLabel.setFont(new Font("Arial", Font.PLAIN, 14));
-        libroLabel.setForeground(Color.BLACK);
-        libroLabel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
-        libroLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        JLabel libroLabel = new JLabel(
+            "<html><b>" + libro.getTitolo() + "</b> - " + libro.getAutore() + " (" + libro.getDataPubblicazione().getYear() + ")</html>"
+        );
+        libroLabel.setFont(new Font("Arial", Font.PLAIN, 15));
+        libroLabel.setForeground(Color.DARK_GRAY);
+        libroLabel.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
 
-        libroLabel.addMouseListener(new MouseAdapter() {
+        libroPanel.add(libroLabel, BorderLayout.CENTER);
+
+        // Hover effect
+        libroPanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                libroPanel.setBackground(hoverColor);
+            }
+            @Override
+            public void mouseExited(MouseEvent e) {
+                libroPanel.setBackground(libroBg);
+            }
             @Override
             public void mouseClicked(MouseEvent e) {
                 Opzioni(libro);
             }
         });
 
-        libroPanel.add(libroLabel, BorderLayout.CENTER);
-        libriPanel.add(libroPanel);
-        libriPanel.add(Box.createVerticalStrut(5)); // Spazio tra i rettangoli
+        listaLibriPanel.add(libroPanel);
+        listaLibriPanel.add(Box.createVerticalStrut(8));
     }
 
-    // Aggiungi il tasto "Indietro" in basso a sinistra
-    JButton indietroButton = new JButton("Indietro");
-    customizeButton(indietroButton);
-    indietroButton.setPreferredSize(new Dimension(100, 40));
-    indietroButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            ((JFrame) SwingUtilities.getWindowAncestor(tabbedPane)).dispose();
-        }
-    });
+    JScrollPane scrollPane = new JScrollPane(listaLibriPanel);
+    scrollPane.setBorder(BorderFactory.createEmptyBorder());
+    scrollPane.setBackground(Color.WHITE);
+    scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+    mainPanel.add(scrollPane, BorderLayout.CENTER);
 
+    // Bottone indietro in basso a sinistra
     JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
     bottomPanel.setBackground(Color.WHITE);
+    JButton indietroButton = new JButton("Indietro");
+    indietroButton.setFont(new Font("Arial", Font.BOLD, 14));
+    indietroButton.setBackground(topPanelColor);
+    indietroButton.setForeground(Color.WHITE);
+    indietroButton.setPreferredSize(new Dimension(110, 40));
+    indietroButton.setBorderPainted(false);
+    indietroButton.setFocusPainted(false);
+    indietroButton.setContentAreaFilled(false);
+    indietroButton.setOpaque(true);
+    indietroButton.addMouseListener(new MouseAdapter() {
+        @Override
+        public void mouseEntered(MouseEvent e) {
+            indietroButton.setBackground(hoverColor);
+        }
+        @Override
+        public void mouseExited(MouseEvent e) {
+            indietroButton.setBackground(topPanelColor);
+        }
+    });
+    indietroButton.addActionListener(e -> tabFrame.dispose());
     bottomPanel.add(indietroButton);
 
-    JPanel mainPanel = new JPanel(new BorderLayout());
-    mainPanel.add(new JScrollPane(libriPanel), BorderLayout.CENTER);
     mainPanel.add(bottomPanel, BorderLayout.SOUTH);
 
-    tabbedPane.addTab(libreria.getNome(), mainPanel);
-
-    JFrame tabFrame = new JFrame(libreria.getNome());
-    tabFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-    tabFrame.setSize(400, 600);
-    tabFrame.add(tabbedPane);
-    tabFrame.setLocationRelativeTo(null);
+    tabFrame.setContentPane(mainPanel);
     tabFrame.setVisible(true);
 }
 
@@ -378,11 +443,12 @@ private void apriTabLibreria(Librerie libreria) {
  */
     public void initialize() {
         frame.setTitle("Librerie");
-        frame.setSize(400, 600);
-        frame.setMinimumSize(new Dimension(400, 600));
+        frame.setSize(350, 500); // Stesse dimensioni di HomeMainFrame
+        frame.setMinimumSize(new Dimension(300, 400)); // Stesse dimensioni minime di HomeMainFrame
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+        
     }
   /**
  * Mostra un dialogo per inserire o modificare le valutazioni di un libro da parte di un utente.
@@ -617,14 +683,41 @@ private void apriTabLibreria(Librerie libreria) {
     private void mostraRisultati(ArrayList<Libro> risultati,int n,JPanel panel) {
         panel.removeAll();
         for (Libro libro : risultati) {
-            JPanel libroPanel = new JPanel(new BorderLayout());
-            JLabel libroLabel = new JLabel(Libro.getTitolo(libro)+" "+Libro.getAutore(libro)+" "+Libro.getAnno(libro));
-            libroLabel.setForeground(Color.BLUE.darker());
+            JPanel libroPanel = new JPanel(new BorderLayout()) {
+                @Override
+                protected void paintComponent(Graphics g) {
+                    super.paintComponent(g);
+                    // Bordo arrotondato come HomeMainFrame
+                    Graphics2D g2 = (Graphics2D) g;
+                    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                    g2.setColor(new Color(245, 250, 255));
+                    g2.fillRoundRect(0, 0, getWidth(), getHeight(), 18, 18);
+                }
+            };
+            libroPanel.setOpaque(false);
+            libroPanel.setBorder(BorderFactory.createEmptyBorder(8, 12, 8, 12));
+
+            JLabel libroLabel = new JLabel(
+                "<html><b>" + Libro.getTitolo(libro) + "</b><br>"
+                + "<span style='color:#555;'>" + Libro.getAutore(libro) + " &middot; " + Libro.getAnno(libro) + "</span></html>"
+            );
+            libroLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+            libroLabel.setForeground(new Color(33, 97, 140));
             libroLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-            libroLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); 
-            libroPanel.add(libroLabel, BorderLayout.CENTER);
-            libroPanel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY)); 
+            libroLabel.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
+
             libroLabel.addMouseListener(new MouseAdapter() {
+                Color orig = libroLabel.getForeground();
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    libroLabel.setForeground(new Color(21, 67, 96));
+                    libroPanel.setBorder(BorderFactory.createLineBorder(new Color(93, 173, 226), 2, true));
+                }
+                @Override
+                public void mouseExited(MouseEvent e) {
+                    libroLabel.setForeground(orig);
+                    libroPanel.setBorder(BorderFactory.createEmptyBorder(8, 12, 8, 12));
+                }
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     if(n==0){
@@ -634,12 +727,13 @@ private void apriTabLibreria(Librerie libreria) {
                     }
                 }
             });
-            
-                panel.add(libroPanel);
-                panel.add(Box.createVerticalStrut(5));
-                panel.revalidate();
-                panel.repaint();
+
+            libroPanel.add(libroLabel, BorderLayout.CENTER);
+            panel.add(libroPanel);
+            panel.add(Box.createVerticalStrut(8));
         }
+        panel.revalidate();
+        panel.repaint();
     }
 /**
  * Mostra le informazioni dettagliate di un libro in un pannello.
