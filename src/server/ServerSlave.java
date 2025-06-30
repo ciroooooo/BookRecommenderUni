@@ -13,6 +13,7 @@ import org.postgresql.*;
 import java.util.*;
 import java.time.LocalDate;
 import parametri.Librerie;
+import parametri.ValutazioniLibro;
 
 public class ServerSlave extends Thread{
     private Socket socket;
@@ -319,6 +320,136 @@ public class ServerSlave extends Thread{
                     out.writeObject(libreria);
                     out.flush();
                 }   
+                else if(operazione.equals("GetIdDelLibro")){
+                    Libro l = (Libro)in.readObject();
+                    String operazioneQuery = "SELECT idlibro FROM libro JOIN autore on(libro.idautore = autore.idautore) WHERE titolo = ? and descrizione = ? and categoria = ? and editore = ? and datapubblicazione = ? and prezzo = ? and nome = ?";
+                    String titolo = l.getTitolo();
+                    String descrizione = l.getDescrizione();
+                    String categoria = l.getCategoria();
+                    String editore = l.getEditore();
+                    Date dataPubb = Date.valueOf(l.getDataPubblicazione());
+                    double prezzo = l.getPrezzo();
+                    String nomeAutore = l.getAutore();
+                    PreparedStatement ps = con.prepareStatement(operazioneQuery);
+                    ps.setString(1,titolo);
+                    ps.setString(2,descrizione);
+                    ps.setString(3,categoria);
+                    ps.setString(4,editore);
+                    ps.setDate(5,dataPubb);
+                    ps.setDouble(6, prezzo);
+                    ps.setString(7,nomeAutore);
+                    ResultSet rs = ps.executeQuery();
+                    rs.next();
+                    int idLibro = rs.getInt(1);
+                    out.writeObject(idLibro);
+                    out.flush();
+                }
+                else if(operazione.equals("AggiungiValutazione")){
+                    ValutazioniLibro valLibro = (ValutazioniLibro)in.readObject();
+                    //Controlla se esiste già una valutazione;
+                    Utente u = valLibro.getUtente();
+                    String cf = u.getCF();
+                    int idLibro = (int)in.readObject();
+                    String operazioneQuery = "SELECT idvalutazione FROM valutazione v JOIN libro l on(v.idlibro = l.idlibro) JOIN utente u on(u.cf = v.cf) WHERE v.cf = ? and v.idlibro = ?";
+                    PreparedStatement ps = con.prepareStatement(operazioneQuery);
+                    ps.setString(1,cf);
+                    ps.setInt(2,idLibro);
+                    ResultSet risultatoQuery = ps.executeQuery();
+                    int stile = valLibro.getStile();
+                    String noteStile = valLibro.getNoteStile();
+                    int contenuto = valLibro.getContenuto();
+                    String noteContenuto = valLibro.getNoteContenuto();
+                    int gradevolezza = valLibro.getGradevolezza();
+                    String noteGradevolezza = valLibro.getNoteGradevolezza();
+                    int originalita = valLibro.getOriginalita();
+                    String noteOriginalita = valLibro.getNoteOriginalita();
+                    int edizione = valLibro.getEdizione();
+                    String noteEdizione = valLibro.getNoteEdizione();
+                    int votoFinale = valLibro.getVotoFinale();
+                    String noteVotoFinale = valLibro.getNoteVotoFinale();
+                    if(risultatoQuery.next()){ //c'è gia una valutazione
+                        operazioneQuery = "UPDATE valutazione SET stile = ?,notestile = ?,contenuto = ?,notecontenuto = ?,gradevolezza = ?,notegradevolezza = ?,originalita = ?,noteoriginalita = ?,edizione = ?,noteedizione = ?,votofinale = ?,notevotofinale = ? WHERE cf = ? AND idlibro = ?";
+                        ps = con.prepareStatement(operazioneQuery);
+                        ps.setInt(1,stile);
+                        ps.setString(2,noteStile);
+                        ps.setInt(3,contenuto);
+                        ps.setString(4,noteContenuto);
+                        ps.setInt(5,gradevolezza);
+                        ps.setString(6,noteGradevolezza);
+                        ps.setInt(7,originalita);
+                        ps.setString(8,noteOriginalita);
+                        ps.setInt(9,edizione);
+                        ps.setString(10,noteEdizione);
+                        ps.setInt(11,votoFinale);
+                        ps.setString(12,noteVotoFinale);
+                        ps.setString(13,cf);
+                        ps.setInt(14,idLibro);
+                        ps.executeUpdate();
+                    }else{
+                        operazioneQuery = "INSERT INTO valutazione(idlibro,stile,notestile,contenuto,notecontenuto,gradevolezza,notegradevolezza,originalita,noteoriginalita,edizione,noteedizione,votofinale,notevotofinale,cf) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                        ps = con.prepareStatement(operazioneQuery);
+                        ps.setInt(1,idLibro);
+                        ps.setInt(2,stile);
+                        ps.setString(3,noteStile);
+                        ps.setInt(4,contenuto);
+                        ps.setString(5,noteContenuto);
+                        ps.setInt(6,gradevolezza);
+                        ps.setString(7,noteGradevolezza);
+                        ps.setInt(8,originalita);
+                        ps.setString(9,noteOriginalita);
+                        ps.setInt(10,edizione);
+                        ps.setString(11,noteEdizione);
+                        ps.setInt(12,votoFinale);
+                        ps.setString(13,noteVotoFinale);
+                        ps.setString(14,cf);
+                        ps.executeUpdate();
+                    }
+                }
+                else if(operazione.equals("GetValutazioneLibro")){
+                    Utente u = (Utente)in.readObject();
+                    String cf = u.getCF();
+                    int idLibro = (int)in.readObject();
+                    Libro libro = (Libro)in.readObject();
+                    String comandoQuery = "SELECT v.* FROM valutazione v JOIN utente u on(v.cf = u.cf) JOIN libro l on(l.idlibro = v.idlibro) where v.cf = ? and v.idlibro = ?";
+                    PreparedStatement ps = con.prepareStatement(comandoQuery);
+                    ps.setString(1,cf);
+                    ps.setInt(2,idLibro);
+                    ResultSet rs = ps.executeQuery();
+                    rs.next();
+                    int stile = rs.getInt("stile");
+                    String noteStile = rs.getString("notestile");
+                    int contenuto = rs.getInt("contenuto");
+                    String noteContenuto = rs.getString("notecontenuto");
+                    int gradevolezza = rs.getInt("gradevolezza");
+                    String noteGradevolezza = rs.getString("notegradevolezza");
+                    int originalita = rs.getInt("originalita");
+                    String noteOriginalita = rs.getString("noteoriginalita");
+                    int edizione = rs.getInt("edizione");
+                    String noteEdizione = rs.getString("noteedizione");
+                    int votoFinale = rs.getInt("votofinale");
+                    String noteVotoFinale = rs.getString("notevotofinale");
+                    ValutazioniLibro valutazioneLibro = new ValutazioniLibro(u,libro);
+                    valutazioneLibro.inserisciValutazioneLibro(stile, noteStile, contenuto, noteContenuto, gradevolezza, noteGradevolezza, originalita, noteOriginalita, edizione, noteEdizione, votoFinale, noteVotoFinale);  
+                    out.writeObject(valutazioneLibro);
+                    out.flush(); 
+                }
+                else if(operazione.equals("EsisteValutazioneLibroUtente")){
+                    Utente u = (Utente)in.readObject();
+                    int idLibro = (int)in.readObject();
+                    String cf = u.getCF();
+                    String comandoQuery = "SELECT idvalutazione FROM valutazione WHERE cf = ? and idlibro = ?";
+                    PreparedStatement ps = con.prepareStatement(comandoQuery);
+                    ps.setString(1,cf);
+                    ps.setInt(2,idLibro);
+                    ResultSet rs = ps.executeQuery();
+                    if(rs.next()){
+                        out.writeObject(true);
+                        out.flush();
+                    }else{
+                        out.writeObject(false);
+                        out.flush();
+                    }
+                }
 
             }
         } catch (Exception e) {
