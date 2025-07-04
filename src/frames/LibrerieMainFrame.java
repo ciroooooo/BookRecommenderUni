@@ -322,39 +322,64 @@ private void apriTabLibreria(Librerie libreria) {
     JPanel mainPanel = new JPanel(new BorderLayout());
     mainPanel.setBackground(Color.WHITE);
 
+    // Titolo della libreria all'interno del pannello
+    JLabel titoloInterno = new JLabel("Libreria \"" + libreria.getNome() + "\"");
+    titoloInterno.setFont(new Font("Arial", Font.BOLD, 18));
+    titoloInterno.setForeground(new Color(41, 128, 185));
+    titoloInterno.setHorizontalAlignment(SwingConstants.CENTER);
+    titoloInterno.setBorder(BorderFactory.createEmptyBorder(16, 24, 12, 24)); // padding laterale aumentato
+    mainPanel.add(titoloInterno, BorderLayout.NORTH);
+
     // Lista libri
     JPanel listaLibriPanel = new JPanel();
     listaLibriPanel.setLayout(new BoxLayout(listaLibriPanel, BoxLayout.Y_AXIS));
     listaLibriPanel.setBackground(Color.WHITE);
 
     for (Libro libro : libreria.getAlLibri()) {
-        JPanel libroPanel = new JPanel(new BorderLayout());
+        // Calcola la larghezza della stringa del libro
+        String testoLibro = libro.getTitolo() + " - " + libro.getAutore() + " (" + libro.getDataPubblicazione().getYear() + ")";
+        Font font = new Font("Arial", Font.PLAIN, 15);
+        JLabel misuraLabel = new JLabel(testoLibro);
+        misuraLabel.setFont(font);
+        Dimension stringSize = misuraLabel.getPreferredSize();
+        int panelWidth = stringSize.width + 32 + 24; // padding extra per il bordo e hover e padding sfondo
+        int panelHeight = 36;
+
+        JPanel libroPanel = new JPanel(new BorderLayout()) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2 = (Graphics2D) g;
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                // Sfondo con padding extra
+                g2.setColor(getBackground());
+                g2.fillRoundRect(6, 3, getWidth() - 12, getHeight() - 6, 16, 16);
+            }
+        };
         libroPanel.setBackground(libroBg);
-        libroPanel.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createEmptyBorder(0, 10, 0, 10),
-            BorderFactory.createLineBorder(topPanelColor, 1, true)
-        ));
-        libroPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 48));
+        libroPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
+        libroPanel.setMaximumSize(new Dimension(panelWidth, panelHeight));
+        libroPanel.setPreferredSize(new Dimension(panelWidth, panelHeight));
+        libroPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
         libroPanel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
-        JLabel libroLabel = new JLabel(
-            "<html><b>" + libro.getTitolo() + "</b> - " + libro.getAutore() + " (" + libro.getDataPubblicazione().getYear() + ")</html>"
-        );
-        libroLabel.setFont(new Font("Arial", Font.PLAIN, 15));
+        JLabel libroLabel = new JLabel("<html><b>" + testoLibro + "</b></html>");
+        libroLabel.setFont(font);
         libroLabel.setForeground(Color.DARK_GRAY);
-        libroLabel.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
+        libroLabel.setBorder(BorderFactory.createEmptyBorder(6, 8, 6, 8));
+        libroLabel.setOpaque(false);
 
-        libroPanel.add(libroLabel, BorderLayout.CENTER);
-
-        // Hover effect
-        libroPanel.addMouseListener(new MouseAdapter() {
+        // Effetto hover SOLO sul testo (come prima)
+        libroLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                libroPanel.setBackground(hoverColor);
+                libroLabel.setOpaque(true);
+                libroLabel.setBackground(hoverColor);
             }
             @Override
             public void mouseExited(MouseEvent e) {
-                libroPanel.setBackground(libroBg);
+                libroLabel.setOpaque(false);
+                libroLabel.setBackground(libroBg);
             }
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -362,8 +387,9 @@ private void apriTabLibreria(Librerie libreria) {
             }
         });
 
+        libroPanel.add(libroLabel, BorderLayout.CENTER);
         listaLibriPanel.add(libroPanel);
-        listaLibriPanel.add(Box.createVerticalStrut(8));
+        listaLibriPanel.add(Box.createVerticalStrut(16)); // spazio aumentato tra le righe
     }
 
     JScrollPane scrollPane = new JScrollPane(listaLibriPanel);
