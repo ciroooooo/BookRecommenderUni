@@ -294,6 +294,7 @@ public class Proxy{
             out.writeObject("GetIdDelLibro");
             out.flush();
             out.writeObject(l);
+            out.flush();
             int idLibro = (int)in.readObject();
             out.writeObject("EsisteValutazioneLibroUtente");
             out.flush();
@@ -305,5 +306,85 @@ public class Proxy{
         } catch (Exception e) {
         }
         return esiste;
+    }
+    public boolean getIfSuggerito(Utente u,Libro l){
+        boolean b = false;
+        try {
+            out.writeObject("GetIdDelLibro");
+            out.flush();
+            out.writeObject(l);
+            out.flush();
+            int idLibro = (int)in.readObject();
+            out.writeObject("getIfSuggerito");
+            out.flush();
+            out.writeObject(u);
+            out.flush();
+            out.writeObject(idLibro);
+            out.flush();
+            b = (boolean)in.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            return b;
+        }
+        return b;
+    }
+    public void aggiungiSuggerimentiLibroUtente(Utente u,Libro l,ArrayList<Libro> libriList){
+        try {
+            out.writeObject("GetIdDelLibro");
+            out.flush();
+            out.writeObject(l);
+            out.flush();
+            int idLibroSorg = (int)in.readObject();
+            ArrayList<Integer> alIdLibriSugg = new ArrayList<>();
+            for(int i=0;i<libriList.size();i++){
+                out.writeObject("GetIdDelLibro");
+                out.flush();
+                out.writeObject(libriList.get(i));
+                out.flush();
+                alIdLibriSugg.add((int)in.readObject());
+            }
+            out.writeObject("aggiungiSuggerimentoLibroUtente");
+            out.flush();
+            out.writeObject(u);
+            out.flush();
+            out.writeObject(idLibroSorg);
+            out.flush();
+            out.writeObject(alIdLibriSugg);
+            out.flush();
+        } catch (IOException | ClassNotFoundException e) {
+        }
+    }
+    public ArrayList<Double> getMediaValutazioniLibro(Libro l){
+        ArrayList<Double> alMedia = null;
+        try {
+            out.writeObject("GetIdDelLibro");
+            out.flush();
+            out.writeObject(l);
+            out.flush();
+            int idLibro = (int)in.readObject();
+            out.writeObject("getMediaValutazioniLibro");
+            out.flush();
+            out.writeObject(idLibro);
+            out.flush();
+            alMedia = (ArrayList<Double>)in.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+        }
+        return alMedia;
+    }
+    public ArrayList<Utente> getUtentiSuggeritori(Libro l){
+        ArrayList<Utente> alUtenti = new ArrayList<>();
+        try{
+            out.writeObject("GetIdDelLibro");
+            out.flush();
+            out.writeObject(l);
+            out.flush();
+            int idLibro = (int)in.readObject();
+            out.writeObject("getUtentiSuggeritori");
+            out.flush();
+            out.writeObject(idLibro);
+            out.flush();
+            alUtenti = (ArrayList<Utente>)in.readObject();
+        }catch(Exception e){
+        }
+        return alUtenti;
     }
 }

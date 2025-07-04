@@ -8,6 +8,7 @@
 package frames;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import javax.swing.*;
 import parametri.*;
@@ -30,7 +31,6 @@ public class LibrerieMainFrame {
     private ArrayList<Libro> alSuggerimenti = new ArrayList<>();
     private int k=0;
     private JScrollPane risultatoScrollPaneSugg;
-    private ArrayList<SuggerimentoLibro> alSugg=new ArrayList<>();
     private JButton searchByTitleButton,searchByAuthorButton,searchByAuthorAndYearButton;
     private JPanel OptionPanel1 = new JPanel(new GridBagLayout());
     private JTextField searchField;
@@ -469,7 +469,14 @@ private void apriTabLibreria(Librerie libreria) {
         frame.setTitle("Librerie");
         frame.setSize(350, 500); // Stesse dimensioni di HomeMainFrame
         frame.setMinimumSize(new Dimension(300, 400)); // Stesse dimensioni minime di HomeMainFrame
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        frame.addWindowListener(new WindowAdapter() {
+        public void windowClosing(WindowEvent e){
+            proxy.fineComunicazione();
+            frame.dispose();
+            
+        }
+    });
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
         
@@ -800,6 +807,7 @@ private void apriTabLibreria(Librerie libreria) {
                 }  
             });
         }else if(n==1){
+            
             AggiungiLibro.addActionListener(new ActionListener() { 
                 public void actionPerformed(ActionEvent e){
                     boolean aggiunto=true;
@@ -898,7 +906,7 @@ private void apriTabLibreria(Librerie libreria) {
             public void actionPerformed(ActionEvent e) {
                 risultatoRicercaSuggerimenti.removeAll();
                 String testo=searchField.getText();
-                ArrayList<Libro>risultati=proxy.ricercaPerTitolo(testo);
+                ArrayList<Libro>risultati=proxy.ricercaPerAutore(new Autore(testo));
                 mostraRisultati(risultati,1,risultatoRicercaSuggerimenti);
             }
         });
@@ -925,25 +933,19 @@ private void apriTabLibreria(Librerie libreria) {
         JDialog dialog=pane.createDialog(frame,"Suggerimenti Libri");
         ApplicaButton.addActionListener(new ActionListener() { 
             public void actionPerformed(ActionEvent e){  
+                boolean isSuggerito = proxy.getIfSuggerito(u,libro);
                 if(alSuggerimenti.size()>0){
                     SuggerimentoLibro sl = new SuggerimentoLibro(libro,u); 
                     sl.inserisciSuggerimento(alSuggerimenti);
-                    boolean controlloLibrerie=true;
-                    for(int i=0;i<alSugg.size();i++){
-                        if(alSugg.get(i).getLibro().getTitolo().equals(libro.getTitolo()) && u.getUsername().equals(alSugg.get(i).getUtente().getUsername())){
-                            controlloLibrerie=false;
-                        }
-                    }
-                    if(controlloLibrerie){
-                        alSugg.add(sl);
-                        //qui si scriveva sul file tutto l'arrayList
+                    if(!isSuggerito){
+                        proxy.aggiungiSuggerimentiLibroUtente(u,libro,alSuggerimenti);
                         risultatoRicercaSuggerimenti.removeAll();
                         dialog.dispose();
                     }else{
                         JOptionPane.showMessageDialog(frame,"Esiste gia un suggerimento per questo libro");
                     }
                 }else{
-                    JOptionPane.showMessageDialog(frame,"Inserire almeno un libro suggerito");
+                    JOptionPane.showMessageDialog(frame, "Inserire almeno un libro");
                 }              
             }
         });
