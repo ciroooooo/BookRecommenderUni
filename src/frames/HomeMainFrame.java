@@ -15,7 +15,7 @@ import javax.swing.*;
 import parametri.*;
 
 public class HomeMainFrame {
-    private int k;
+    private boolean esisteValutazione;
     private JFrame frame;
     private JPanel topPanel;
     private JPanel searchPanel;
@@ -37,6 +37,7 @@ public class HomeMainFrame {
     private ArrayList<Utente>alUtentiVal=new ArrayList<>();
     private ArrayList<SuggerimentoLibro>alSuggerimenti=new ArrayList<>();
     private JPanel pane=new JPanel(new GridBagLayout());
+    private Proxy proxy;
 
 /**
  * Costruttore della classe HomeMainFrame.
@@ -45,6 +46,7 @@ public class HomeMainFrame {
  * @param cf indica il codice fiscale della persona che ha effettuato l'accesso, altrimenti indica "Ospite" se si è entrati come ospite.
  */
 public HomeMainFrame(Proxy proxy,String cf) {
+    this.proxy = proxy;
     frame = new JFrame();
 
     topPanel = new JPanel();
@@ -353,7 +355,14 @@ public void initialize() {
     frame.setTitle("Home");
     frame.setSize(350, 500);
     frame.setMinimumSize(new Dimension(300, 400)); 
-    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+    frame.addWindowListener(new WindowAdapter() {
+        public void windowClosing(WindowEvent e){
+            proxy.fineComunicazione();
+            frame.dispose();
+            
+        }
+    });
     frame.setLocationRelativeTo(null);
     frame.setVisible(true);
 }
@@ -472,7 +481,7 @@ private void mostraDettagliLibro(Libro libro, int n) {
     String infoValutazioni;
     MediaValutazioneLibri(libro); 
     
-    if (k != 0) {
+    if (esisteValutazione) {
         infoValutazioni = "<html><b>Media Stile:</b>" + mediaStile + "<br><b>Media Contenuto:</b>" + mediaContenuto +
                           "<br><b>Media Gradevolezza:</b>" + mediaGradevolezza;
         infoValutazioni = infoValutazioni + "<br><b>Media Originalita:</b>" + mediaOriginalita +
@@ -483,9 +492,10 @@ private void mostraDettagliLibro(Libro libro, int n) {
     
     
     JLabel exLabel = new JLabel("");
-    if (alUtentiVal.size() != 0 && n == 1) {
+    ArrayList<Utente> alUtentiSuggerimenti = proxy.getUtentiSuggeritori(libro);
+    if (!(alUtentiSuggerimenti.isEmpty())) {
         exLabel = new JLabel("<html><b>Recensioni utenti:</b></html>");
-    } else if (n == 1) {
+    } else{
         exLabel = new JLabel("<html><b>Nessun utente ha lasciato recensioni</b></html>");
     }
     
@@ -514,8 +524,8 @@ private void mostraDettagliLibro(Libro libro, int n) {
     panel.add(exLabel, c);
     
     
-    if (n == 1) {
-        mostraUtentiRecensioni(alUtentiVal, libro);
+    if (!(alUtentiSuggerimenti.isEmpty())) {
+        mostraUtentiRecensioni(alUtentiSuggerimenti, libro);
         c.gridy = 3;
         panel.add(panelRisultatoNESugg, c);
     }
@@ -540,51 +550,21 @@ private void mostraDettagliLibro(Libro libro, int n) {
  * @param libro Il libro per cui calcolare le medie delle valutazioni.
  */
 private void MediaValutazioneLibri(Libro libro){
-    alUtentiVal.clear();
-    alSuggerimenti.clear();
-    mediaStile = 0;
-    mediaContenuto = 0;
-    mediaGradevolezza = 0;
-    mediaOriginalita = 0;
-    mediaEdizione = 0;
-    mediaVotoFinale = 0;
-    k = 0;
+    ArrayList<Double> alMediaVal = proxy.getMediaValutazioniLibro(libro);
+    if(alMediaVal!=null){
+        mediaStile = alMediaVal.get(0);
+        mediaContenuto = alMediaVal.get(1);
+        mediaGradevolezza = alMediaVal.get(2);
+        mediaOriginalita = alMediaVal.get(3);
+        mediaEdizione = alMediaVal.get(4);
+        mediaVotoFinale = alMediaVal.get(5);
+        esisteValutazione = true;
 
-    ArrayList<ValutazioniLibro> alVl;
-    alVl = leggiFile(); 
-
-    ArrayList<SuggerimentoLibro> tmpSugg = SuggerimentoLibro.leggiFileSugg(); 
-
-    for (int i = 0; i < alVl.size(); i++) {
-        if (alVl.get(i).getLibro().getTitolo().equals(libro.getTitolo())) {
-            alUtentiVal.add(alVl.get(i).getUtente());
-            mediaStile += alVl.get(i).getStile();
-            mediaContenuto += alVl.get(i).getContenuto();
-            mediaGradevolezza += alVl.get(i).getGradevolezza();
-            mediaOriginalita += alVl.get(i).getOriginalita();
-            mediaEdizione += alVl.get(i).getEdizione();
-            mediaVotoFinale += alVl.get(i).getVotoFinale();
-            k++;
-        }
+    }else{
+        esisteValutazione = false;
     }
-
-    for (int i = 0; i < tmpSugg.size(); i++) {
-        for (int j = 0; j < alUtentiVal.size(); j++) {
-            if (alUtentiVal.get(j).getUsername().equals(tmpSugg.get(i).getUtente().getUsername()) && 
-                tmpSugg.get(i).getLibro().getTitolo().equals(libro.getTitolo())) {
-                alSuggerimenti.add(tmpSugg.get(i));
-            }
-        }
-    }
-
-    if (k != 0) {
-        mediaStile /= k;
-        mediaContenuto /= k;
-        mediaGradevolezza /= k;
-        mediaOriginalita /= k;
-        mediaEdizione /= k;
-        mediaVotoFinale /= k;
-    }
+    
+    
 }
 
 /**

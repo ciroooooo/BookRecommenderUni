@@ -450,7 +450,84 @@ public class ServerSlave extends Thread{
                         out.flush();
                     }
                 }
-
+                else if(operazione.equals("getIfSuggerito")){
+                    Utente u = (Utente)in.readObject();
+                    int idLibro = (int)in.readObject();
+                    String cf = u.getCF();
+                    String comandoQuery = "SELECT cf FROM suggerimento WHERE cf = ? and idlibrosorgente = ?";
+                    PreparedStatement ps = con.prepareStatement(comandoQuery);
+                    ps.setString(1,cf);
+                    ps.setInt(2,idLibro);
+                    ResultSet rs = ps.executeQuery();
+                    if(rs.next()){
+                        out.writeObject(true);
+                        out.flush();
+                    }else{
+                        out.writeObject(false);
+                        out.flush();
+                    }
+                    
+                }else if(operazione.equals("aggiungiSuggerimentoLibroUtente")){
+                    Utente u = (Utente)in.readObject();
+                    int idLibroSorg = (int)in.readObject();
+                    String cf = u.getCF();
+                    ArrayList<Integer> alIdLibriSugg = (ArrayList<Integer>)in.readObject();
+                    String operazioneQuery = "INSERT INTO suggerimento(idlibrosorgente,idlibrosuggerito,cf) VALUES(?,?,?)";
+                    for(int i=0;i<alIdLibriSugg.size();i++){
+                        PreparedStatement ps = con.prepareStatement(operazioneQuery);
+                        ps.setInt(1,idLibroSorg);
+                        ps.setString(3,cf);
+                        ps.setInt(2,alIdLibriSugg.get(i));
+                        ps.executeUpdate();
+                    }
+                }
+                else if(operazione.equals("getMediaValutazioniLibro")){
+                    int id = (int)in.readObject();
+                    String operazioneQuery = "SELECT AVG(stile), AVG(contenuto), AVG(gradevolezza), AVG(originalita), AVG(edizione), AVG(votofinale) FROM valutazione WHERE idLibro = ?";
+                    ArrayList<Double> alMedia = null;
+                    PreparedStatement ps = con.prepareStatement(operazioneQuery);
+                    ps.setInt(1, id);
+                    ResultSet rs = ps.executeQuery();
+                    if(rs.next()){
+                        boolean tuttiNull = true;
+                        for(int i=1;i<=6;i++){
+                            if(rs.getObject(i)!=null){
+                                tuttiNull = false;
+                                break;
+                            }
+                        }
+                        if(tuttiNull){
+                            out.writeObject(null);
+                            out.flush();
+                        }else{
+                            alMedia = new ArrayList<>();
+                            for(int i=1;i<=6;i++){
+                                alMedia.add(rs.getDouble(i));
+                            }
+                            out.writeObject(alMedia);
+                            out.flush();
+                        }
+                    }
+                    
+                }else if(operazione.equals("getUtentiSuggeritori")){
+                    int idLibro = (int)in.readObject();
+                    ArrayList<Utente> alUtenti = new ArrayList<Utente>();
+                    String operazioneQuery= "SELECT DISTINCT u.* FROM SUGGERIMENTO s JOIN utente u ON (s.cf = u.cf) WHERE s.idlibrosorgente = ?";
+                    PreparedStatement ps = con.prepareStatement(operazioneQuery);
+                    ps.setInt(1, idLibro);
+                    ResultSet rs = ps.executeQuery();
+                    while(rs.next()){
+                        String nome = rs.getString(1);
+                        String cognome =  rs.getString(2);
+                        String cf = rs.getString(3);
+                        String email = rs.getString(4);
+                        String username = rs.getString(5);
+                        String password = rs.getString(6);
+                        alUtenti.add(new Utente(nome, cognome, cf, email, username, password));
+                    }
+                    out.writeObject(alUtenti);
+                    out.flush();
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

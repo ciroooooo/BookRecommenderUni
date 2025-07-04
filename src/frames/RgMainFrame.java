@@ -10,34 +10,36 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import javax.swing.*;
 import parametri.*;
 
 public class RgMainFrame {
     private JTextField nome;
     private JTextField cognome;
-    private JButton bottoneRG;
-    JFrame frame;
+    private final JButton bottoneRG;
+    private JFrame frame;
     private JTextField email;
     private JTextField username;
     private JPasswordField password;
     private JTextField cf;
     private JButton bottoneMostraPassword;
-    private JLabel nomeLabel, cognomeLabel, cfLabel, emailLabel, usernameLabel, passwordLabel;
+    private final JLabel nomeLabel, cognomeLabel, cfLabel, emailLabel, usernameLabel, passwordLabel;
     private JLabel erroreLabel;
     private JTextField nascondiPasswordField;
-
+    private Proxy proxy;
 /**
  * Costruttore per la finestra di registrazione utente.
  * 
  * @param listaLibri La lista dei libri disponibili nel sistema.
  */
+    @SuppressWarnings("Convert2Lambda")
     public RgMainFrame(Proxy proxy) {
+        this.proxy = proxy;
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (ClassNotFoundException |UnsupportedLookAndFeelException | InstantiationException | IllegalAccessException e) {}
         JPanel contentPanel = new JPanel(new GridBagLayout());
         contentPanel.setBackground(Color.white);
 
@@ -144,6 +146,7 @@ public class RgMainFrame {
         contentPanel.add(bottoneMostraPassword, c);
 
         bottoneMostraPassword.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 String textPassword=getPassword();
                 if(password.isVisible()){
@@ -184,6 +187,7 @@ public class RgMainFrame {
         contentPanel.add(erroreLabel, c);
 
         bottoneRG.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 String textPassword;
                 if(password.isVisible()){
@@ -261,7 +265,14 @@ public void initialize() {
     frame.setTitle("Registrazione");
     frame.setSize(350, 450);
     frame.setMinimumSize(new Dimension(1, 1)); 
-    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+    frame.addWindowListener(new WindowAdapter() {
+        public void windowClosing(WindowEvent e){
+            proxy.fineComunicazione();
+            frame.dispose();
+            
+        }
+    });
     frame.setLocationRelativeTo(null); 
     frame.setVisible(true); 
 }

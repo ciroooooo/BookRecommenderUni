@@ -10,20 +10,20 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import parametri.*;
 
 public class LgMainFrame {
-    private JButton accesso;
+    private final JButton accesso;
     JFrame frame;
     private JTextField username;
     private JPasswordField password;
-    private JLabel usernameLabel, passwordLabel;
-    private ArrayList<Libro> listaLibri = new ArrayList<>();
+    private final JLabel usernameLabel, passwordLabel;
     private JButton mostraPassword;
     private JTextField nascondiPassword;
     private Proxy proxy;
@@ -35,13 +35,12 @@ public class LgMainFrame {
  * @param listaLibri un ArrayList contenente l'elenco dei libri.
  * 
  */
+    @SuppressWarnings("Convert2Lambda")
     public LgMainFrame(Proxy proxy) {
         this.proxy = proxy;
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException | UnsupportedLookAndFeelException e) {}
         Image sfondo = null;
         File fileSfondo = new File(".");
         String pathSfondo = fileSfondo.getAbsolutePath().substring(0,fileSfondo.getAbsolutePath().length()-1);
@@ -49,9 +48,7 @@ public class LgMainFrame {
         System.out.println(pathSfondo);
         try {
             sfondo = ImageIO.read(new File(pathSfondo)); // cambia path se necessario
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        } catch (IOException e) {}
         BackGroundPanel contentPanel = new BackGroundPanel(sfondo);
         contentPanel.setLayout(new GridBagLayout());
         contentPanel.setOpaque(false); // trasparente per vedere lo sfondo
@@ -114,6 +111,7 @@ public class LgMainFrame {
         contentPanel.add(mostraPassword, c);
 
         mostraPassword.addActionListener(new ActionListener() { 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 String textPassword = getPassword();
                 if (password.isVisible()) {
@@ -214,7 +212,15 @@ public class LgMainFrame {
         frame.setTitle("Login");
         frame.setSize(350, 450);
         frame.setMinimumSize(new Dimension(350, 450));
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        frame.addWindowListener(new WindowAdapter() {
+        @Override
+        public void windowClosing(WindowEvent e){
+            proxy.fineComunicazione();
+            frame.dispose();
+            
+        }
+    });
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
