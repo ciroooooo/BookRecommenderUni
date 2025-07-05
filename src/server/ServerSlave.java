@@ -415,23 +415,27 @@ public class ServerSlave extends Thread{
                     ps.setString(1,cf);
                     ps.setInt(2,idLibro);
                     ResultSet rs = ps.executeQuery();
-                    rs.next();
-                    int stile = rs.getInt("stile");
-                    String noteStile = rs.getString("notestile");
-                    int contenuto = rs.getInt("contenuto");
-                    String noteContenuto = rs.getString("notecontenuto");
-                    int gradevolezza = rs.getInt("gradevolezza");
-                    String noteGradevolezza = rs.getString("notegradevolezza");
-                    int originalita = rs.getInt("originalita");
-                    String noteOriginalita = rs.getString("noteoriginalita");
-                    int edizione = rs.getInt("edizione");
-                    String noteEdizione = rs.getString("noteedizione");
-                    int votoFinale = rs.getInt("votofinale");
-                    String noteVotoFinale = rs.getString("notevotofinale");
-                    ValutazioniLibro valutazioneLibro = new ValutazioniLibro(u,libro);
-                    valutazioneLibro.inserisciValutazioneLibro(stile, noteStile, contenuto, noteContenuto, gradevolezza, noteGradevolezza, originalita, noteOriginalita, edizione, noteEdizione, votoFinale, noteVotoFinale);  
-                    out.writeObject(valutazioneLibro);
-                    out.flush(); 
+                    if(rs.next()){
+                        int stile = rs.getInt("stile");
+                        String noteStile = rs.getString("notestile");
+                        int contenuto = rs.getInt("contenuto");
+                        String noteContenuto = rs.getString("notecontenuto");
+                        int gradevolezza = rs.getInt("gradevolezza");
+                        String noteGradevolezza = rs.getString("notegradevolezza");
+                        int originalita = rs.getInt("originalita");
+                        String noteOriginalita = rs.getString("noteoriginalita");
+                        int edizione = rs.getInt("edizione");
+                        String noteEdizione = rs.getString("noteedizione");
+                        int votoFinale = rs.getInt("votofinale");
+                        String noteVotoFinale = rs.getString("notevotofinale");
+                        ValutazioniLibro valutazioneLibro = new ValutazioniLibro(u,libro);
+                        valutazioneLibro.inserisciValutazioneLibro(stile, noteStile, contenuto, noteContenuto, gradevolezza, noteGradevolezza, originalita, noteOriginalita, edizione, noteEdizione, votoFinale, noteVotoFinale);  
+                        out.writeObject(valutazioneLibro);
+                        out.flush(); 
+                    }else{
+                        out.writeObject(null);
+                        out.flush();
+                    }
                 }
                 else if(operazione.equals("EsisteValutazioneLibroUtente")){
                     Utente u = (Utente)in.readObject();
@@ -519,13 +523,35 @@ public class ServerSlave extends Thread{
                     while(rs.next()){
                         String nome = rs.getString(1);
                         String cognome =  rs.getString(2);
-                        String cf = rs.getString(3);
-                        String email = rs.getString(4);
-                        String username = rs.getString(5);
-                        String password = rs.getString(6);
+                        String cf = rs.getString(6);
+                        String email = rs.getString(3);
+                        String username = rs.getString(4);
+                        String password = rs.getString(5);
                         alUtenti.add(new Utente(nome, cognome, cf, email, username, password));
                     }
                     out.writeObject(alUtenti);
+                    out.flush();
+                }else if(operazione.equals("getLibriSuggeriti")){
+                    Utente u = (Utente)in.readObject();
+                    int idLibro = (int)in.readObject();
+                    String cf = u.getCF();
+                    ArrayList<Libro> alLibri = new ArrayList<Libro>();
+                    String operazioneQuery= "SELECT l.titolo as titolo, l.descrizione as descrizione, l.categoria as categoria, l.editore as editore, l.datapubblicazione as data, l.prezzo as prezzo, a.nome as nome FROM suggerimento s join libro l on (s.idlibrosuggerito = l.idlibro) join utente u on(u.cf = s.cf) join autore a on (l.idautore = a.idautore) WHERE u.cf = ? AND idlibrosorgente = ?";
+                    PreparedStatement ps = con.prepareStatement(operazioneQuery);
+                    ps.setString(1,cf);
+                    ps.setInt(2,idLibro);
+                    ResultSet rs = ps.executeQuery();
+                    while(rs.next()){
+                        String titolo = rs.getString("titolo");
+                        String descrizione = rs.getString("descrizione");
+                        String categoria = rs. getString("categoria");
+                        String editore = rs.getString("editore");
+                        LocalDate dataPubblicazione = rs.getDate("data").toLocalDate();
+                        double prezzo = rs.getDouble("prezzo");
+                        String nomeAutore = rs.getString("nome");
+                        alLibri.add(new Libro(titolo, new Autore(nomeAutore), descrizione, categoria, editore, dataPubblicazione, prezzo));
+                    }
+                    out.writeObject(alLibri);
                     out.flush();
                 }
             }

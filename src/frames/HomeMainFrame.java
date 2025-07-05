@@ -493,9 +493,9 @@ private void mostraDettagliLibro(Libro libro, int n) {
     
     JLabel exLabel = new JLabel("");
     ArrayList<Utente> alUtentiSuggerimenti = proxy.getUtentiSuggeritori(libro);
-    if (!(alUtentiSuggerimenti.isEmpty())) {
-        exLabel = new JLabel("<html><b>Recensioni utenti:</b></html>");
-    } else{
+    if (!(alUtentiSuggerimenti.isEmpty()) && n==1) {
+        exLabel = new JLabel("<html><b>Suggerimenti degli utenti:</b></html>");
+    } else if(alUtentiSuggerimenti.isEmpty() && n==1){
         exLabel = new JLabel("<html><b>Nessun utente ha lasciato recensioni</b></html>");
     }
     
@@ -524,7 +524,7 @@ private void mostraDettagliLibro(Libro libro, int n) {
     panel.add(exLabel, c);
     
     
-    if (!(alUtentiSuggerimenti.isEmpty())) {
+    if (!(alUtentiSuggerimenti.isEmpty()) && n==1) {
         mostraUtentiRecensioni(alUtentiSuggerimenti, libro);
         c.gridy = 3;
         panel.add(panelRisultatoNESugg, c);
@@ -573,38 +573,17 @@ private void MediaValutazioneLibri(Libro libro){
  * @param u L'utente di cui mostrare le valutazioni e i suggerimenti.
  * @param l Il libro di cui mostrare le valutazioni e i suggerimenti.
  */
-private void mostraValUtente(Utente u, Libro l) {
+private void mostraValUtente(Utente utente, Libro l) {
     JPanel panel = new JPanel(new GridBagLayout());
     panel.setBackground(Color.decode("#f0f0f0"));
     GridBagConstraints c = new GridBagConstraints();
     c.fill = GridBagConstraints.HORIZONTAL;
     c.insets = new Insets(10, 10, 10, 10);
 
-    ArrayList<ValutazioniLibro> tmp = new ArrayList(); // qui si leggeva il file valutazioniLibro
-    ValutazioniLibro valLibro = new ValutazioniLibro(u, l);
-    boolean valTrovata = false;
+    ValutazioniLibro valLibro = proxy.getValutazioneLibro(utente, l);
+    ArrayList<Libro> libriSuggeriti = proxy.getLibriSuggeriti(utente, l);
 
-    for (int i = 0; i < tmp.size(); i++) {
-        if (tmp.get(i).getUtente().getUsername().equals(u.getUsername()) && tmp.get(i).getLibro().getTitolo().equals(l.getTitolo())) {
-            valTrovata = true;
-            valLibro = tmp.get(i);
-            break;
-        }
-    }
-
-    ArrayList<SuggerimentoLibro> tmpS = SuggerimentoLibro.leggiFileSugg();
-    SuggerimentoLibro sl = new SuggerimentoLibro(l, u);
-    boolean suggTrovato = false;
-
-    for (int i = 0; i < tmpS.size(); i++) {
-        if (tmpS.get(i).getUtente().getUsername().equals(u.getUsername()) && tmpS.get(i).getLibro().getTitolo().equals(l.getTitolo())) {
-            suggTrovato = true;
-            sl = tmpS.get(i);
-            break;
-        }
-    }
-
-    if (valTrovata) {
+    if (valLibro!=null) {
         JLabel labelStile = new JLabel("<html><b>Voto Stile:</b>" + valLibro.getStile() + "<br>Note Stile:" + valLibro.getNoteStile());
         c.gridwidth = 3;
         c.gridx = 0;
@@ -638,36 +617,28 @@ private void mostraValUtente(Utente u, Libro l) {
         panel.add(labelVotiNF, c);
     }
 
-    if (suggTrovato) {
-        c.gridx = 0;
-        int y = c.gridy + 1;
+    
+    c.gridx = 0;
+    int y = c.gridy + 1;
+    c.gridy = y;
+    JLabel labelSuggF = new JLabel("<html><b>Libri Suggeriti:</b><br></html>");
+    panel.add(labelSuggF, c);
+    y++;
+    for (Libro libro : libriSuggeriti) {
+        JLabel libroLabel = new JLabel(Libro.getTitolo(libro) + " " + Libro.getAutore(libro) + " " + Libro.getAnno(libro));
+        libroLabel.setForeground(Color.BLUE.darker());
+        libroLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        libroLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         c.gridy = y;
-        JLabel labelSuggF = new JLabel("<html><b>Libri Suggeriti:</b><br></html>");
-        panel.add(labelSuggF, c);
-
         y++;
-        ArrayList<Libro> libriSuggeriti = sl.getALLibri();
-        for (Libro libro : libriSuggeriti) {
-            JLabel libroLabel = new JLabel(Libro.getTitolo(libro) + " " + Libro.getAutore(libro) + " " + Libro.getAnno(libro));
-            libroLabel.setForeground(Color.BLUE.darker());
-            libroLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-            libroLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-            c.gridy = y;
-            y++;
-            panel.add(libroLabel, c);
-            panel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+        panel.add(libroLabel, c);
+        panel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
 
-            libroLabel.addMouseListener(new MouseAdapter() {
-                public void mouseClicked(MouseEvent e) {
-                    mostraDettagliLibro(libro, 0);
-                }
-            });
-        }
-    } else {
-        c.gridx = 0;
-        c.gridy = c.gridy + 1;
-        JLabel labelSuggNF = new JLabel("L'utente non ha inserito suggerimenti per questo libro");
-        panel.add(labelSuggNF, c);
+        libroLabel.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                mostraDettagliLibro(libro, 0);
+            }
+        });
     }
 
     JOptionPane pane = new JOptionPane(
