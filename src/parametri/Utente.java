@@ -5,15 +5,8 @@
 //Gabriele Schioppa 756634 (VA)
 
 package parametri;
-
-
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.ObjectInputStream;
-import java.io.EOFException;
-import java.io.IOException;
 
 public class Utente implements Serializable {
 
@@ -24,7 +17,6 @@ public class Utente implements Serializable {
     private String password;
     private String cf;
     private int codice;
-    ArrayList<Utente> alUtente = new ArrayList<Utente>();
 
 /**
  * Costruttore per la classe Utente che inizializza un nuovo utente con nome, cognome, email, username e password.
@@ -144,31 +136,6 @@ public class Utente implements Serializable {
     public void setCF(String cf){
         this.cf=cf;
     }
-
-
-
-
-/**
- * Restituisce la dimensione dell'ArrayList di utenti letta da un file.
- *
- * @return La dimensione dell'ArrayList di utenti.
- * @throws IOException            Se si verifica un errore di input/output durante la lettura del file.
- * @throws ClassNotFoundException Se la classe degli oggetti letti dal file non viene trovata.
- */
-    public int getAlSize(){
-        alUtente.clear();
-        File file=new File("file\\utenti.txt");
-        try{
-            FileInputStream fis=new FileInputStream(file);
-            ObjectInputStream ois=new ObjectInputStream(fis);
-            alUtente=(ArrayList<Utente>)ois.readObject();
-            ois.close();
-            fis.close();
-        }catch(EOFException e){
-        }catch(IOException | ClassNotFoundException e){
-        }
-        return alUtente.size();
-    }
 /**
 /**
  * Verifica se una delle stringhe passate è vuota.
@@ -182,12 +149,7 @@ public class Utente implements Serializable {
  */
     public static boolean stringheVuote(String nome, String cognome,String codiceFiscale, String email,String username, String password)
     {   
-        if(nome.length()==0 || cognome.length()==0 || codiceFiscale.length()==0 || email.length()==0 || username.length()==0 || password.length()==0){
-            return true;
-        }else
-        {
-        return false;
-        }
+        return nome.length()==0 || cognome.length()==0 || codiceFiscale.length()==0 || email.length()==0 || username.length()==0 || password.length()==0;
     }
 /**
  * Verifica la validità di un indirizzo email utilizzando un'espressione regolare.
@@ -203,31 +165,6 @@ public class Utente implements Serializable {
             }
         }
         return b;
-    }
-/**
- * Legge un file di utenti serializzato e restituisce un ArrayList di Utente.
- *
- * @return ArrayList di Utente letto dal file.
- * @throws IOException            Se si verifica un errore di I/O durante la lettura del file.
- * @throws ClassNotFoundException Se la classe dell'oggetto letto non è trovata.
- */
-    public ArrayList<Utente> leggiFile(){
-        ArrayList<Utente> tmp=new ArrayList<>();
-        File file=new File("file\\utenti.txt");
-        if(file.length()!=0){
-            try{
-                FileInputStream fis=new FileInputStream(file);
-                ObjectInputStream ois=new ObjectInputStream(fis);
-                tmp=(ArrayList<Utente>)ois.readObject();
-                fis.close();
-                ois.close();
-                return tmp;
-            }catch(EOFException e){
-            }catch(IOException | ClassNotFoundException e){
-
-            }
-        }
-    return tmp;
     }
 /**
  * Verifica se un'email è già presente nella lista degli utenti.

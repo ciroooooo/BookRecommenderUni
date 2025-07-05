@@ -5,17 +5,14 @@
 //Gabriele Schioppa 756634 (VA)
 
 package parametri;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 
 
 public class SuggerimentoLibro implements Serializable{
     private ArrayList<Libro>suggerimenti;
-    private Libro l;
-    private Utente u;
+    private final  Libro l;
+    private final Utente u;
 /**
  * Costruisce un nuovo oggetto SuggerimentoLibro con due parametri uno Libro e l'altro Utente.
  *
@@ -41,25 +38,7 @@ public class SuggerimentoLibro implements Serializable{
  * @param alSugg L'ArrayList di SuggerimentoLibro da scrivere sul file.
  * @throws Exception Se si verificano errori durante la scrittura del file.
 
-/**
- * Legge un ArrayList di SuggerimentoLibro dal file "Suggerimenti.txt".
- *
- * @return Un ArrayList di SuggerimentoLibro letto dal file.
- * @throws Exception Se si verificano errori durante la lettura del file.
- */
-    public static ArrayList<SuggerimentoLibro> leggiFileSugg(){
-        File file=new File("file\\Suggerimenti.txt");
-        ArrayList<SuggerimentoLibro> tmp=new ArrayList<>();
-        if(file.length()!=0){
-            try {
-                FileInputStream fis=new FileInputStream(file);
-                ObjectInputStream ois=new ObjectInputStream(fis);
-                tmp=(ArrayList<SuggerimentoLibro>)ois.readObject();
-            } catch (Exception e) {
-            }
-        }
-        return tmp;
-    }
+
 /**
  * Restituisce l'utente associato al suggerimento.
  *

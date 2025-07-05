@@ -7,9 +7,6 @@
 package frames;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import javax.swing.*;
 import parametri.*;
@@ -17,14 +14,12 @@ import parametri.*;
 public class HomeMainFrame {
     private boolean esisteValutazione;
     private JFrame frame;
-    private JPanel topPanel;
-    private JPanel searchPanel;
-    private JPanel resultsPanel;
+    private final JPanel topPanel;
+    private final JPanel searchPanel;
+    private final JPanel resultsPanel;
     private JPanel panelRisultatoNESugg;
-    private JPanel panelImpostazioniProfilo;
-    private JScrollPane risultatoScrollPane;
+    private final JScrollPane risultatoScrollPane;
     private JButton bottoneHome;
-    private JButton logout;
     private JButton bottoneLibreria;
     private JButton bottoneProfilo;
     private Utente u;
@@ -34,10 +29,7 @@ public class HomeMainFrame {
     private double mediaOriginalita=0;
     private double mediaEdizione=0;
     private double mediaVotoFinale=0;
-    private ArrayList<Utente>alUtentiVal=new ArrayList<>();
-    private ArrayList<SuggerimentoLibro>alSuggerimenti=new ArrayList<>();
-    private JPanel pane=new JPanel(new GridBagLayout());
-    private Proxy proxy;
+    private final Proxy proxy;
 
 /**
  * Costruttore della classe HomeMainFrame.
@@ -45,7 +37,8 @@ public class HomeMainFrame {
  * @param proxy utilizzato per la connessione al Server
  * @param cf indica il codice fiscale della persona che ha effettuato l'accesso, altrimenti indica "Ospite" se si è entrati come ospite.
  */
-public HomeMainFrame(Proxy proxy,String cf) {
+    @SuppressWarnings("Convert2Lambda")
+    public HomeMainFrame(Proxy proxy,String cf) {
     this.proxy = proxy;
     frame = new JFrame();
 
@@ -69,6 +62,7 @@ public HomeMainFrame(Proxy proxy,String cf) {
     bottoneProfilo.setForeground(Color.WHITE);
      // Azione per il tasto Logout
     bottoneHome.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
             LgMainFrame loginFrame = new LgMainFrame(proxy);
             loginFrame.initialize();
@@ -113,6 +107,7 @@ public HomeMainFrame(Proxy proxy,String cf) {
 
     // Aggiunta dell'azione al bottone Libreria
     bottoneLibreria.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
             if (cf.equals("Ospite")) {
                 JOptionPane.showMessageDialog(null, "Impossibile effettuare questa operazione come ospite");
@@ -124,6 +119,7 @@ public HomeMainFrame(Proxy proxy,String cf) {
         }
     });
     bottoneProfilo.addActionListener(new ActionListener(){
+        @Override
         public void actionPerformed(ActionEvent e){
             if(cf.equals("Ospite")){
                 JOptionPane.showMessageDialog(null, "Impossibile effettuare questa operazione come ospite");
@@ -237,6 +233,7 @@ public HomeMainFrame(Proxy proxy,String cf) {
 
     // Azioni per i bottoni di ricerca
     searchByTitleButton.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
             String searchText = searchField.getText();
             if (searchText.length() > 0) {
@@ -253,6 +250,7 @@ public HomeMainFrame(Proxy proxy,String cf) {
     });
 
     searchByAuthorButton.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
             String searchText = searchField.getText();
             if (searchText.length() > 0) {
@@ -269,6 +267,7 @@ public HomeMainFrame(Proxy proxy,String cf) {
     });
 
     searchByAuthorAndYearButton.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
             String searchText = searchField.getText();
             String[] parts = searchText.split("z,");
@@ -357,6 +356,7 @@ public void initialize() {
     frame.setMinimumSize(new Dimension(300, 400)); 
     frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
     frame.addWindowListener(new WindowAdapter() {
+        @Override
         public void windowClosing(WindowEvent e){
             proxy.fineComunicazione();
             frame.dispose();
@@ -573,106 +573,84 @@ private void MediaValutazioneLibri(Libro libro){
  * @param u L'utente di cui mostrare le valutazioni e i suggerimenti.
  * @param l Il libro di cui mostrare le valutazioni e i suggerimenti.
  */
-private void mostraValUtente(Utente utente, Libro l) {
-    JPanel panel = new JPanel(new GridBagLayout());
-    panel.setBackground(Color.decode("#f0f0f0"));
-    GridBagConstraints c = new GridBagConstraints();
-    c.fill = GridBagConstraints.HORIZONTAL;
-    c.insets = new Insets(10, 10, 10, 10);
+    private void mostraValUtente(Utente utente, Libro l) {
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.setBackground(Color.decode("#f0f0f0"));
+        GridBagConstraints c = new GridBagConstraints();
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.insets = new Insets(10, 10, 10, 10);
 
-    ValutazioniLibro valLibro = proxy.getValutazioneLibro(utente, l);
-    ArrayList<Libro> libriSuggeriti = proxy.getLibriSuggeriti(utente, l);
+        ValutazioniLibro valLibro = proxy.getValutazioneLibro(utente, l);
+        ArrayList<Libro> libriSuggeriti = proxy.getLibriSuggeriti(utente, l);
 
-    if (valLibro!=null) {
-        JLabel labelStile = new JLabel("<html><b>Voto Stile:</b>" + valLibro.getStile() + "<br>Note Stile:" + valLibro.getNoteStile());
-        c.gridwidth = 3;
-        c.gridx = 0;
-        c.gridy = 0;
-        panel.add(labelStile, c);
+        if (valLibro!=null) {
+            JLabel labelStile = new JLabel("<html><b>Voto Stile:</b>" + valLibro.getStile() + "<br>Note Stile:" + valLibro.getNoteStile());
+            c.gridwidth = 3;
+            c.gridx = 0;
+            c.gridy = 0;
+            panel.add(labelStile, c);
 
-        JLabel labelContenuto = new JLabel("<html><b>Voto Contenuto:</b>" + valLibro.getContenuto() + "<br>Note Contenuto:" + valLibro.getNoteContenuto());
-        c.gridy = 1;
-        panel.add(labelContenuto, c);
+            JLabel labelContenuto = new JLabel("<html><b>Voto Contenuto:</b>" + valLibro.getContenuto() + "<br>Note Contenuto:" + valLibro.getNoteContenuto());
+            c.gridy = 1;
+            panel.add(labelContenuto, c);
 
-        JLabel labelGradevolezza = new JLabel("<html><b>Voto Gradevolezza:</b>" + valLibro.getGradevolezza() + "<br>Note Gradevolezza:" + valLibro.getNoteGradevolezza());
-        c.gridy = 2;
-        panel.add(labelGradevolezza, c);
+            JLabel labelGradevolezza = new JLabel("<html><b>Voto Gradevolezza:</b>" + valLibro.getGradevolezza() + "<br>Note Gradevolezza:" + valLibro.getNoteGradevolezza());
+            c.gridy = 2;
+            panel.add(labelGradevolezza, c);
 
-        JLabel labelOriginalita = new JLabel("<html><b>Voto originalita:</b>" + valLibro.getOriginalita() + "<br>Note Originalita:" + valLibro.getNoteOriginalita());
-        c.gridy = 3;
-        panel.add(labelOriginalita, c);
+            JLabel labelOriginalita = new JLabel("<html><b>Voto originalita:</b>" + valLibro.getOriginalita() + "<br>Note Originalita:" + valLibro.getNoteOriginalita());
+            c.gridy = 3;
+            panel.add(labelOriginalita, c);
 
-        JLabel labelEdizione = new JLabel("<html><b>Voto Edizione:</b>" + valLibro.getEdizione() + "<br>Note Edizione:" + valLibro.getNoteEdizione());
-        c.gridy = 4;
-        panel.add(labelEdizione, c);
+            JLabel labelEdizione = new JLabel("<html><b>Voto Edizione:</b>" + valLibro.getEdizione() + "<br>Note Edizione:" + valLibro.getNoteEdizione());
+            c.gridy = 4;
+            panel.add(labelEdizione, c);
 
-        JLabel labelVotoFinale = new JLabel("<html><b>Voto finale:</b>" + valLibro.getVotoFinale() + "<br>Note voto finale:" + valLibro.getNoteVotoFinale());
-        c.gridy = 5;
-        panel.add(labelVotoFinale, c);
-    } else {
-        JLabel labelVotiNF = new JLabel("L'utente non ha inserito voti per questo libro");
-        c.gridwidth = 3;
-        c.gridx = 0;
-        c.gridy = 0;
-        panel.add(labelVotiNF, c);
-    }
-
-    
-    c.gridx = 0;
-    int y = c.gridy + 1;
-    c.gridy = y;
-    JLabel labelSuggF = new JLabel("<html><b>Libri Suggeriti:</b><br></html>");
-    panel.add(labelSuggF, c);
-    y++;
-    for (Libro libro : libriSuggeriti) {
-        JLabel libroLabel = new JLabel(Libro.getTitolo(libro) + " " + Libro.getAutore(libro) + " " + Libro.getAnno(libro));
-        libroLabel.setForeground(Color.BLUE.darker());
-        libroLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        libroLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        c.gridy = y;
-        y++;
-        panel.add(libroLabel, c);
-        panel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
-
-        libroLabel.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent e) {
-                mostraDettagliLibro(libro, 0);
-            }
-        });
-    }
-
-    JOptionPane pane = new JOptionPane(
-            panel,
-            JOptionPane.PLAIN_MESSAGE,
-            JOptionPane.DEFAULT_OPTION,
-            null,
-            new Object[]{},
-            null);
-    JDialog dialog = pane.createDialog(frame, "Dettagli Utente");
-    dialog.pack();
-    dialog.setVisible(true);
-}
-
-/**
- * Legge le valutazioni dei libri da un file e restituisce un ArrayList di ValutazioniLibro.
- *
- * @return Un ArrayList di ValutazioniLibro contenente le valutazioni lette dal file.
- */
-public ArrayList<ValutazioniLibro> leggiFile() {
-    ArrayList<ValutazioniLibro> al = new ArrayList<>();
-    File file = new File("file\\Valutazioni.txt");
-    if (file.length() != 0) {
-        try {
-            FileInputStream fis = new FileInputStream(file);
-            ObjectInputStream ois = new ObjectInputStream(fis);
-            al = (ArrayList<ValutazioniLibro>) ois.readObject();
-            ois.close();
-            fis.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+            JLabel labelVotoFinale = new JLabel("<html><b>Voto finale:</b>" + valLibro.getVotoFinale() + "<br>Note voto finale:" + valLibro.getNoteVotoFinale());
+            c.gridy = 5;
+            panel.add(labelVotoFinale, c);
+        } else {
+            JLabel labelVotiNF = new JLabel("L'utente non ha inserito voti per questo libro");
+            c.gridwidth = 3;
+            c.gridx = 0;
+            c.gridy = 0;
+            panel.add(labelVotiNF, c);
         }
-    }
-    return al;
-}
 
+        
+        c.gridx = 0;
+        int y = c.gridy + 1;
+        c.gridy = y;
+        JLabel labelSuggF = new JLabel("<html><b>Libri Suggeriti:</b><br></html>");
+        panel.add(labelSuggF, c);
+        y++;
+        for (Libro libro : libriSuggeriti) {
+            JLabel libroLabel = new JLabel(Libro.getTitolo(libro) + " " + Libro.getAutore(libro) + " " + Libro.getAnno(libro));
+            libroLabel.setForeground(Color.BLUE.darker());
+            libroLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            libroLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+            c.gridy = y;
+            y++;
+            panel.add(libroLabel, c);
+            panel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+
+            libroLabel.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    mostraDettagliLibro(libro, 0);
+                }
+            });
+        }
+
+        JOptionPane pane = new JOptionPane(
+                panel,
+                JOptionPane.PLAIN_MESSAGE,
+                JOptionPane.DEFAULT_OPTION,
+                null,
+                new Object[]{},
+                null);
+        JDialog dialog = pane.createDialog(frame, "Dettagli Utente");
+        dialog.pack();
+        dialog.setVisible(true);
+    }
 }
