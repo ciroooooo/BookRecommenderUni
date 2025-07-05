@@ -356,7 +356,6 @@ public void initialize() {
     frame.setMinimumSize(new Dimension(300, 400)); 
     frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
     frame.addWindowListener(new WindowAdapter() {
-        @Override
         public void windowClosing(WindowEvent e){
             proxy.fineComunicazione();
             frame.dispose();
@@ -684,7 +683,6 @@ private void MediaValutazioneLibri(Libro libro){
  * @param u L'utente di cui mostrare le valutazioni e i suggerimenti.
  * @param l Il libro di cui mostrare le valutazioni e i suggerimenti.
  */
-
 private void mostraValUtente(Utente utente, Libro l) {
     JPanel contentPanel = new JPanel(new GridBagLayout());
     contentPanel.setBackground(new Color(245, 250, 255));
@@ -799,6 +797,7 @@ private void mostraValUtente(Utente utente, Libro l) {
         contentPanel.add(libroLabel, c);
 
         libroLabel.addMouseListener(new MouseAdapter() {
+            @Override
             public void mouseClicked(MouseEvent e) {
                 mostraDettagliLibro(libro, 0);
             }
@@ -825,34 +824,5 @@ private void mostraValUtente(Utente utente, Libro l) {
     dialog.setVisible(true);
 }
 
-/**
- * Legge le valutazioni dei libri da un file e restituisce un ArrayList di ValutazioniLibro.
- *
- * @return Un ArrayList di ValutazioniLibro contenente le valutazioni lette dal file.
- */
-public ArrayList<ValutazioniLibro> leggiFile() {
-    ArrayList<ValutazioniLibro> al = new ArrayList<>();
-    File file = new File("file\\Valutazioni.txt");
-    if (file.length() != 0) {
-        try {
-            FileInputStream fis = new FileInputStream(file);
-            ObjectInputStream ois = new ObjectInputStream(fis);
-            al = (ArrayList<ValutazioniLibro>) ois.readObject();
-            ois.close();
-            fis.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
-        JOptionPane pane = new JOptionPane(
-                panel,
-                JOptionPane.PLAIN_MESSAGE,
-                JOptionPane.DEFAULT_OPTION,
-                null,
-                new Object[]{},
-                null);
-        JDialog dialog = pane.createDialog(frame, "Dettagli Utente");
-        dialog.pack();
-        dialog.setVisible(true);
-    }
 }
