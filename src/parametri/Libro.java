@@ -8,14 +8,14 @@ package parametri;
 import java.io.Serializable;
 import java.time.LocalDate;
 
-public class Libro implements Serializable,Cloneable {
-    private String titolo;
-    private Autore autore;
-    private String descrizione;
-    private String categoria;
-    private String editore;
-    private LocalDate dataPubblicazione;
-    private double prezzo;
+public class Libro implements Serializable{
+    private final  String titolo;
+    private final Autore autore;
+    private final String descrizione;
+    private final String categoria;
+    private final String editore;
+    private final LocalDate dataPubblicazione;
+    private final double prezzo;
 
     /**
      * Crea una nuova istanza della classe Libro.
@@ -44,7 +44,7 @@ public class Libro implements Serializable,Cloneable {
  * @return Una stringa che rappresenta il libro, includendo titolo, autore, descrizione,
  * categoria, editore, data di pubblicazione e prezzo.
  */
-
+    @Override
     public String toString(){
         return this.titolo+" "+this.autore.getNome()+" "+this.descrizione+" "+this.categoria+" "+this.editore+" "+this.dataPubblicazione+" "+this.prezzo;
     }
@@ -139,19 +139,6 @@ public class Libro implements Serializable,Cloneable {
  */
     public static String getTitolo(Libro l){
         return l.getTitolo();
-    }
-    /**
- * Crea e restituisce una copia superficiale dell'oggetto Libro.
- *
- * @return Una copia superficiale dell'oggetto Libro, o null se la clonazione non è supportata.
- */
-    public Object clone() {
-        try {
-            return super.clone();
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
-            return null;
-        }
     }
     /**
  * Restituisce le informazioni di base del libro formattate in HTML.

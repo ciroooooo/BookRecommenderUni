@@ -4,12 +4,11 @@
 //Matteo Corda 757928 (VA)
 //Gabriele Schioppa 756634 (VA)
 
-
 package parametri;
 
 import java.io.Serializable;
 public class Autore implements Serializable{
-    private String nome;
+    private final String nome;
     /**
  * Costruisce un oggetto Autore con il nome.
  *

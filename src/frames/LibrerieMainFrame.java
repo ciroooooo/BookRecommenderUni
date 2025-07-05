@@ -16,28 +16,23 @@ import parametri.*;
 public class LibrerieMainFrame {
     private Libro libroCorrente;
     private JFrame frame;
-    private JPanel topPanel;
-    private String nomeLib;
-    private JPanel resultsPanel;
-    private JScrollPane risultatoScrollPane;
+    private final JPanel topPanel;
+    private final JPanel resultsPanel;
+    private final JScrollPane risultatoScrollPane;
     private JScrollPane risultatoScrollPaneLib;
     private JButton bottoneHome;
     private JButton bottoneCLibrerie;
-    private ArrayList<Libro> listaLibri = new ArrayList<>();
-    private ArrayList<Boolean> libriVisibili = new ArrayList<>();
     private ArrayList<Libro> libriDaAggiungere = new ArrayList<>();
     private Utente u;
-    private String cf;
     private ArrayList<Libro> alSuggerimenti = new ArrayList<>();
     private int k=0;
     private JScrollPane risultatoScrollPaneSugg;
     private JButton searchByTitleButton,searchByAuthorButton,searchByAuthorAndYearButton;
-    private JPanel OptionPanel1 = new JPanel(new GridBagLayout());
     private JTextField searchField;
-    private GridBagConstraints c=new GridBagConstraints();
+    private  final GridBagConstraints c=new GridBagConstraints();
     private JLabel labelRicerca;
     private boolean firstTime=true;
-    private Proxy proxy;
+    private final Proxy proxy;
     private ArrayList<Librerie> listaLibrerieUtente;
 /**
  * Costruttore per la classe LibrerieMainFrame.
@@ -49,10 +44,10 @@ public class LibrerieMainFrame {
  * @throws IOException se si verifica un errore durante la lettura dei file di librerie o suggerimenti.
  * @throws ClassNotFoundException se la classe degli oggetti letti dai file non viene trovata.
  */
+    @SuppressWarnings("Convert2Lambda")
     public LibrerieMainFrame(Proxy proxy, String cf) {
         this.proxy = proxy;
         u = proxy.getUtenteDaCF(cf);
-        this.cf = cf;
         listaLibrerieUtente = proxy.getLibrerieUtente(cf);
         frame = new JFrame();
         topPanel = new JPanel();
@@ -97,6 +92,7 @@ public class LibrerieMainFrame {
         topPanel.add(bottoneCLibrerie);
 
         bottoneHome.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e){
                 HomeMainFrame myFrame=new HomeMainFrame(proxy,cf);
                 frame.dispose();
@@ -105,6 +101,7 @@ public class LibrerieMainFrame {
         });
         
         bottoneCLibrerie.addActionListener(new ActionListener() { 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 JPanel OptionPanelCLib = new JPanel(new GridBagLayout());
                 libriDaAggiungere.clear();
@@ -119,7 +116,6 @@ public class LibrerieMainFrame {
                 OptionPanelCLib.add(nomeLabel, c);
 
                 JTextField nomeLibField= new JTextField(20);
-                nomeLib = nomeLibField.getText();
 
                 c.gridx = 2;
                 c.gridwidth = 2;
@@ -158,6 +154,7 @@ public class LibrerieMainFrame {
                 null);
                 
                 searchByTitleButton.addActionListener(new ActionListener() {
+                    @Override
                     public void actionPerformed(ActionEvent e) {
                         risultatoRicercaLibrerie.removeAll();
                         String testo=searchField.getText();
@@ -167,6 +164,7 @@ public class LibrerieMainFrame {
                 });
 
                 searchByAuthorButton.addActionListener(new ActionListener() {
+                    @Override
                     public void actionPerformed(ActionEvent e) {
                         risultatoRicercaLibrerie.removeAll();
                         String testo=searchField.getText();
@@ -176,6 +174,7 @@ public class LibrerieMainFrame {
                 });
                 
                 searchByAuthorAndYearButton.addActionListener(new ActionListener() {
+                    @Override
                     public void actionPerformed(ActionEvent e) {
                         risultatoRicercaLibrerie.removeAll();
                        String testo=searchField.getText();
@@ -188,6 +187,7 @@ public class LibrerieMainFrame {
                 });
                 JDialog dialog=pane.createDialog(frame,"Creazione Libreria");
                 ApplicaButton.addActionListener(new ActionListener() { 
+                    @Override
                     public void actionPerformed(ActionEvent e){
                         String nomeLibreria = nomeLibField.getText();
                         if(nomeLibreria.length()==0){
@@ -219,6 +219,7 @@ public class LibrerieMainFrame {
                     }
                 });
                 cancelButton.addActionListener(new ActionListener() {
+                    @Override
                     public void actionPerformed(ActionEvent e){
                         dialog.dispose();
                         risultatoRicercaLibrerie.removeAll();
@@ -285,9 +286,7 @@ private void listaLibrerie(ArrayList<Librerie> listaLibrerieUtente) {
         libreriaLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                String nomeCurrentLibreria = nomeLibreria;
-                Librerie libreria = null;
-                libreria = proxy.getLibreriaUtenteDaNome(u,nomeLibreria);
+                Librerie libreria = proxy.getLibreriaUtenteDaNome(u,nomeLibreria);
                 apriTabLibreria(libreria);
             }
         });
@@ -471,6 +470,7 @@ private void apriTabLibreria(Librerie libreria) {
         frame.setMinimumSize(new Dimension(300, 400)); // Stesse dimensioni minime di HomeMainFrame
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         frame.addWindowListener(new WindowAdapter() {
+        @Override
         public void windowClosing(WindowEvent e){
             proxy.fineComunicazione();
             frame.dispose();
@@ -486,6 +486,7 @@ private void apriTabLibreria(Librerie libreria) {
  * 
  * @param libro Il libro per il quale inserire o modificare le valutazioni.
  */  
+    @SuppressWarnings("Convert2Lambda")
     private void mostraInserimentoValutazioni(Libro libro) { 
         String infoLibro=Libro.getInfoBase(libro);
         JLabel infoLabel = new JLabel(infoLibro);
@@ -638,6 +639,7 @@ private void apriTabLibreria(Librerie libreria) {
                 null);
         JDialog provaDialog=provaPane.createDialog(frame,"Valutazioni");
         applicaButton.addActionListener(new ActionListener() { 
+            @Override
             public void actionPerformed(ActionEvent e){
                 int votoStile=Integer.parseInt(boxStile.getSelectedItem().toString());
                 int votoContenuto=Integer.parseInt(boxContenuto.getSelectedItem().toString());
@@ -672,6 +674,7 @@ private void apriTabLibreria(Librerie libreria) {
             }
         });
         cancelButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e){
                 provaDialog.dispose();
             }
@@ -752,6 +755,7 @@ private void apriTabLibreria(Librerie libreria) {
  *          - 0 per la visualizzazione nelle librerie dell'utente.
  *          - 1 per la visualizzazione nei suggerimenti.
  */
+    @SuppressWarnings("Convert2Lambda")
     private void mostraInfoInLibrerie(Libro libro,int n) {
         String infoLibro=Libro.getInfoBase(libro);
         GridBagConstraints c=new GridBagConstraints();
@@ -783,6 +787,7 @@ private void apriTabLibreria(Librerie libreria) {
         JDialog dialog=pane.createDialog(frame,"");
         if(n==0){
             AggiungiLibro.addActionListener(new ActionListener() {
+                @Override
                 public void actionPerformed(ActionEvent e){
                     boolean libroAggiunto=true;
                     firstTime = true;
@@ -809,11 +814,12 @@ private void apriTabLibreria(Librerie libreria) {
         }else if(n==1){
             
             AggiungiLibro.addActionListener(new ActionListener() { 
+                @Override
                 public void actionPerformed(ActionEvent e){
                     boolean aggiunto=true;
                     firstTime=true;
                     boolean controlloLibrerie=true;
-                    if(alSuggerimenti.size()==0){
+                    if(alSuggerimenti.isEmpty()){
                         alSuggerimenti.add(libro);
                         aggiunto=false;
                         firstTime=false;
@@ -862,10 +868,12 @@ private void apriTabLibreria(Librerie libreria) {
  * 
  * @param libro Il libro per il quale si vogliono inserire i suggerimenti.
  */    
+    @SuppressWarnings("Convert2Lambda")
     private void Suggerimenti(Libro libro){
         libroCorrente=libro;
         alSuggerimenti.clear();
-        AggiungiBottoniECampoRicerca(OptionPanel1);
+        JPanel optionpanel = new JPanel(new GridBagLayout());
+        AggiungiBottoniECampoRicerca(optionpanel);
        
        
         JPanel risultatoRicercaSuggerimenti=new JPanel();
@@ -880,20 +888,21 @@ private void apriTabLibreria(Librerie libreria) {
         c.gridy = 6;
         c.gridwidth = 6;
         c.fill = GridBagConstraints.BOTH;
-        OptionPanel1.add(risultatoScrollPaneSugg,c);
+        optionpanel.add(risultatoScrollPaneSugg,c);
 
         JButton ApplicaButton=new JButton("Applica");
         c.gridx=0;
         c.gridy=8;
         c.gridwidth=1;
-        OptionPanel1.add(ApplicaButton,c);
+        optionpanel.add(ApplicaButton,c);
         
         JButton cancelButton=new JButton("Annulla");
         c.gridx=3;
         c.gridy=8;
-        OptionPanel1.add(cancelButton,c);
+        optionpanel.add(cancelButton,c);
 
         searchByTitleButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 risultatoRicercaSuggerimenti.removeAll();
                 String testo=searchField.getText();
@@ -903,6 +912,7 @@ private void apriTabLibreria(Librerie libreria) {
         });
 
         searchByAuthorButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 risultatoRicercaSuggerimenti.removeAll();
                 String testo=searchField.getText();
@@ -912,6 +922,7 @@ private void apriTabLibreria(Librerie libreria) {
         });
         
         searchByAuthorAndYearButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 risultatoRicercaSuggerimenti.removeAll();
                 String testo=searchField.getText();
@@ -924,7 +935,7 @@ private void apriTabLibreria(Librerie libreria) {
         }); 
 
         JOptionPane pane = new JOptionPane(
-        OptionPanel1,
+        optionpanel,
         JOptionPane.PLAIN_MESSAGE,
         JOptionPane.DEFAULT_OPTION,
         null,
@@ -932,9 +943,10 @@ private void apriTabLibreria(Librerie libreria) {
         null);
         JDialog dialog=pane.createDialog(frame,"Suggerimenti Libri");
         ApplicaButton.addActionListener(new ActionListener() { 
+            @Override
             public void actionPerformed(ActionEvent e){  
                 boolean isSuggerito = proxy.getIfSuggerito(u,libro);
-                if(alSuggerimenti.size()>0){
+                if(!(alSuggerimenti.isEmpty())){
                     SuggerimentoLibro sl = new SuggerimentoLibro(libro,u); 
                     sl.inserisciSuggerimento(alSuggerimenti);
                     if(!isSuggerito){
@@ -950,6 +962,7 @@ private void apriTabLibreria(Librerie libreria) {
             }
         });
         cancelButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e){
                 dialog.dispose();
                 risultatoRicercaSuggerimenti.removeAll();
@@ -963,7 +976,8 @@ private void apriTabLibreria(Librerie libreria) {
  * 
  * @param libro Il libro per il quale si vogliono visualizzare le opzioni.
  */
-private void Opzioni(Libro libro){  
+    @SuppressWarnings("Convert2Lambda")  
+    private void Opzioni(Libro libro){  
     JPanel panel = new JPanel(new GridBagLayout());
     panel.setBackground(Color.decode("#f0f0f0"));
     GridBagConstraints c=new GridBagConstraints();
@@ -990,18 +1004,21 @@ private void Opzioni(Libro libro){
             null);
     JDialog dialog=provaPane.createDialog(frame,"Opzioni");
     valutazioni.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e){
             mostraInserimentoValutazioni(libro);
             dialog.dispose();
         }
     });
     cancel.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e){
             dialog.dispose();
         }
     });
     
     consigli.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e){
             Suggerimenti(libro);
             dialog.dispose();

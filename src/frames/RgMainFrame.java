@@ -267,6 +267,7 @@ public void initialize() {
     frame.setMinimumSize(new Dimension(1, 1)); 
     frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
     frame.addWindowListener(new WindowAdapter() {
+        @Override
         public void windowClosing(WindowEvent e){
             proxy.fineComunicazione();
             frame.dispose();
