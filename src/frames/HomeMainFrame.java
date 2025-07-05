@@ -439,26 +439,82 @@ private void mostraRisultati(ArrayList<Libro> risultati) {
 private void mostraUtentiRecensioni(ArrayList<Utente> risultato, Libro l) {
     panelRisultatoNESugg.removeAll();
 
+    JPanel utentiGridPanel = new JPanel(new GridBagLayout());
+    utentiGridPanel.setBackground(new Color(245, 250, 255));
+    GridBagConstraints gbc = new GridBagConstraints();
+    gbc.insets = new Insets(6, 6, 6, 6);
+    gbc.fill = GridBagConstraints.HORIZONTAL;
+
+    int col = 0, row = 0;
     for (Utente utente : risultato) {
-        JPanel utentePanel = new JPanel(new BorderLayout());
-        JLabel utenteLabel = new JLabel(utente.getUsername() + " ");
-        utenteLabel.setForeground(Color.BLUE.darker());
+        JPanel utentePanel = new JPanel(new BorderLayout()) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2 = (Graphics2D) g;
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(new Color(245, 250, 255));
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 14, 14);
+            }
+        };
+        utentePanel.setOpaque(false);
+        utentePanel.setBackground(new Color(245, 250, 255));
+        utentePanel.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(189, 195, 199), 1, true),
+            BorderFactory.createEmptyBorder(6, 16, 6, 16)
+        ));
+        utentePanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 38));
+        utentePanel.setPreferredSize(new Dimension(180, 38));
+        utentePanel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+        JLabel utenteLabel = new JLabel("<html><b>" + utente.getUsername() + "</b></html>");
+        utenteLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        utenteLabel.setForeground(new Color(41, 128, 185));
+        utenteLabel.setBorder(BorderFactory.createEmptyBorder(0, 8, 0, 8));
         utenteLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        utenteLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        utentePanel.add(utenteLabel, BorderLayout.CENTER);
-        utentePanel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
-
-        utenteLabel.addMouseListener(new MouseAdapter() {
+        utentePanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                utentePanel.setBackground(new Color(220, 240, 255));
+                utenteLabel.setForeground(new Color(21, 67, 96));
+                utentePanel.repaint();
+            }
+            @Override
+            public void mouseExited(MouseEvent e) {
+                utentePanel.setBackground(new Color(245, 250, 255));
+                utenteLabel.setForeground(new Color(41, 128, 185));
+                utentePanel.repaint();
+            }
             @Override
             public void mouseClicked(MouseEvent e) {
                 mostraValUtente(utente, l);
             }
         });
 
-        panelRisultatoNESugg.add(utentePanel);
-        panelRisultatoNESugg.add(Box.createVerticalStrut(5));
+        utentePanel.add(utenteLabel, BorderLayout.CENTER);
+
+        gbc.gridx = col;
+        gbc.gridy = row;
+        utentiGridPanel.add(utentePanel, gbc);
+
+        col++;
+        if (col > 1) {
+            col = 0;
+            row++;
+        }
     }
+
+    JScrollPane utentiScrollPane = new JScrollPane(utentiGridPanel);
+    utentiScrollPane.setBorder(null);
+    utentiScrollPane.getViewport().setBackground(new Color(245, 250, 255));
+    utentiScrollPane.setBackground(new Color(245, 250, 255));
+    utentiScrollPane.setPreferredSize(new Dimension(400, 90));
+    utentiScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+    panelRisultatoNESugg.setLayout(new BorderLayout());
+    panelRisultatoNESugg.setBackground(new Color(245, 250, 255));
+    panelRisultatoNESugg.add(utentiScrollPane, BorderLayout.CENTER);
 
     panelRisultatoNESugg.revalidate();
     panelRisultatoNESugg.repaint();
@@ -474,72 +530,127 @@ private void mostraUtentiRecensioni(ArrayList<Utente> risultato, Libro l) {
 private void mostraDettagliLibro(Libro libro, int n) {
     panelRisultatoNESugg = new JPanel();
     panelRisultatoNESugg.removeAll();
-    
+
     String infoLibro = Libro.getInfoBase(libro);
-    
-    
+
     String infoValutazioni;
-    MediaValutazioneLibri(libro); 
-    
+    MediaValutazioneLibri(libro);
+
     if (esisteValutazione) {
-        infoValutazioni = "<html><b>Media Stile:</b>" + mediaStile + "<br><b>Media Contenuto:</b>" + mediaContenuto +
-                          "<br><b>Media Gradevolezza:</b>" + mediaGradevolezza;
-        infoValutazioni = infoValutazioni + "<br><b>Media Originalita:</b>" + mediaOriginalita +
-                          "<br><b>Media Edizione:</b>" + mediaEdizione + "<br><b>Media Voto finale:</b>" + mediaVotoFinale + "</html>";
+        infoValutazioni = "<html><b>Media Stile:</b> " + mediaStile + "<br><b>Media Contenuto:</b> " + mediaContenuto +
+                          "<br><b>Media Gradevolezza:</b> " + mediaGradevolezza +
+                          "<br><b>Media Originalita:</b> " + mediaOriginalita +
+                          "<br><b>Media Edizione:</b> " + mediaEdizione +
+                          "<br><b>Media Voto finale:</b> " + mediaVotoFinale + "</html>";
     } else {
         infoValutazioni = "<html><b>Non ci sono valutazioni per questo libro</b></html>";
     }
-    
-    
+
     JLabel exLabel = new JLabel("");
     ArrayList<Utente> alUtentiSuggerimenti = proxy.getUtentiSuggeritori(libro);
-    if (!(alUtentiSuggerimenti.isEmpty()) && n==1) {
+    if (!(alUtentiSuggerimenti.isEmpty()) && n == 1) {
         exLabel = new JLabel("<html><b>Suggerimenti degli utenti:</b></html>");
-    } else if(alUtentiSuggerimenti.isEmpty() && n==1){
+    } else if (alUtentiSuggerimenti.isEmpty() && n == 1) {
         exLabel = new JLabel("<html><b>Nessun utente ha lasciato recensioni</b></html>");
     }
-    
-   
+
+    JPanel contentPanel = new JPanel(new GridBagLayout());
+    contentPanel.setBackground(new Color(245, 250, 255));
+    contentPanel.setBorder(BorderFactory.createCompoundBorder(
+        BorderFactory.createLineBorder(new Color(189, 195, 199), 1, true),
+        BorderFactory.createEmptyBorder(12, 16, 12, 16)
+    ));
     GridBagConstraints c = new GridBagConstraints();
-    JPanel panel = new JPanel(new GridBagLayout());
-    JLabel infoLabel = new JLabel();
-    infoLabel.setText(infoLibro);
-    panel.setBackground(Color.decode("#f0f0f0"));
     c.fill = GridBagConstraints.HORIZONTAL;
-    c.insets = new Insets(20, 20, 20, 20);
-    
-   
+    c.insets = new Insets(6, 6, 6, 6);
+
+    int row = 0;
+
+    // Titolo libro
+    JLabel titoloLabel = new JLabel("<html><span style='font-size:13px'><b>Dettagli libro</b></span></html>");
+    titoloLabel.setFont(new Font("Arial", Font.BOLD, 13));
+    titoloLabel.setForeground(new Color(41, 128, 185));
     c.gridx = 0;
-    c.gridy = 0;
-    c.gridwidth = 1;
-    panel.add(infoLabel, c);
-    
-    
+    c.gridy = row++;
+    c.gridwidth = 3;
+    contentPanel.add(titoloLabel, c);
+
+    // Divider
+    JSeparator sep = new JSeparator();
+    sep.setForeground(new Color(189, 195, 199));
+    c.gridy = row++;
+    c.gridwidth = 3;
+    c.fill = GridBagConstraints.HORIZONTAL;
+    contentPanel.add(sep, c);
+
+    // Info libro
+    JLabel infoLabel = new JLabel(infoLibro);
+    infoLabel.setFont(new Font("Arial", Font.PLAIN, 12));
+    infoLabel.setForeground(new Color(33, 97, 140));
+    c.gridy = row++;
+    c.gridx = 0;
+    c.gridwidth = 3;
+    contentPanel.add(infoLabel, c);
+
+    // Divider
+    JSeparator sep2 = new JSeparator();
+    sep2.setForeground(new Color(189, 195, 199));
+    c.gridy = row++;
+    c.gridwidth = 3;
+    c.fill = GridBagConstraints.HORIZONTAL;
+    contentPanel.add(sep2, c);
+
+    // Valutazioni
     JLabel panelValutazioni = new JLabel(infoValutazioni);
-    c.gridy = 1;
-    panel.add(panelValutazioni, c);
-    
-    
-    c.gridy = 2;
-    panel.add(exLabel, c);
-    
-    
-    if (!(alUtentiSuggerimenti.isEmpty()) && n==1) {
+    panelValutazioni.setFont(new Font("Arial", Font.PLAIN, 12));
+    panelValutazioni.setForeground(new Color(21, 67, 96));
+    c.gridy = row++;
+    c.gridx = 0;
+    c.gridwidth = 3;
+    contentPanel.add(panelValutazioni, c);
+
+    // Divider
+    JSeparator sep3 = new JSeparator();
+    sep3.setForeground(new Color(189, 195, 199));
+    c.gridy = row++;
+    c.gridwidth = 3;
+    c.fill = GridBagConstraints.HORIZONTAL;
+    contentPanel.add(sep3, c);
+
+    // Suggerimenti utenti
+    c.gridy = row++;
+    c.gridx = 0;
+    c.gridwidth = 3;
+    exLabel.setFont(new Font("Arial", Font.BOLD, 12));
+    exLabel.setForeground(new Color(41, 128, 185));
+    contentPanel.add(exLabel, c);
+
+    if (!(alUtentiSuggerimenti.isEmpty()) && n == 1) {
         mostraUtentiRecensioni(alUtentiSuggerimenti, libro);
-        c.gridy = 3;
-        panel.add(panelRisultatoNESugg, c);
+        c.gridy = row++;
+        c.gridx = 0;
+        c.gridwidth = 3;
+        contentPanel.add(panelRisultatoNESugg, c);
     }
-    
+
+    JScrollPane scrollPane = new JScrollPane(contentPanel);
+    scrollPane.setBorder(null);
+    scrollPane.setPreferredSize(new Dimension(420, 300));
+    scrollPane.setMinimumSize(new Dimension(300, 200));
+
     JOptionPane pane = new JOptionPane(
-        panel,
+        scrollPane,
         JOptionPane.PLAIN_MESSAGE,
         JOptionPane.DEFAULT_OPTION,
         null,
         new Object[]{},
         null);
-    
+
     JDialog dialog = pane.createDialog(frame, "Dettagli Libro");
-    dialog.pack();
+    dialog.setSize(600, 500);
+    dialog.setMinimumSize(new Dimension(350, 320));
+    dialog.setResizable(true);
+    dialog.setLocationRelativeTo(frame);
     dialog.setVisible(true);
 }
 
@@ -573,73 +684,164 @@ private void MediaValutazioneLibri(Libro libro){
  * @param u L'utente di cui mostrare le valutazioni e i suggerimenti.
  * @param l Il libro di cui mostrare le valutazioni e i suggerimenti.
  */
-    private void mostraValUtente(Utente utente, Libro l) {
-        JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBackground(Color.decode("#f0f0f0"));
-        GridBagConstraints c = new GridBagConstraints();
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.insets = new Insets(10, 10, 10, 10);
 
-        ValutazioniLibro valLibro = proxy.getValutazioneLibro(utente, l);
-        ArrayList<Libro> libriSuggeriti = proxy.getLibriSuggeriti(utente, l);
+private void mostraValUtente(Utente utente, Libro l) {
+    JPanel contentPanel = new JPanel(new GridBagLayout());
+    contentPanel.setBackground(new Color(245, 250, 255));
+    contentPanel.setBorder(BorderFactory.createCompoundBorder(
+        BorderFactory.createLineBorder(new Color(189, 195, 199), 1, true),
+        BorderFactory.createEmptyBorder(12, 16, 12, 16)
+    ));
+    GridBagConstraints c = new GridBagConstraints();
+    c.fill = GridBagConstraints.HORIZONTAL;
+    c.insets = new Insets(6, 6, 6, 6);
 
-        if (valLibro!=null) {
-            JLabel labelStile = new JLabel("<html><b>Voto Stile:</b>" + valLibro.getStile() + "<br>Note Stile:" + valLibro.getNoteStile());
-            c.gridwidth = 3;
+    ValutazioniLibro valLibro = proxy.getValutazioneLibro(utente, l);
+    ArrayList<Libro> libriSuggeriti = proxy.getLibriSuggeriti(utente, l);
+
+    int row = 0;
+
+    JLabel utenteTitle = new JLabel("<html><span style='font-size:13px'><b>Recensione di " + utente.getUsername() + "</b></span></html>");
+    utenteTitle.setFont(new Font("Arial", Font.BOLD, 13));
+    utenteTitle.setForeground(new Color(41, 128, 185));
+    c.gridx = 0;
+    c.gridy = row++;
+    c.gridwidth = 3;
+    contentPanel.add(utenteTitle, c);
+
+    JSeparator sep = new JSeparator();
+    sep.setForeground(new Color(189, 195, 199));
+    c.gridy = row++;
+    c.gridwidth = 3;
+    c.fill = GridBagConstraints.HORIZONTAL;
+    contentPanel.add(sep, c);
+
+    if (valLibro != null) {
+        String[] labels = {
+            "Stile", "Contenuto", "Gradevolezza", "Originalità", "Edizione", "Voto finale"
+        };
+        int[] voti = {
+            valLibro.getStile(), valLibro.getContenuto(), valLibro.getGradevolezza(),
+            valLibro.getOriginalita(), valLibro.getEdizione(), valLibro.getVotoFinale()
+        };
+        String[] note = {
+            valLibro.getNoteStile(), valLibro.getNoteContenuto(), valLibro.getNoteGradevolezza(),
+            valLibro.getNoteOriginalita(), valLibro.getNoteEdizione(), valLibro.getNoteVotoFinale()
+        };
+
+        for (int i = 0; i < labels.length; i++) {
+            JLabel label = new JLabel("<html><b>" + labels[i] + ":</b></html>");
+            label.setFont(new Font("Arial", Font.BOLD, 11));
+            label.setForeground(new Color(33, 97, 140));
             c.gridx = 0;
-            c.gridy = 0;
-            panel.add(labelStile, c);
+            c.gridy = row;
+            c.gridwidth = 1;
+            contentPanel.add(label, c);
 
-            JLabel labelContenuto = new JLabel("<html><b>Voto Contenuto:</b>" + valLibro.getContenuto() + "<br>Note Contenuto:" + valLibro.getNoteContenuto());
-            c.gridy = 1;
-            panel.add(labelContenuto, c);
+            JLabel voto = new JLabel(String.valueOf(voti[i]));
+            voto.setFont(new Font("Arial", Font.BOLD, 11));
+            voto.setForeground(new Color(21, 67, 96));
+            c.gridx = 1;
+            contentPanel.add(voto, c);
 
-            JLabel labelGradevolezza = new JLabel("<html><b>Voto Gradevolezza:</b>" + valLibro.getGradevolezza() + "<br>Note Gradevolezza:" + valLibro.getNoteGradevolezza());
-            c.gridy = 2;
-            panel.add(labelGradevolezza, c);
+            JTextArea noteArea = new JTextArea(note[i]);
+            noteArea.setFont(new Font("Arial", Font.PLAIN, 10));
+            noteArea.setLineWrap(true);
+            noteArea.setWrapStyleWord(true);
+            noteArea.setEditable(false);
+            noteArea.setBackground(new Color(245, 250, 255));
+            noteArea.setBorder(BorderFactory.createEmptyBorder(2, 4, 2, 4));
+            noteArea.setRows(1);
+            c.gridx = 2;
+            c.weightx = 1.0;
+            c.fill = GridBagConstraints.HORIZONTAL;
+            contentPanel.add(noteArea, c);
 
-            JLabel labelOriginalita = new JLabel("<html><b>Voto originalita:</b>" + valLibro.getOriginalita() + "<br>Note Originalita:" + valLibro.getNoteOriginalita());
-            c.gridy = 3;
-            panel.add(labelOriginalita, c);
-
-            JLabel labelEdizione = new JLabel("<html><b>Voto Edizione:</b>" + valLibro.getEdizione() + "<br>Note Edizione:" + valLibro.getNoteEdizione());
-            c.gridy = 4;
-            panel.add(labelEdizione, c);
-
-            JLabel labelVotoFinale = new JLabel("<html><b>Voto finale:</b>" + valLibro.getVotoFinale() + "<br>Note voto finale:" + valLibro.getNoteVotoFinale());
-            c.gridy = 5;
-            panel.add(labelVotoFinale, c);
-        } else {
-            JLabel labelVotiNF = new JLabel("L'utente non ha inserito voti per questo libro");
-            c.gridwidth = 3;
-            c.gridx = 0;
-            c.gridy = 0;
-            panel.add(labelVotiNF, c);
+            row++;
         }
-
-        
+    } else {
+        JLabel labelVotiNF = new JLabel("L'utente non ha inserito voti per questo libro");
+        labelVotiNF.setFont(new Font("Arial", Font.ITALIC, 11));
+        labelVotiNF.setForeground(new Color(120, 120, 120));
+        c.gridwidth = 3;
         c.gridx = 0;
-        int y = c.gridy + 1;
-        c.gridy = y;
-        JLabel labelSuggF = new JLabel("<html><b>Libri Suggeriti:</b><br></html>");
-        panel.add(labelSuggF, c);
-        y++;
-        for (Libro libro : libriSuggeriti) {
-            JLabel libroLabel = new JLabel(Libro.getTitolo(libro) + " " + Libro.getAutore(libro) + " " + Libro.getAnno(libro));
-            libroLabel.setForeground(Color.BLUE.darker());
-            libroLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-            libroLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-            c.gridy = y;
-            y++;
-            panel.add(libroLabel, c);
-            panel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+        c.gridy = row++;
+        contentPanel.add(labelVotiNF, c);
+    }
 
-            libroLabel.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    mostraDettagliLibro(libro, 0);
-                }
-            });
+    JSeparator sep2 = new JSeparator();
+    sep2.setForeground(new Color(189, 195, 199));
+    c.gridy = row++;
+    c.gridwidth = 3;
+    c.fill = GridBagConstraints.HORIZONTAL;
+    contentPanel.add(sep2, c);
+
+    c.gridx = 0;
+    c.gridy = row++;
+    c.gridwidth = 3;
+    JLabel labelSuggF = new JLabel("<html><b>Libri Suggeriti:</b></html>");
+    labelSuggF.setFont(new Font("Arial", Font.BOLD, 12));
+    labelSuggF.setForeground(new Color(41, 128, 185));
+    contentPanel.add(labelSuggF, c);
+
+    for (Libro libro : libriSuggeriti) {
+        JLabel libroLabel = new JLabel(
+            "<html><b>" + Libro.getTitolo(libro) + "</b> <span style='color:#888;'>" +
+            Libro.getAutore(libro) + " &middot; " + Libro.getAnno(libro) + "</span></html>"
+        );
+        libroLabel.setFont(new Font("Arial", Font.BOLD, 11));
+        libroLabel.setForeground(new Color(33, 97, 140));
+        libroLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        libroLabel.setBorder(BorderFactory.createEmptyBorder(6, 8, 6, 8));
+        c.gridy = row++;
+        c.gridx = 0;
+        c.gridwidth = 3;
+        contentPanel.add(libroLabel, c);
+
+        libroLabel.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                mostraDettagliLibro(libro, 0);
+            }
+        });
+    }
+
+    JScrollPane scrollPane = new JScrollPane(contentPanel);
+    scrollPane.setBorder(null);
+    scrollPane.setPreferredSize(new Dimension(420, 300));
+    scrollPane.setMinimumSize(new Dimension(300, 200));
+
+    JOptionPane pane = new JOptionPane(
+            scrollPane,
+            JOptionPane.PLAIN_MESSAGE,
+            JOptionPane.DEFAULT_OPTION,
+            null,
+            new Object[] {},
+            null);
+    JDialog dialog = pane.createDialog(frame, "Dettagli Utente");
+    dialog.setSize(600, 500);
+    dialog.setMinimumSize(new Dimension(350, 320));
+    dialog.setResizable(true);
+    dialog.setLocationRelativeTo(frame);
+    dialog.setVisible(true);
+}
+
+/**
+ * Legge le valutazioni dei libri da un file e restituisce un ArrayList di ValutazioniLibro.
+ *
+ * @return Un ArrayList di ValutazioniLibro contenente le valutazioni lette dal file.
+ */
+public ArrayList<ValutazioniLibro> leggiFile() {
+    ArrayList<ValutazioniLibro> al = new ArrayList<>();
+    File file = new File("file\\Valutazioni.txt");
+    if (file.length() != 0) {
+        try {
+            FileInputStream fis = new FileInputStream(file);
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            al = (ArrayList<ValutazioniLibro>) ois.readObject();
+            ois.close();
+            fis.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         JOptionPane pane = new JOptionPane(
