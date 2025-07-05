@@ -33,8 +33,7 @@ public class Proxy{
             out.writeObject("GetListaUsernameUtente");
             out.flush();
             listaUsername = (ArrayList<String>)in.readObject();
-        } catch (IOException | ClassNotFoundException e) {
-        }
+        } catch (IOException | ClassNotFoundException e) {}
         return listaUsername;
     }
     public ArrayList<String> getListaPasswordUtente(){

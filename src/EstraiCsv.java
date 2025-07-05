@@ -4,27 +4,11 @@
 //Matteo Corda 757928 (VA)
 //Gabriele Schioppa 756634 (VA)
 
+import frames.Proxy;
 import java.io.*;
 import java.time.LocalDate;
 import java.util.*;
-
 public class EstraiCsv {
-    /**
-     * Verifica se un file esiste; se non esiste, tenta di crearlo.
-     *
-     * @param file Il file da verificare o creare.
-     * @throws IOException Se si verifica un errore durante la creazione del file.
-     */
-    public static void FileEsiste(File file){
-        if(!file.exists()){
-            try{
-                file.createNewFile();
-            }catch(Exception e){
-                e.printStackTrace();
-            }
-        }
-    }  
-
     /**
      * Converte il nome di un mese in un numero intero corrispondente.
      *
@@ -130,7 +114,7 @@ public class EstraiCsv {
     public static ArrayList<String> getALDate(ArrayList<String> listaRiga){
         String[] arrayData = listaRiga.get(5).split(" ");
         ArrayList<String> alk = new ArrayList<>();
-        for (int i = 0; i < arrayData.length; i++) {
+        for(int i = 0; i < arrayData.length; i++) {
             alk.add(arrayData[i].replace(",", ""));
         }
         return alk;
@@ -143,13 +127,9 @@ public class EstraiCsv {
      */
     public static void main(String[] args){
         Proxy proxy = new Proxy();
-        ArrayList<Libro> alLibri = new ArrayList<>();
         ArrayList<String> listaRiga;
-        File file = new File("file\\Libri.txt");
-        FileEsiste(file);
         File fileCsv = new File("BooksDataset.csv");
-        FileEsiste(fileCsv);
-        try {
+        try{
             FileReader fr = new FileReader(fileCsv);
             BufferedReader br = new BufferedReader(fr);
             br.readLine();
@@ -174,18 +154,6 @@ public class EstraiCsv {
                 listaRiga.clear();
             }
             br.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        try {
-            FileOutputStream fos = new FileOutputStream(file);
-            ObjectOutputStream oos = new ObjectOutputStream(fos);
-            oos.writeObject(alLibri);
-            oos.close();
-            fos.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (IOException | NumberFormatException e) {}
     }
 }

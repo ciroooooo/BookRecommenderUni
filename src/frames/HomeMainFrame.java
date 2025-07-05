@@ -7,9 +7,6 @@
 package frames;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import javax.swing.*;
 import parametri.*;
@@ -17,14 +14,12 @@ import parametri.*;
 public class HomeMainFrame {
     private boolean esisteValutazione;
     private JFrame frame;
-    private JPanel topPanel;
-    private JPanel searchPanel;
-    private JPanel resultsPanel;
+    private final JPanel topPanel;
+    private final JPanel searchPanel;
+    private final JPanel resultsPanel;
     private JPanel panelRisultatoNESugg;
-    private JPanel panelImpostazioniProfilo;
-    private JScrollPane risultatoScrollPane;
+    private final JScrollPane risultatoScrollPane;
     private JButton bottoneHome;
-    private JButton logout;
     private JButton bottoneLibreria;
     private JButton bottoneProfilo;
     private Utente u;
@@ -34,10 +29,7 @@ public class HomeMainFrame {
     private double mediaOriginalita=0;
     private double mediaEdizione=0;
     private double mediaVotoFinale=0;
-    private ArrayList<Utente>alUtentiVal=new ArrayList<>();
-    private ArrayList<SuggerimentoLibro>alSuggerimenti=new ArrayList<>();
-    private JPanel pane=new JPanel(new GridBagLayout());
-    private Proxy proxy;
+    private final Proxy proxy;
 
 /**
  * Costruttore della classe HomeMainFrame.
@@ -45,7 +37,8 @@ public class HomeMainFrame {
  * @param proxy utilizzato per la connessione al Server
  * @param cf indica il codice fiscale della persona che ha effettuato l'accesso, altrimenti indica "Ospite" se si è entrati come ospite.
  */
-public HomeMainFrame(Proxy proxy,String cf) {
+    @SuppressWarnings("Convert2Lambda")
+    public HomeMainFrame(Proxy proxy,String cf) {
     this.proxy = proxy;
     frame = new JFrame();
 
@@ -69,6 +62,7 @@ public HomeMainFrame(Proxy proxy,String cf) {
     bottoneProfilo.setForeground(Color.WHITE);
      // Azione per il tasto Logout
     bottoneHome.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
             LgMainFrame loginFrame = new LgMainFrame(proxy);
             loginFrame.initialize();
@@ -113,6 +107,7 @@ public HomeMainFrame(Proxy proxy,String cf) {
 
     // Aggiunta dell'azione al bottone Libreria
     bottoneLibreria.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
             if (cf.equals("Ospite")) {
                 JOptionPane.showMessageDialog(null, "Impossibile effettuare questa operazione come ospite");
@@ -124,6 +119,7 @@ public HomeMainFrame(Proxy proxy,String cf) {
         }
     });
     bottoneProfilo.addActionListener(new ActionListener(){
+        @Override
         public void actionPerformed(ActionEvent e){
             if(cf.equals("Ospite")){
                 JOptionPane.showMessageDialog(null, "Impossibile effettuare questa operazione come ospite");
@@ -237,6 +233,7 @@ public HomeMainFrame(Proxy proxy,String cf) {
 
     // Azioni per i bottoni di ricerca
     searchByTitleButton.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
             String searchText = searchField.getText();
             if (searchText.length() > 0) {
@@ -253,6 +250,7 @@ public HomeMainFrame(Proxy proxy,String cf) {
     });
 
     searchByAuthorButton.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
             String searchText = searchField.getText();
             if (searchText.length() > 0) {
@@ -269,6 +267,7 @@ public HomeMainFrame(Proxy proxy,String cf) {
     });
 
     searchByAuthorAndYearButton.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
             String searchText = searchField.getText();
             String[] parts = searchText.split("z,");
@@ -357,6 +356,7 @@ public void initialize() {
     frame.setMinimumSize(new Dimension(300, 400)); 
     frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
     frame.addWindowListener(new WindowAdapter() {
+        @Override
         public void windowClosing(WindowEvent e){
             proxy.fineComunicazione();
             frame.dispose();
@@ -684,6 +684,7 @@ private void MediaValutazioneLibri(Libro libro){
  * @param u L'utente di cui mostrare le valutazioni e i suggerimenti.
  * @param l Il libro di cui mostrare le valutazioni e i suggerimenti.
  */
+
 private void mostraValUtente(Utente utente, Libro l) {
     JPanel contentPanel = new JPanel(new GridBagLayout());
     contentPanel.setBackground(new Color(245, 250, 255));
@@ -842,8 +843,16 @@ public ArrayList<ValutazioniLibro> leggiFile() {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-    return al;
-}
 
+        JOptionPane pane = new JOptionPane(
+                panel,
+                JOptionPane.PLAIN_MESSAGE,
+                JOptionPane.DEFAULT_OPTION,
+                null,
+                new Object[]{},
+                null);
+        JDialog dialog = pane.createDialog(frame, "Dettagli Utente");
+        dialog.pack();
+        dialog.setVisible(true);
+    }
 }

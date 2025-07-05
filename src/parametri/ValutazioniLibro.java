@@ -6,17 +6,14 @@
 
 
 package parametri;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.ArrayList;
+
 
 
 
 public class ValutazioniLibro implements Serializable{
     private int stile;
-    private Utente u;
+    private final Utente u;
     private String noteStile;
     private int contenuto;
     private String noteContenuto;
@@ -28,7 +25,7 @@ public class ValutazioniLibro implements Serializable{
     private String noteEdizione;
     private int votoFinale;
     private String noteVotoFinale;
-    private Libro l;
+    private final Libro l;
     
     /**
  * Costruisce un nuovo oggetto ValutazioniLibro associato a un utente e a un libro specificati.
@@ -184,28 +181,4 @@ public class ValutazioniLibro implements Serializable{
     public Utente getUtente(){
         return this.u;
     }
-/**
- * Scrive un elenco di valutazioni di libri su un file.
- *
- * @param alVL L'ArrayList di ValutazioniLibro da scrivere su file.
- * @throws IOException Se si verifica un errore di input/output durante la scrittura su file.
- */
-    public static void scriviFileVL(ArrayList<ValutazioniLibro> alVL){
-        File file=new File("file\\Valutazioni.txt");
-        try {
-            FileOutputStream fos=new FileOutputStream(file);
-            ObjectOutputStream oos=new ObjectOutputStream(fos);
-            oos.writeObject(alVL);
-            oos.close();
-            fos.close();
-        } catch (Exception e) {
-        }
-    }
-/**
- * Legge un elenco di valutazioni di libri da un file.
- *
- * @return Un ArrayList di ValutazioniLibro lette dal file.
- * @throws IOException            Se si verifica un errore di input/output durante la lettura dal file.
- * @throws ClassNotFoundException Se la classe delle valutazioni di libri non viene trovata durante la deserializzazione.
- */
 }

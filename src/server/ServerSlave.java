@@ -28,9 +28,7 @@ public class ServerSlave extends Thread{
             "jdbc:postgresql://aws-0-eu-central-1.pooler.supabase.com:5432/postgres?user=postgres.qgavtjdnntjotuevqsds&password=7apU3CLd6rDrXCHM");
             this.stmt = con.createStatement();
             System.out.println("Connessione ad database avvenuta con successo!");
-        }catch(SQLException sq){
-            sq.printStackTrace();
-        }
+        }catch(SQLException sq){}
         try {
             this.out = new ObjectOutputStream(socket.getOutputStream());
             out.flush();
@@ -39,6 +37,7 @@ public class ServerSlave extends Thread{
         } catch (IOException e) {
         }
     }
+    
     public void run(){
         try {
             while(!socket.isClosed()){
@@ -488,7 +487,7 @@ public class ServerSlave extends Thread{
                 else if(operazione.equals("getMediaValutazioniLibro")){
                     int id = (int)in.readObject();
                     String operazioneQuery = "SELECT AVG(stile), AVG(contenuto), AVG(gradevolezza), AVG(originalita), AVG(edizione), AVG(votofinale) FROM valutazione WHERE idLibro = ?";
-                    ArrayList<Double> alMedia = null;
+                    ArrayList<Double> alMedia = new ArrayList<>();
                     PreparedStatement ps = con.prepareStatement(operazioneQuery);
                     ps.setInt(1, id);
                     ResultSet rs = ps.executeQuery();
@@ -504,7 +503,6 @@ public class ServerSlave extends Thread{
                             out.writeObject(null);
                             out.flush();
                         }else{
-                            alMedia = new ArrayList<>();
                             for(int i=1;i<=6;i++){
                                 alMedia.add(rs.getDouble(i));
                             }
@@ -515,7 +513,7 @@ public class ServerSlave extends Thread{
                     
                 }else if(operazione.equals("getUtentiSuggeritori")){
                     int idLibro = (int)in.readObject();
-                    ArrayList<Utente> alUtenti = new ArrayList<Utente>();
+                    ArrayList<Utente> alUtenti = new ArrayList<>();
                     String operazioneQuery= "SELECT DISTINCT u.* FROM SUGGERIMENTO s JOIN utente u ON (s.cf = u.cf) WHERE s.idlibrosorgente = ?";
                     PreparedStatement ps = con.prepareStatement(operazioneQuery);
                     ps.setInt(1, idLibro);
@@ -535,7 +533,7 @@ public class ServerSlave extends Thread{
                     Utente u = (Utente)in.readObject();
                     int idLibro = (int)in.readObject();
                     String cf = u.getCF();
-                    ArrayList<Libro> alLibri = new ArrayList<Libro>();
+                    ArrayList<Libro> alLibri = new ArrayList<>();
                     String operazioneQuery= "SELECT l.titolo as titolo, l.descrizione as descrizione, l.categoria as categoria, l.editore as editore, l.datapubblicazione as data, l.prezzo as prezzo, a.nome as nome FROM suggerimento s join libro l on (s.idlibrosuggerito = l.idlibro) join utente u on(u.cf = s.cf) join autore a on (l.idautore = a.idautore) WHERE u.cf = ? AND idlibrosorgente = ?";
                     PreparedStatement ps = con.prepareStatement(operazioneQuery);
                     ps.setString(1,cf);
@@ -555,9 +553,7 @@ public class ServerSlave extends Thread{
                     out.flush();
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (IOException | ClassNotFoundException | SQLException e) {}
     }
 
 }
