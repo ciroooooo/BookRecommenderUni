@@ -33,7 +33,7 @@ public class Proxy{
             out.writeObject("GetListaUsernameUtente");
             out.flush();
             listaUsername = (ArrayList<String>)in.readObject();
-        } catch (Exception e) {
+        } catch (IOException | ClassNotFoundException e) {
         }
         return listaUsername;
     }
@@ -43,7 +43,7 @@ public class Proxy{
             out.writeObject("GetListaPasswordUtente");
             out.flush();
             listaPassword = (ArrayList)in.readObject();
-        } catch (Exception e) {
+        } catch (IOException | ClassNotFoundException e) {
         }
         return listaPassword;
     }
@@ -57,8 +57,7 @@ public class Proxy{
             out.writeObject(password);
             out.flush();
             cf = (String)in.readObject();
-        } catch (Exception e) {
-        }
+        } catch (IOException | ClassNotFoundException e) {}
         return cf;
     }
     public void aggiungiLibro(String titolo,String descrizione,String categoria,String editore,LocalDate dataPubblicazione,double prezzo,String autore){
@@ -79,9 +78,7 @@ public class Proxy{
             out.flush();
             out.writeObject(autore);
             out.flush();
-        }catch(IOException e){
-            e.printStackTrace();
-        }
+        }catch(IOException e){}
     }
     public void aggiungiAutore(String nome){
         try {
@@ -107,8 +104,7 @@ public class Proxy{
             out.flush();
             out.writeObject(cf);
             out.flush();
-        } catch (Exception e) {
-        }
+        } catch (IOException e) {}
     }
     public int aggiungiUtente(Utente u){
         try {
@@ -144,8 +140,7 @@ public class Proxy{
             out.writeObject(u);
             out.flush();
             return 2; 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException | ClassNotFoundException e) {
             return 9;
         }
     }
@@ -303,7 +298,7 @@ public class Proxy{
             out.writeObject(idLibro);
             out.flush();
             esiste = (boolean)in.readObject();
-        } catch (Exception e) {
+        } catch (IOException | ClassNotFoundException e) {
         }
         return esiste;
     }
@@ -383,8 +378,26 @@ public class Proxy{
             out.writeObject(idLibro);
             out.flush();
             alUtenti = (ArrayList<Utente>)in.readObject();
-        }catch(Exception e){
+        }catch(IOException | ClassNotFoundException e){
         }
         return alUtenti;
+    }
+    public ArrayList<Libro> getLibriSuggeriti(Utente u, Libro l){
+        ArrayList<Libro> alLibri = new ArrayList<>();
+        try{
+            out.writeObject("GetIdDelLibro");
+            out.flush();
+            out.writeObject(l);
+            out.flush();
+            int idLibro = (int)in.readObject();
+            out.writeObject("getLibriSuggeriti");
+            out.flush();
+            out.writeObject(u);
+            out.flush();
+            out.writeObject(idLibro);
+            out.flush();
+            alLibri =(ArrayList<Libro>)in.readObject();
+        }catch(IOException | ClassNotFoundException e){}
+        return alLibri;
     }
 }
