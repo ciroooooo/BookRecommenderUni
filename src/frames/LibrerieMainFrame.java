@@ -514,8 +514,6 @@ private void apriTabLibreria(Librerie libreria) {
 
         JComboBox<String> boxEdizione = new JComboBox<>(arrayPunteggio);
 
-        JComboBox<String> boxVotoFinale = new JComboBox<>(arrayPunteggio);
-
         JButton applicaButton=new JButton("Applica");
         JButton cancelButton=new JButton("Annulla");
 
@@ -592,18 +590,15 @@ private void apriTabLibreria(Librerie libreria) {
         
         panel.add(aggiunteEdizione,c);
 
-        JLabel votoFinaleLabel=new JLabel("Voto finale:");
+        JLabel votoFinaleLabel=new JLabel("Note finale:");
 
         c.gridx=0;
         c.gridy=9;
         panel.add(votoFinaleLabel,c);
 
-        c.gridx=1;
-        c.gridy=9;
-        panel.add(boxVotoFinale,c);
-        JTextField aggiunteVotoFinale=new JTextField(20);
-        c.gridx=2;
-        
+        JTextField aggiunteVotoFinale = new JTextField(70);
+        c.gridwidth = 2;
+        c.gridx = 1;
         panel.add(aggiunteVotoFinale,c);
 
         c.gridx=0;
@@ -621,7 +616,6 @@ private void apriTabLibreria(Librerie libreria) {
             boxGradevolezza.setSelectedIndex(vl.getGradevolezza()-1);
             boxOriginalita.setSelectedIndex(vl.getOriginalita()-1);
             boxEdizione.setSelectedIndex(vl.getEdizione()-1);
-            boxVotoFinale.setSelectedIndex(vl.getVotoFinale()-1);
             aggiunteStile.setText(vl.getNoteStile());
             aggiunteContenuto.setText(vl.getNoteContenuto());
             aggiunteGradevolezza.setText(vl.getNoteGradevolezza());
@@ -646,7 +640,7 @@ private void apriTabLibreria(Librerie libreria) {
                 int votoGradevolezza=Integer.parseInt(boxGradevolezza.getSelectedItem().toString());
                 int votoOriginalita=Integer.parseInt(boxOriginalita.getSelectedItem().toString());
                 int votoEdizione=Integer.parseInt(boxEdizione.getSelectedItem().toString());
-                int votoFinale=Integer.parseInt(boxVotoFinale.getSelectedItem().toString());
+                int votoFinale;
                 String noteStile=aggiunteStile.getText();
                 String noteContenuto=aggiunteContenuto.getText();
                 String noteGradevolezza=aggiunteGradevolezza.getText();
@@ -667,6 +661,8 @@ private void apriTabLibreria(Librerie libreria) {
                 }else if(noteVotoFinale.length()>255){
                     JOptionPane.showMessageDialog(frame,"La lunghezza delle note sul voto finale non può essere più lunga di 255 caratteri");
                 }else{
+                    float mediaVoti = (votoStile+votoContenuto+votoGradevolezza+votoOriginalita+votoEdizione)/5;
+                    votoFinale = Math.round(mediaVoti);
                     valLibro.inserisciValutazioneLibro(votoStile, noteStile, votoContenuto, noteContenuto, votoGradevolezza, noteGradevolezza, votoOriginalita, noteOriginalita, votoEdizione, noteEdizione, votoFinale, noteVotoFinale);
                     proxy.aggiungiValutazione(valLibro);
                     provaDialog.dispose();
