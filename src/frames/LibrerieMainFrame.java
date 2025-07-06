@@ -485,134 +485,107 @@ private void apriTabLibreria(Librerie libreria) {
  */  
     @SuppressWarnings("Convert2Lambda")
     private void mostraInserimentoValutazioni(Libro libro) { 
-        String infoLibro=Libro.getInfoBase(libro);
-        JLabel infoLabel = new JLabel(infoLibro);
-        JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBackground(Color.decode("#f0f0f0"));
-        GridBagConstraints c=new GridBagConstraints();
+        String infoLibro = Libro.getInfoBase(libro);
+        JPanel contentPanel = new JPanel(new GridBagLayout());
+        contentPanel.setBackground(new Color(245, 250, 255));
+        contentPanel.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(189, 195, 199), 1, true),
+            BorderFactory.createEmptyBorder(12, 16, 12, 16)
+        ));
+        GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
-        c.insets = new Insets(5, 5, 5, 5);
-        panel.add(infoLabel);
+        c.insets = new Insets(6, 6, 6, 6);
 
-        
+        JLabel infoLabel = new JLabel(infoLibro);
+        infoLabel.setFont(new Font("Arial", Font.PLAIN, 12));
+        infoLabel.setForeground(new Color(33, 97, 140));
+        c.gridx = 0;
+        c.gridy = 0;
+        c.gridwidth = 3;
+        contentPanel.add(infoLabel, c);
+
+        JSeparator sep = new JSeparator();
+        sep.setForeground(new Color(189, 195, 199));
+        c.gridy = 1;
+        c.gridwidth = 3;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        contentPanel.add(sep, c);
+
         Boolean esisteValutazione = proxy.esisteValutazioneLibroUtente(u, libro);
-        JFrame frame = new JFrame();
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        
-        String[] arrayPunteggio={"1","2","3","4","5"};
+        String[] arrayPunteggio = {"1", "2", "3", "4", "5"};
         JComboBox<String> boxStile = new JComboBox<>(arrayPunteggio);
-
         JComboBox<String> boxContenuto = new JComboBox<>(arrayPunteggio);
-
         JComboBox<String> boxGradevolezza = new JComboBox<>(arrayPunteggio);
-
         JComboBox<String> boxOriginalita = new JComboBox<>(arrayPunteggio);
-
         JComboBox<String> boxEdizione = new JComboBox<>(arrayPunteggio);
 
-        JButton applicaButton=new JButton("Applica");
-        JButton cancelButton=new JButton("Annulla");
+        JTextField aggiunteStile = new JTextField(16);
+        JTextField aggiunteContenuto = new JTextField(16);
+        JTextField aggiunteGradevolezza = new JTextField(16);
+        JTextField aggiunteOriginalita = new JTextField(16);
+        JTextField aggiunteEdizione = new JTextField(16);
+        JTextField aggiunteVotoFinale = new JTextField(24);
 
-        
-        
-        String info="Stile:";
-        JTextField aggiunteStile = new JTextField(20);
-        
-        c.gridwidth=1;
-        JLabel stileLabel=new JLabel(info);
-        c.gridx=0;
-        c.gridy=4;
-        panel.add(stileLabel,c);
+        JButton applicaButton = new JButton("Applica");
+        JButton cancelButton = new JButton("Annulla");
 
-        c.gridx=1;
-        c.gridy=4;
-        panel.add(boxStile,c);
+        int row = 2;
+        String[] labels = {
+            "Stile", "Contenuto", "Gradevolezza", "Originalità", "Edizione"
+        };
+        JComboBox<?>[] boxes = { boxStile, boxContenuto, boxGradevolezza, boxOriginalita, boxEdizione };
+        JTextField[] notes = { aggiunteStile, aggiunteContenuto, aggiunteGradevolezza, aggiunteOriginalita, aggiunteEdizione };
 
-        c.gridx=2;
-        panel.add(aggiunteStile,c);
-        
-        info="Contenuto:";
-        JLabel contenutoLabel=new JLabel(info);
+        for (int i = 0; i < labels.length; i++) {
+            JLabel label = new JLabel("<html><b>" + labels[i] + ":</b></html>");
+            label.setFont(new Font("Arial", Font.BOLD, 12));
+            label.setForeground(new Color(33, 97, 140));
+            c.gridx = 0;
+            c.gridy = row;
+            c.gridwidth = 1;
+            contentPanel.add(label, c);
 
-        c.gridx=0;
-        c.gridy=5;
-        panel.add(contenutoLabel,c);
+            boxes[i].setFont(new Font("Arial", Font.PLAIN, 12));
+            c.gridx = 1;
+            contentPanel.add(boxes[i], c);
 
-        c.gridx=1;
-        c.gridy=5;
-        panel.add(boxContenuto,c);
+            notes[i].setFont(new Font("Arial", Font.PLAIN, 11));
+            c.gridx = 2;
+            contentPanel.add(notes[i], c);
 
-        JTextField aggiunteContenuto=new JTextField(20);
-        c.gridx=2;
-        panel.add(aggiunteContenuto,c);
+            row++;
+        }
 
-        JLabel gradevolezzaLabel=new JLabel("gradevolezza");
+        JLabel votoFinaleLabel = new JLabel("<html><b>Note finale:</b></html>");
+        votoFinaleLabel.setFont(new Font("Arial", Font.BOLD, 12));
+        votoFinaleLabel.setForeground(new Color(33, 97, 140));
+        c.gridx = 0;
+        c.gridy = row;
+        c.gridwidth = 1;
+        contentPanel.add(votoFinaleLabel, c);
 
-        c.gridx=0;
-        c.gridy=6;
-        panel.add(gradevolezzaLabel,c);
-
-        c.gridx=1;
-        c.gridy=6;
-        panel.add(boxGradevolezza,c);
-
-        JTextField aggiunteGradevolezza=new JTextField(20);
-        c.gridx=2;
-        panel.add(aggiunteGradevolezza,c);
-        JLabel originalitaLabel=new JLabel("Originalita:");
-
-        c.gridx=0;
-        c.gridy=7;
-        panel.add(originalitaLabel,c);
-
-        c.gridx=1;
-        c.gridy=7;
-        panel.add(boxOriginalita,c);
-        JTextField aggiunteOriginalita=new JTextField(20);
-        c.gridx=2;
-        panel.add(aggiunteOriginalita,c);
-        
-        JLabel edizioneLabel=new JLabel("Edizione:");
-
-        c.gridx=0;
-        c.gridy=8;
-        panel.add(edizioneLabel,c);
-
-        c.gridx=1;
-        c.gridy=8;
-        panel.add(boxEdizione,c);
-        JTextField aggiunteEdizione=new JTextField(20);
-        c.gridx=2;
-        
-        panel.add(aggiunteEdizione,c);
-
-        JLabel votoFinaleLabel=new JLabel("Note finale:");
-
-        c.gridx=0;
-        c.gridy=9;
-        panel.add(votoFinaleLabel,c);
-
-        JTextField aggiunteVotoFinale = new JTextField(70);
-        c.gridwidth = 2;
         c.gridx = 1;
-        panel.add(aggiunteVotoFinale,c);
+        c.gridwidth = 2;
+        contentPanel.add(aggiunteVotoFinale, c);
 
-        c.gridx=0;
-        c.gridy=10;
-        panel.add(cancelButton,c);
+        row++;
 
-        c.gridx=1;
-        c.gridy=10;
-        panel.add(applicaButton,c);
+        c.gridx = 0;
+        c.gridy = row;
+        c.gridwidth = 1;
+        contentPanel.add(cancelButton, c);
 
-        if(esisteValutazione){ 
-            ValutazioniLibro vl = proxy.getValutazioneLibro(u,libro);
-            boxStile.setSelectedIndex(vl.getStile()-1);
-            boxContenuto.setSelectedIndex(vl.getContenuto()-1);
-            boxGradevolezza.setSelectedIndex(vl.getGradevolezza()-1);
-            boxOriginalita.setSelectedIndex(vl.getOriginalita()-1);
-            boxEdizione.setSelectedIndex(vl.getEdizione()-1);
+        c.gridx = 1;
+        contentPanel.add(applicaButton, c);
+
+        if (esisteValutazione) { 
+            ValutazioniLibro vl = proxy.getValutazioneLibro(u, libro);
+            boxStile.setSelectedIndex(vl.getStile() - 1);
+            boxContenuto.setSelectedIndex(vl.getContenuto() - 1);
+            boxGradevolezza.setSelectedIndex(vl.getGradevolezza() - 1);
+            boxOriginalita.setSelectedIndex(vl.getOriginalita() - 1);
+            boxEdizione.setSelectedIndex(vl.getEdizione() - 1);
             aggiunteStile.setText(vl.getNoteStile());
             aggiunteContenuto.setText(vl.getNoteContenuto());
             aggiunteGradevolezza.setText(vl.getNoteGradevolezza());
@@ -620,31 +593,41 @@ private void apriTabLibreria(Librerie libreria) {
             aggiunteEdizione.setText(vl.getNoteEdizione());
             aggiunteVotoFinale.setText(vl.getNoteVotoFinale());
         }
-        frame.add(panel);
+
+        JScrollPane scrollPane = new JScrollPane(contentPanel);
+        scrollPane.setBorder(null);
+        scrollPane.setPreferredSize(new Dimension(420, 300));
+        scrollPane.setMinimumSize(new Dimension(300, 200));
+
         JOptionPane provaPane = new JOptionPane(
-                panel,
+                scrollPane,
                 JOptionPane.PLAIN_MESSAGE,
                 JOptionPane.DEFAULT_OPTION,
                 null,
-                new Object[]{},
+                new Object[] {},
                 null);
-        JDialog provaDialog=provaPane.createDialog(frame,"Valutazioni");
+        JDialog provaDialog = provaPane.createDialog(frame, "Valutazioni");
+        provaDialog.setSize(600, 500); // finestra più grande
+        provaDialog.setMinimumSize(new Dimension(500, 400));
+        provaDialog.setResizable(true);
+        provaDialog.setLocationRelativeTo(frame);
+
         applicaButton.addActionListener(new ActionListener() { 
             @Override
             public void actionPerformed(ActionEvent e){
-                int votoStile=Integer.parseInt(boxStile.getSelectedItem().toString());
-                int votoContenuto=Integer.parseInt(boxContenuto.getSelectedItem().toString());
-                int votoGradevolezza=Integer.parseInt(boxGradevolezza.getSelectedItem().toString());
-                int votoOriginalita=Integer.parseInt(boxOriginalita.getSelectedItem().toString());
-                int votoEdizione=Integer.parseInt(boxEdizione.getSelectedItem().toString());
+                int votoStile = Integer.parseInt(boxStile.getSelectedItem().toString());
+                int votoContenuto = Integer.parseInt(boxContenuto.getSelectedItem().toString());
+                int votoGradevolezza = Integer.parseInt(boxGradevolezza.getSelectedItem().toString());
+                int votoOriginalita = Integer.parseInt(boxOriginalita.getSelectedItem().toString());
+                int votoEdizione = Integer.parseInt(boxEdizione.getSelectedItem().toString());
                 int votoFinale;
-                String noteStile=aggiunteStile.getText();
-                String noteContenuto=aggiunteContenuto.getText();
-                String noteGradevolezza=aggiunteGradevolezza.getText();
-                String noteOriginalita=aggiunteOriginalita.getText();
-                String noteEdizione=aggiunteEdizione.getText();
-                String noteVotoFinale=aggiunteVotoFinale.getText();
-                ValutazioniLibro valLibro=new ValutazioniLibro(u, libro);
+                String noteStile = aggiunteStile.getText();
+                String noteContenuto = aggiunteContenuto.getText();
+                String noteGradevolezza = aggiunteGradevolezza.getText();
+                String noteOriginalita = aggiunteOriginalita.getText();
+                String noteEdizione = aggiunteEdizione.getText();
+                String noteVotoFinale = aggiunteVotoFinale.getText();
+                ValutazioniLibro valLibro = new ValutazioniLibro(u, libro);
                 if(noteStile.length()>255){
                     JOptionPane.showMessageDialog(frame,"La lunghezza delle note stile non può essere più lunga di 255 caratteri");
                 }else if(noteContenuto.length()>255){

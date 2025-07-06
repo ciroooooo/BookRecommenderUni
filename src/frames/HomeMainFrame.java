@@ -125,79 +125,35 @@ public class HomeMainFrame {
                 if(cf.equals("Ospite")){
                     JOptionPane.showMessageDialog(null, "Impossibile effettuare questa operazione come ospite");
                 }else{
-                    JPanel profiloPanel=new JPanel(new GridBagLayout());
-                    JButton bottoneInformazioni = new JButton("Informazioni");
-                    bottoneInformazioni.setForeground(Color.WHITE);
-                    bottoneInformazioni.setBackground(new Color(41, 128, 185)); 
-                    bottoneInformazioni.setBorderPainted(false);
-                    bottoneInformazioni.setFocusPainted(false);
-                    bottoneInformazioni.setPreferredSize(new Dimension (125,25));
-                    bottoneInformazioni.addMouseListener(new MouseAdapter() {
-                        @Override
-                        public void mouseEntered(MouseEvent e) {
-                            bottoneInformazioni.setBackground(new Color(93, 173, 226)); 
-                        }
-                        @Override
-                        public void mouseExited(MouseEvent e) {
-                            bottoneInformazioni.setBackground(new Color(41, 128, 185));
-                        }
-                    });
-                    JButton bottoneCambioPassword = new JButton("Cambia Password");
-                    bottoneCambioPassword.setForeground(Color.WHITE);
-                    bottoneCambioPassword.setBackground(new Color(41, 128, 185));
-                    bottoneCambioPassword.setBorderPainted(false);
-                    bottoneCambioPassword.setFocusPainted(false);
-                    bottoneCambioPassword.setPreferredSize(new Dimension (125,25));
-                    bottoneCambioPassword.addMouseListener(new MouseAdapter() {
-                        @Override
-                        public void mouseEntered(MouseEvent e) {
-                            bottoneCambioPassword.setBackground(new Color(93, 173, 226));
-                        }
-                        @Override
-                        public void mouseExited(MouseEvent e) {
-                            bottoneCambioPassword.setBackground(new Color(41, 128, 185));
-                        }
-                    });
-                    JButton bottoneCambioUsername = new JButton("Cambia Username");
-                    bottoneCambioUsername.setForeground(Color.WHITE);
-                    bottoneCambioUsername.setBackground(new Color(41, 128, 185));
-                    bottoneCambioUsername.setBorderPainted(false);
-                    bottoneCambioUsername.setFocusPainted(false);
-                    bottoneCambioUsername.setPreferredSize(new Dimension (125,25));
+                    // --- INIZIO MODIFICHE ESTETICHE ---
+                    Color bgMain = new Color(245, 250, 255);
+                    Color bgPanel = new Color(237, 245, 252);
+                    Color blue = new Color(41, 128, 185);
+                    Color blueLabel = new Color(33, 97, 140);
+                    Color borderBtn = new Color(120, 160, 200); // nuovo bordo per i bottoni laterali
+                    Font titleFont = new Font("Arial", Font.BOLD, 20);
+                    Font labelFont = new Font("Arial", Font.BOLD, 14);
+                    Font valueFont = new Font("Arial", Font.PLAIN, 14);
 
-                    bottoneCambioUsername.addMouseListener(new MouseAdapter() {
-                        @Override
-                        public void mouseEntered(MouseEvent e) {
-                            bottoneCambioUsername.setBackground(new Color(93, 173, 226)); 
-                        }
-                        @Override
-                        public void mouseExited(MouseEvent e) {
-                            bottoneCambioUsername.setBackground(new Color(41, 128, 185));
-                        }
-                    });
-                    JButton bottoneCambioEmail= new JButton("Cambia Email");
-                    bottoneCambioEmail.setForeground(Color.WHITE);
-                    bottoneCambioEmail.setBackground(new Color(41, 128, 185));
-                    bottoneCambioEmail.setBorderPainted(false);
-                    bottoneCambioEmail.setFocusPainted(false);
-                    bottoneCambioEmail.setPreferredSize(new Dimension (125,25));
-                    bottoneCambioEmail.addMouseListener(new MouseAdapter() {
-                        @Override
-                        public void mouseEntered(MouseEvent e) {
-                            bottoneCambioEmail.setBackground(new Color(93, 173, 226));
-                        }
-                        @Override
-                        public void mouseExited(MouseEvent e) {
-                            bottoneCambioEmail.setBackground(new Color(41, 128, 185));
-                        }
-                    });
-                        
+                    JPanel profiloPanel = new JPanel(new BorderLayout());
+                    profiloPanel.setBackground(bgMain);
+                    profiloPanel.setBorder(BorderFactory.createEmptyBorder(18, 18, 18, 18));
+
                     JPanel panelSinistra = new JPanel();
                     panelSinistra.setLayout(new BoxLayout(panelSinistra, BoxLayout.Y_AXIS));
-                    panelSinistra.setBackground(new Color(236, 240, 241));
-                    panelSinistra.setBorder(BorderFactory.createEmptyBorder(30, 10, 30, 30));
+                    panelSinistra.setBackground(bgPanel);
+                    panelSinistra.setBorder(BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(new Color(220,230,240), 1, true),
+                        BorderFactory.createEmptyBorder(20, 10, 20, 10)
+                    ));
 
-                    Dimension buttonSize = new Dimension(120, 30);
+                    Dimension buttonSize = new Dimension(160, 36);
+
+                    JButton bottoneInformazioni = new JButton("Informazioni");
+                    JButton bottoneCambioUsername = new JButton("Cambia Username");
+                    JButton bottoneCambioPassword = new JButton("Cambia Password");
+                    JButton bottoneCambioEmail = new JButton("Cambia Email");
+
                     JButton[] bottoni = {
                         bottoneInformazioni,
                         bottoneCambioUsername,
@@ -205,136 +161,160 @@ public class HomeMainFrame {
                         bottoneCambioEmail
                     };
 
+                    // --- bottoni laterali con bordo diverso ---
                     for (JButton b : bottoni) {
+                        b.setFont(labelFont);
+                        b.setBackground(Color.WHITE);
+                        b.setForeground(blue);
+                        b.setFocusPainted(false);
+                        b.setBorder(BorderFactory.createLineBorder(borderBtn, 2, true)); // bordo diverso
                         b.setMaximumSize(buttonSize);
                         b.setPreferredSize(buttonSize);
                         b.setMinimumSize(buttonSize);
                         b.setAlignmentX(0.5f);
+                        b.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                        b.addMouseListener(new java.awt.event.MouseAdapter() {
+                            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                                b.setBackground(new Color(220, 240, 255));
+                            }
+                            public void mouseExited(java.awt.event.MouseEvent evt) {
+                                b.setBackground(Color.WHITE);
+                            }
+                        });
                         panelSinistra.add(b);
-                        panelSinistra.add(Box.createVerticalStrut(10));
+                        panelSinistra.add(Box.createVerticalStrut(14));
                     }
 
                     JPanel panelDestra = new JPanel();
-                    GridBagConstraints gbc = new GridBagConstraints();
-
-                    panelDestra.setLayout(new GridBagLayout());
-                    panelDestra.setBackground(new Color(236, 240, 241));
-                    GridBagConstraints rightGbc = new GridBagConstraints();
-                    rightGbc.insets = new Insets(10, 10, 10, 10);
-                    rightGbc.fill = GridBagConstraints.HORIZONTAL;
-                    rightGbc.gridx = 0;
-                    rightGbc.gridy = 0;
+                    panelDestra.setLayout(new BoxLayout(panelDestra, BoxLayout.Y_AXIS));
+                    panelDestra.setBackground(bgPanel);
+                    panelDestra.setBorder(BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(new Color(220,230,240), 1, true),
+                        BorderFactory.createEmptyBorder(24, 32, 24, 32)
+                    ));
 
                     Utente u = proxy.getUtenteDaCF(cf);
-                    JLabel nome = new JLabel("Nome: " + u.getNome());
-                    JLabel cognome = new JLabel("Cognome: " + u.getCognome());
-                    JLabel codf = new JLabel("Codice Fiscale: " + u.getCF());
-                    JLabel username = new JLabel("Username: " + u.getUsername());
-                    JLabel email = new JLabel("Email: " + u.getEmail());
 
-                    panelDestra.add(nome, rightGbc);
-                    rightGbc.gridy++;
-                    panelDestra.add(cognome, rightGbc);
-                    rightGbc.gridy++;
-                    panelDestra.add(codf, rightGbc);
-                    rightGbc.gridy++;
-                    panelDestra.add(username, rightGbc);
-                    rightGbc.gridy++;
-                    panelDestra.add(email, rightGbc);
-                    rightGbc.gridy++;
-                    rightGbc.insets = new Insets(20, 10, 10, 10); 
+                    JLabel titolo = new JLabel("Profilo utente");
+                    titolo.setFont(titleFont);
+                    titolo.setForeground(blue);
+                    titolo.setAlignmentX(0.0f);
+                    panelDestra.add(titolo);
+                    panelDestra.add(Box.createVerticalStrut(16));
+                    JSeparator sep = new JSeparator();
+                    sep.setForeground(new Color(200, 210, 220));
+                    sep.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
+                    panelDestra.add(sep);
+                    panelDestra.add(Box.createVerticalStrut(16));
 
-                    gbc.gridx = 0;
-                    gbc.gridy = 0;
-                    gbc.anchor = GridBagConstraints.NORTHWEST;
-                    gbc.insets = new Insets(0, 10, 0, 10);
-                    profiloPanel.add(panelSinistra, gbc);
+                    String[][] dati = {
+                        {"Nome:", u.getNome()},
+                        {"Cognome:", u.getCognome()},
+                        {"Codice Fiscale:", u.getCF()},
+                        {"Username:", u.getUsername()},
+                        {"Email:", u.getEmail()}
+                    };
+                    for (String[] r : dati) {
+                        JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+                        row.setOpaque(false);
+                        JLabel l1 = new JLabel(r[0]);
+                        l1.setFont(labelFont);
+                        l1.setForeground(blueLabel);
+                        JLabel l2 = new JLabel(" " + r[1]);
+                        l2.setFont(valueFont);
+                        l2.setForeground(Color.DARK_GRAY);
+                        row.add(l1); row.add(l2);
+                        panelDestra.add(row);
+                        panelDestra.add(Box.createVerticalStrut(8));
+                    }
 
-                    gbc.gridx = 1;
-                    gbc.gridy = 0;
-                    gbc.anchor = GridBagConstraints.CENTER;
-                    gbc.insets = new Insets(0, 0, 0, 40);
-                    profiloPanel.add(panelDestra, gbc);
+                    profiloPanel.add(panelSinistra, BorderLayout.WEST);
+                    profiloPanel.add(panelDestra, BorderLayout.CENTER);
 
-                    JDialog dialog = new JDialog(frame, "Dettagli profilo", false);
-                    dialog.setSize(400, 400);
-                    dialog.getContentPane().setBackground(new Color(236, 240, 241));
+                    JDialog dialog = new JDialog(frame, "Profilo", false);
+                    dialog.setSize(520, 340);
+                    dialog.getContentPane().setBackground(bgMain);
                     dialog.setLayout(new BorderLayout());
                     dialog.setLocationRelativeTo(null);
                     dialog.add(profiloPanel, BorderLayout.CENTER);
+                    dialog.setResizable(false);
                     dialog.setVisible(true);
 
-
-
+                    // --- STILE PER I PANNELLI SECONDARI ---
                     bottoneInformazioni.addActionListener(new ActionListener() {
                         public void actionPerformed(ActionEvent e) {
-                            dialog.getContentPane().removeAll();
-                            GridBagConstraints gbc = new GridBagConstraints();
-                            JPanel informazioniPanel = new JPanel(new GridBagLayout());
+                            JPanel informazioniPanel = new JPanel(new BorderLayout());
+                            informazioniPanel.setBackground(bgMain);
+                            informazioniPanel.setBorder(BorderFactory.createEmptyBorder(18, 18, 18, 18));
 
-                            JPanel panelSinistra = new JPanel();
-                            panelSinistra.setLayout(new BoxLayout(panelSinistra, BoxLayout.Y_AXIS));
-                            panelSinistra.setBackground(new Color(236, 240, 241));
-                            panelSinistra.setBorder(BorderFactory.createEmptyBorder(30, 10, 30, 30));
-
-                            Dimension buttonSize = new Dimension(120, 30);
-                            JButton[] bottoni = {
-                                bottoneInformazioni,
-                                bottoneCambioUsername,
-                                bottoneCambioPassword,
-                                bottoneCambioEmail
-                            };
-
+                            JPanel panelSinistra2 = new JPanel();
+                            panelSinistra2.setLayout(new BoxLayout(panelSinistra2, BoxLayout.Y_AXIS));
+                            panelSinistra2.setBackground(bgPanel);
+                            panelSinistra2.setBorder(panelSinistra.getBorder());
                             for (JButton b : bottoni) {
+                                b.setFont(new Font("Arial", Font.BOLD, 13));
+                                b.setBackground(Color.WHITE);
+                                b.setForeground(blue);
+                                b.setFocusPainted(false);
+                                b.setBorder(BorderFactory.createLineBorder(blue, 1, true));
                                 b.setMaximumSize(buttonSize);
                                 b.setPreferredSize(buttonSize);
                                 b.setMinimumSize(buttonSize);
                                 b.setAlignmentX(0.5f);
-                                panelSinistra.add(b);
-                                panelSinistra.add(Box.createVerticalStrut(10));
+                                b.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                                b.addMouseListener(new java.awt.event.MouseAdapter() {
+                                    public void mouseEntered(java.awt.event.MouseEvent evt) {
+                                        b.setBackground(new Color(220, 240, 255));
+                                    }
+                                    public void mouseExited(java.awt.event.MouseEvent evt) {
+                                        b.setBackground(Color.WHITE);
+                                    }
+                                });
+                                panelSinistra2.add(b);
+                                panelSinistra2.add(Box.createVerticalStrut(14));
                             }
 
-                            JPanel panelDestra = new JPanel();
-                            panelDestra.setLayout(new GridBagLayout());
-                            panelDestra.setBackground(new Color(236, 240, 241));
-                            GridBagConstraints rightGbc = new GridBagConstraints();
-                            rightGbc.insets = new Insets(10, 10, 10, 10);
-                            rightGbc.fill = GridBagConstraints.HORIZONTAL;
-                            rightGbc.gridx = 0;
-                            rightGbc.gridy = 0;
+                            JPanel panelDestra2 = new JPanel();
+                            panelDestra2.setLayout(new BoxLayout(panelDestra2, BoxLayout.Y_AXIS));
+                            panelDestra2.setBackground(bgPanel);
+                            panelDestra2.setBorder(panelDestra.getBorder());
+
+                            JLabel titolo = new JLabel("Profilo utente");
+                            titolo.setFont(new Font("Arial", Font.BOLD, 20));
+                            titolo.setForeground(blue);
+                            titolo.setAlignmentX(0.0f);
+                            panelDestra2.add(titolo);
+                            panelDestra2.add(Box.createVerticalStrut(16));
+                            JSeparator sep = new JSeparator();
+                            sep.setForeground(new Color(200, 210, 220));
+                            sep.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
+                            panelDestra2.add(sep);
+                            panelDestra2.add(Box.createVerticalStrut(16));
 
                             Utente u = proxy.getUtenteDaCF(cf);
-                            JLabel nome = new JLabel("Nome: " + u.getNome());
-                            JLabel cognome = new JLabel("Cognome: " + u.getCognome());
-                            JLabel codf = new JLabel("Codice Fiscale: " + u.getCF());
-                            JLabel username = new JLabel("Username: " + u.getUsername());
-                            JLabel email = new JLabel("Email: " + u.getEmail());
+                            String[][] dati = {
+                                {"Nome:", u.getNome()},
+                                {"Cognome:", u.getCognome()},
+                                {"Codice Fiscale:", u.getCF()},
+                                {"Username:", u.getUsername()},
+                                {"Email:", u.getEmail()}
+                            };
+                            for (String[] r : dati) {
+                                JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+                                row.setOpaque(false);
+                                JLabel l1 = new JLabel(r[0]);
+                                l1.setFont(new Font("Arial", Font.BOLD, 15));
+                                l1.setForeground(blueLabel);
+                                JLabel l2 = new JLabel(" " + r[1]);
+                                l2.setFont(new Font("Arial", Font.PLAIN, 15));
+                                l2.setForeground(Color.DARK_GRAY);
+                                row.add(l1); row.add(l2);
+                                panelDestra2.add(row);
+                                panelDestra2.add(Box.createVerticalStrut(10));
+                            }
 
-                            panelDestra.add(nome, rightGbc);
-                            rightGbc.gridy++;
-                            panelDestra.add(cognome, rightGbc);
-                            rightGbc.gridy++;
-                            panelDestra.add(codf, rightGbc);
-                            rightGbc.gridy++;
-                            panelDestra.add(username, rightGbc);
-                            rightGbc.gridy++;
-                            panelDestra.add(email, rightGbc);
-                            rightGbc.gridy++;
-                            rightGbc.insets = new Insets(20, 10, 10, 10);
-
-                            gbc.gridx = 0;
-                            gbc.gridy = 0;
-                            gbc.anchor = GridBagConstraints.NORTHWEST;
-                            gbc.insets = new Insets(0, 10, 0, 10);
-                            informazioniPanel.add(panelSinistra, gbc);
-
-                            gbc.gridx = 1;
-                            gbc.gridy = 0;
-                            gbc.anchor = GridBagConstraints.CENTER;
-                            gbc.insets = new Insets(0, 0, 0, 40);
-                            informazioniPanel.add(panelDestra, gbc);
-
-                                
+                            informazioniPanel.add(panelSinistra2, BorderLayout.WEST);
+                            informazioniPanel.add(panelDestra2, BorderLayout.CENTER);
 
                             dialog.setContentPane(informazioniPanel);
                             dialog.getContentPane().revalidate();
@@ -344,83 +324,109 @@ public class HomeMainFrame {
 
 
 
-
                     bottoneCambioPassword.addActionListener(new ActionListener() {
                         public void actionPerformed(ActionEvent e) {
                             dialog.getContentPane().removeAll();
 
-                            JPanel cambioPasswordPanel = new JPanel(new GridBagLayout());
-                            GridBagConstraints gbc = new GridBagConstraints();
+                            JPanel cambioPasswordPanel = new JPanel(new BorderLayout());
+                            cambioPasswordPanel.setBackground(bgMain);
+                            cambioPasswordPanel.setBorder(BorderFactory.createEmptyBorder(18, 18, 18, 18));
 
-                            JPanel panelSinistra = new JPanel();
-                            panelSinistra.setLayout(new BoxLayout(panelSinistra, BoxLayout.Y_AXIS));
-                            panelSinistra.setBackground(new Color(236, 240, 241));
-                            panelSinistra.setBorder(BorderFactory.createEmptyBorder(30, 10, 30, 30));
-
-                            Dimension buttonSize = new Dimension(120, 30);
-                            JButton[] bottoni = {
-                                bottoneInformazioni,
-                                bottoneCambioUsername,
-                                bottoneCambioPassword,
-                                bottoneCambioEmail
-                            };
-
+                            JPanel panelSinistra2 = new JPanel();
+                            panelSinistra2.setLayout(new BoxLayout(panelSinistra2, BoxLayout.Y_AXIS));
+                            panelSinistra2.setBackground(bgPanel);
+                            panelSinistra2.setBorder(panelSinistra.getBorder());
                             for (JButton b : bottoni) {
+                                b.setFont(new Font("Arial", Font.BOLD, 13));
+                                b.setBackground(Color.WHITE);
+                                b.setForeground(blue);
+                                b.setFocusPainted(false);
+                                b.setBorder(BorderFactory.createLineBorder(blue, 1, true));
                                 b.setMaximumSize(buttonSize);
                                 b.setPreferredSize(buttonSize);
                                 b.setMinimumSize(buttonSize);
                                 b.setAlignmentX(0.5f);
-                                panelSinistra.add(b);
-                                panelSinistra.add(Box.createVerticalStrut(10));
+                                b.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                                b.addMouseListener(new java.awt.event.MouseAdapter() {
+                                    public void mouseEntered(java.awt.event.MouseEvent evt) {
+                                        b.setBackground(new Color(220, 240, 255));
+                                    }
+                                    public void mouseExited(java.awt.event.MouseEvent evt) {
+                                        b.setBackground(Color.WHITE);
+                                    }
+                                });
+                                panelSinistra2.add(b);
+                                panelSinistra2.add(Box.createVerticalStrut(14));
                             }
 
-                            JPanel panelDestra = new JPanel();
-                            panelDestra.setLayout(new GridBagLayout());
-                            panelDestra.setBackground(new Color(236, 240, 241));
-                            GridBagConstraints rightGbc = new GridBagConstraints();
-                            rightGbc.insets = new Insets(10, 10, 10, 10);
-                            rightGbc.fill = GridBagConstraints.HORIZONTAL;
-                            rightGbc.gridx = 0;
-                            rightGbc.gridy = 0;
+                            JPanel panelDestra2 = new JPanel();
+                            panelDestra2.setLayout(new BoxLayout(panelDestra2, BoxLayout.Y_AXIS));
+                            panelDestra2.setBackground(bgPanel);
+                            panelDestra2.setBorder(panelDestra.getBorder());
 
-                            JLabel vecchiaPasswordLabel = new JLabel("Inserisci vecchia password");
-                            JTextField vecchiaPasswordField = new JTextField(20);
-                            JLabel nuovaPasswordLabel = new JLabel("Inserisci nuova password");
-                            JTextField nuovaPasswordField = new JTextField(20);
+                            JLabel titolo = new JLabel("Cambia Password");
+                            titolo.setFont(new Font("Arial", Font.BOLD, 18));
+                            titolo.setForeground(blue);
+                            titolo.setAlignmentX(0.0f);
+                            panelDestra2.add(titolo);
+                            panelDestra2.add(Box.createVerticalStrut(16));
+                            JSeparator sep = new JSeparator();
+                            sep.setForeground(new Color(200, 210, 220));
+                            sep.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
+                            panelDestra2.add(sep);
+                            panelDestra2.add(Box.createVerticalStrut(16));
+
+                            JLabel vecchiaPasswordLabel = new JLabel("Vecchia password:");
+                            vecchiaPasswordLabel.setFont(new Font("Arial", Font.BOLD, 14));
+                            vecchiaPasswordLabel.setForeground(blueLabel);
+                            vecchiaPasswordLabel.setAlignmentX(0.0f);
+                            panelDestra2.add(vecchiaPasswordLabel);
+                            panelDestra2.add(Box.createVerticalStrut(5));
+                            JPasswordField vecchiaPasswordField = new JPasswordField(20);
+                            vecchiaPasswordField.setFont(new Font("Arial", Font.PLAIN, 14));
+                            vecchiaPasswordField.setMaximumSize(new Dimension(250, 28));
+                            vecchiaPasswordField.setAlignmentX(0.0f);
+                            panelDestra2.add(vecchiaPasswordField);
+                            panelDestra2.add(Box.createVerticalStrut(10));
+
+                            JLabel nuovaPasswordLabel = new JLabel("Nuova password:");
+                            nuovaPasswordLabel.setFont(new Font("Arial", Font.BOLD, 14));
+                            nuovaPasswordLabel.setForeground(blueLabel);
+                            nuovaPasswordLabel.setAlignmentX(0.0f);
+                            panelDestra2.add(nuovaPasswordLabel);
+                            panelDestra2.add(Box.createVerticalStrut(5));
+                            JPasswordField nuovaPasswordField = new JPasswordField(20);
+                            nuovaPasswordField.setFont(new Font("Arial", Font.PLAIN, 14));
+                            nuovaPasswordField.setMaximumSize(new Dimension(250, 28));
+                            nuovaPasswordField.setAlignmentX(0.0f);
+                            panelDestra2.add(nuovaPasswordField);
+                            panelDestra2.add(Box.createVerticalStrut(18));
+
                             JButton applicaButton = new JButton("Applica");
-
-                            Dimension fieldSize = new Dimension(250, 25);
-                            vecchiaPasswordField.setPreferredSize(fieldSize);
-                            nuovaPasswordField.setPreferredSize(fieldSize);
-                            applicaButton.setPreferredSize(fieldSize);
-
-                            panelDestra.add(vecchiaPasswordLabel, rightGbc);
-                            rightGbc.gridy++;
-                            panelDestra.add(vecchiaPasswordField, rightGbc);
-                            rightGbc.gridy++;
-                            panelDestra.add(nuovaPasswordLabel, rightGbc);
-                            rightGbc.gridy++;
-                            panelDestra.add(nuovaPasswordField, rightGbc);
-                            rightGbc.gridy++;
-                            rightGbc.insets = new Insets(20, 10, 10, 10);
-                            panelDestra.add(applicaButton, rightGbc);
-
-                            gbc.gridx = 0;
-                            gbc.gridy = 0;
-                            gbc.anchor = GridBagConstraints.NORTHWEST;
-                            gbc.insets = new Insets(0, 10, 0, 10);
-                            cambioPasswordPanel.add(panelSinistra, gbc);
-
-                            gbc.gridx = 1;
-                            gbc.gridy = 0;
-                            gbc.anchor = GridBagConstraints.CENTER;
-                            gbc.insets = new Insets(0, 0, 0, 40);
-                            cambioPasswordPanel.add(panelDestra, gbc);
+                            applicaButton.setFont(new Font("Arial", Font.BOLD, 13));
+                            applicaButton.setBackground(blue);
+                            applicaButton.setForeground(blueLabel); // colore testo come "Informazioni"
+                            applicaButton.setFocusPainted(false);
+                            applicaButton.setBorder(BorderFactory.createLineBorder(blue, 1, true));
+                            applicaButton.setMaximumSize(new Dimension(120, 32));
+                            applicaButton.setAlignmentX(0.0f);
+                            applicaButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                            applicaButton.addMouseListener(new MouseAdapter() {
+                                @Override
+                                public void mouseEntered(MouseEvent e) {
+                                    applicaButton.setBackground(new Color(93, 173, 226));
+                                }
+                                @Override
+                                public void mouseExited(MouseEvent e) {
+                                    applicaButton.setBackground(blue);
+                                }
+                            });
+                            panelDestra2.add(applicaButton);
 
                             applicaButton.addActionListener(new ActionListener() {
                                 public void actionPerformed(ActionEvent e) {
-                                    String passwordVecchia = vecchiaPasswordField.getText();
-                                    String passwordNuova = nuovaPasswordField.getText();
+                                    String passwordVecchia = new String(vecchiaPasswordField.getPassword());
+                                    String passwordNuova = new String(nuovaPasswordField.getPassword());
                                     boolean risultato = proxy.cambiaPassword(cf, passwordVecchia, passwordNuova);
                                     if (risultato) {
                                         JOptionPane.showMessageDialog(dialog, "Aggiornamento password avvenuto con successo");
@@ -429,6 +435,9 @@ public class HomeMainFrame {
                                     }
                                 }
                             });
+
+                            cambioPasswordPanel.add(panelSinistra2, BorderLayout.WEST);
+                            cambioPasswordPanel.add(panelDestra2, BorderLayout.CENTER);
 
                             dialog.setContentPane(cambioPasswordPanel);
                             dialog.revalidate();
@@ -442,66 +451,87 @@ public class HomeMainFrame {
                         public void actionPerformed(ActionEvent e) {
                             dialog.getContentPane().removeAll();
 
-                            JPanel cambioUsernamePanel = new JPanel(new GridBagLayout());
-                            GridBagConstraints gbc = new GridBagConstraints();
+                            JPanel cambioUsernamePanel = new JPanel(new BorderLayout());
+                            cambioUsernamePanel.setBackground(bgMain);
+                            cambioUsernamePanel.setBorder(BorderFactory.createEmptyBorder(18, 18, 18, 18));
 
-                            JPanel panelSinistra = new JPanel();
-                            panelSinistra.setLayout(new BoxLayout(panelSinistra, BoxLayout.Y_AXIS));
-                            panelSinistra.setBackground(new Color(236, 240, 241));
-                            panelSinistra.setBorder(BorderFactory.createEmptyBorder(30, 10, 30, 30));
-
-                            Dimension buttonSize = new Dimension(120, 30);
-                            JButton[] bottoni = {
-                                bottoneInformazioni,
-                                bottoneCambioUsername,
-                                bottoneCambioPassword,
-                                bottoneCambioEmail
-                            };
-
+                            JPanel panelSinistra2 = new JPanel();
+                            panelSinistra2.setLayout(new BoxLayout(panelSinistra2, BoxLayout.Y_AXIS));
+                            panelSinistra2.setBackground(bgPanel);
+                            panelSinistra2.setBorder(panelSinistra.getBorder());
                             for (JButton b : bottoni) {
+                                b.setFont(new Font("Arial", Font.BOLD, 13));
+                                b.setBackground(Color.WHITE);
+                                b.setForeground(blue);
+                                b.setFocusPainted(false);
+                                b.setBorder(BorderFactory.createLineBorder(blue, 1, true));
                                 b.setMaximumSize(buttonSize);
                                 b.setPreferredSize(buttonSize);
                                 b.setMinimumSize(buttonSize);
                                 b.setAlignmentX(0.5f);
-                                panelSinistra.add(b);
-                                panelSinistra.add(Box.createVerticalStrut(10));
+                                b.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                                b.addMouseListener(new java.awt.event.MouseAdapter() {
+                                    public void mouseEntered(java.awt.event.MouseEvent evt) {
+                                        b.setBackground(new Color(220, 240, 255));
+                                    }
+                                    public void mouseExited(java.awt.event.MouseEvent evt) {
+                                        b.setBackground(Color.WHITE);
+                                    }
+                                });
+                                panelSinistra2.add(b);
+                                panelSinistra2.add(Box.createVerticalStrut(14));
                             }
 
-                            JPanel panelDestra = new JPanel();
-                            panelDestra.setLayout(new GridBagLayout());
-                            panelDestra.setBackground(new Color(236, 240, 241));
-                            GridBagConstraints rightGbc = new GridBagConstraints();
-                            rightGbc.insets = new Insets(10, 10, 10, 10);
-                            rightGbc.fill = GridBagConstraints.HORIZONTAL;
-                            rightGbc.gridx = 0;
-                            rightGbc.gridy = 0;
+                            JPanel panelDestra2 = new JPanel();
+                            panelDestra2.setLayout(new BoxLayout(panelDestra2, BoxLayout.Y_AXIS));
+                            panelDestra2.setBackground(bgPanel);
+                            panelDestra2.setBorder(panelDestra.getBorder());
 
-                            JLabel nuovoUsernameLabel = new JLabel("Inserisci nuovo username");
+                            JLabel titolo = new JLabel("Cambia Username");
+                            titolo.setFont(new Font("Arial", Font.BOLD, 18));
+                            titolo.setForeground(blue);
+                            titolo.setAlignmentX(0.0f);
+                            panelDestra2.add(titolo);
+                            panelDestra2.add(Box.createVerticalStrut(16));
+                            JSeparator sep = new JSeparator();
+                            sep.setForeground(new Color(200, 210, 220));
+                            sep.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
+                            panelDestra2.add(sep);
+                            panelDestra2.add(Box.createVerticalStrut(16));
+
+                            JLabel nuovoUsernameLabel = new JLabel("Nuovo username:");
+                            nuovoUsernameLabel.setFont(new Font("Arial", Font.BOLD, 14));
+                            nuovoUsernameLabel.setForeground(blueLabel);
+                            nuovoUsernameLabel.setAlignmentX(0.0f);
+                            panelDestra2.add(nuovoUsernameLabel);
+                            panelDestra2.add(Box.createVerticalStrut(5));
                             JTextField nuovoUsernameField = new JTextField(20);
+                            nuovoUsernameField.setFont(new Font("Arial", Font.PLAIN, 14));
+                            nuovoUsernameField.setMaximumSize(new Dimension(250, 28));
+                            nuovoUsernameField.setAlignmentX(0.0f);
+                            panelDestra2.add(nuovoUsernameField);
+                            panelDestra2.add(Box.createVerticalStrut(18));
+
                             JButton applicaButton = new JButton("Applica");
-
-                            Dimension fieldSize = new Dimension(250, 25);
-                            nuovoUsernameField.setPreferredSize(fieldSize);
-                            applicaButton.setPreferredSize(fieldSize);
-
-                            panelDestra.add(nuovoUsernameLabel, rightGbc);
-                            rightGbc.gridy++;
-                            panelDestra.add(nuovoUsernameField, rightGbc);
-                            rightGbc.gridy++;
-                            rightGbc.insets = new Insets(20, 10, 10, 10);
-                            panelDestra.add(applicaButton, rightGbc);
-
-                            gbc.gridx = 0;
-                            gbc.gridy = 0;
-                            gbc.anchor = GridBagConstraints.NORTHWEST;
-                            gbc.insets = new Insets(0, 10, 0, 10);
-                            cambioUsernamePanel.add(panelSinistra, gbc);
-
-                            gbc.gridx = 1;
-                            gbc.gridy = 0;
-                            gbc.anchor = GridBagConstraints.CENTER;
-                            gbc.insets = new Insets(0, 0, 0, 40);
-                            cambioUsernamePanel.add(panelDestra, gbc);
+                            applicaButton.setFont(new Font("Arial", Font.BOLD, 13));
+                            applicaButton.setBackground(blue);
+                            applicaButton.setForeground(blueLabel); // colore testo come "Informazioni"
+                            applicaButton.setFocusPainted(false);
+                            applicaButton.setBorder(BorderFactory.createLineBorder(blue, 1, true));
+                            applicaButton.setMaximumSize(new Dimension(120, 32));
+                            applicaButton.setAlignmentX(0.0f);
+                            applicaButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                            applicaButton.addMouseListener(new MouseAdapter() {
+                                @Override
+                                public void mouseEntered(MouseEvent e) {
+                                    applicaButton.setBackground(new Color(93, 173, 226));
+                                }
+                                @Override
+                                public void mouseExited(MouseEvent e) {
+                                    applicaButton.setBackground(blue);
+                                }
+                            });
+                            panelDestra2.add(applicaButton);
 
                             applicaButton.addActionListener(new ActionListener() {
                                 public void actionPerformed(ActionEvent e) {
@@ -515,6 +545,9 @@ public class HomeMainFrame {
                                 }
                             });
 
+                            cambioUsernamePanel.add(panelSinistra2, BorderLayout.WEST);
+                            cambioUsernamePanel.add(panelDestra2, BorderLayout.CENTER);
+
                             dialog.setContentPane(cambioUsernamePanel);
                             dialog.revalidate();
                             dialog.repaint();
@@ -527,66 +560,87 @@ public class HomeMainFrame {
                         public void actionPerformed(ActionEvent e) {
                             dialog.getContentPane().removeAll();
 
-                            JPanel cambioEmailPanel = new JPanel(new GridBagLayout());
-                            GridBagConstraints gbc = new GridBagConstraints();
+                            JPanel cambioEmailPanel = new JPanel(new BorderLayout());
+                            cambioEmailPanel.setBackground(bgMain);
+                            cambioEmailPanel.setBorder(BorderFactory.createEmptyBorder(18, 18, 18, 18));
 
-                            JPanel panelSinistra = new JPanel();
-                            panelSinistra.setLayout(new BoxLayout(panelSinistra, BoxLayout.Y_AXIS));
-                            panelSinistra.setBackground(new Color(236, 240, 241));
-                            panelSinistra.setBorder(BorderFactory.createEmptyBorder(30, 10, 30, 30));
-
-                            Dimension buttonSize = new Dimension(120, 30);
-                            JButton[] bottoni = {
-                                bottoneInformazioni,
-                                bottoneCambioUsername,
-                                bottoneCambioPassword,
-                                bottoneCambioEmail
-                            };
-
+                            JPanel panelSinistra2 = new JPanel();
+                            panelSinistra2.setLayout(new BoxLayout(panelSinistra2, BoxLayout.Y_AXIS));
+                            panelSinistra2.setBackground(bgPanel);
+                            panelSinistra2.setBorder(panelSinistra.getBorder());
                             for (JButton b : bottoni) {
+                                b.setFont(new Font("Arial", Font.BOLD, 13));
+                                b.setBackground(Color.WHITE);
+                                b.setForeground(blue);
+                                b.setFocusPainted(false);
+                                b.setBorder(BorderFactory.createLineBorder(blue, 1, true));
                                 b.setMaximumSize(buttonSize);
                                 b.setPreferredSize(buttonSize);
                                 b.setMinimumSize(buttonSize);
                                 b.setAlignmentX(0.5f);
-                                panelSinistra.add(b);
-                                panelSinistra.add(Box.createVerticalStrut(10));
+                                b.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                                b.addMouseListener(new java.awt.event.MouseAdapter() {
+                                    public void mouseEntered(java.awt.event.MouseEvent evt) {
+                                        b.setBackground(new Color(220, 240, 255));
+                                    }
+                                    public void mouseExited(java.awt.event.MouseEvent evt) {
+                                        b.setBackground(Color.WHITE);
+                                    }
+                                });
+                                panelSinistra2.add(b);
+                                panelSinistra2.add(Box.createVerticalStrut(14));
                             }
 
-                            JPanel panelDestra = new JPanel();
-                            panelDestra.setLayout(new GridBagLayout());
-                            panelDestra.setBackground(new Color(236, 240, 241));
-                            GridBagConstraints rightGbc = new GridBagConstraints();
-                            rightGbc.insets = new Insets(10, 10, 10, 10);
-                            rightGbc.fill = GridBagConstraints.HORIZONTAL;
-                            rightGbc.gridx = 0;
-                            rightGbc.gridy = 0;
+                            JPanel panelDestra2 = new JPanel();
+                            panelDestra2.setLayout(new BoxLayout(panelDestra2, BoxLayout.Y_AXIS));
+                            panelDestra2.setBackground(bgPanel);
+                            panelDestra2.setBorder(panelDestra.getBorder());
 
-                            JLabel nuovaEmailLabel = new JLabel("Inserisci nuova Email");
+                            JLabel titolo = new JLabel("Cambia Email");
+                            titolo.setFont(new Font("Arial", Font.BOLD, 18));
+                            titolo.setForeground(blue);
+                            titolo.setAlignmentX(0.0f);
+                            panelDestra2.add(titolo);
+                            panelDestra2.add(Box.createVerticalStrut(16));
+                            JSeparator sep = new JSeparator();
+                            sep.setForeground(new Color(200, 210, 220));
+                            sep.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
+                            panelDestra2.add(sep);
+                            panelDestra2.add(Box.createVerticalStrut(16));
+
+                            JLabel nuovaEmailLabel = new JLabel("Nuova email:");
+                            nuovaEmailLabel.setFont(new Font("Arial", Font.BOLD, 14));
+                            nuovaEmailLabel.setForeground(blueLabel);
+                            nuovaEmailLabel.setAlignmentX(0.0f);
+                            panelDestra2.add(nuovaEmailLabel);
+                            panelDestra2.add(Box.createVerticalStrut(5));
                             JTextField nuovaEmailField = new JTextField(20);
+                            nuovaEmailField.setFont(new Font("Arial", Font.PLAIN, 14));
+                            nuovaEmailField.setMaximumSize(new Dimension(250, 28));
+                            nuovaEmailField.setAlignmentX(0.0f);
+                            panelDestra2.add(nuovaEmailField);
+                            panelDestra2.add(Box.createVerticalStrut(18));
+
                             JButton applicaButton = new JButton("Applica");
-
-                            Dimension fieldSize = new Dimension(250, 25);
-                            nuovaEmailField.setPreferredSize(fieldSize);
-                            applicaButton.setPreferredSize(fieldSize);
-
-                            panelDestra.add(nuovaEmailLabel, rightGbc);
-                            rightGbc.gridy++;
-                            panelDestra.add(nuovaEmailField, rightGbc);
-                            rightGbc.gridy++;
-                            rightGbc.insets = new Insets(20, 10, 10, 10);
-                            panelDestra.add(applicaButton, rightGbc);
-
-                            gbc.gridx = 0;
-                            gbc.gridy = 0;
-                            gbc.anchor = GridBagConstraints.NORTHWEST;
-                            gbc.insets = new Insets(0, 10, 0, 10);
-                            cambioEmailPanel.add(panelSinistra, gbc);
-
-                            gbc.gridx = 1;
-                            gbc.gridy = 0;
-                            gbc.anchor = GridBagConstraints.CENTER;
-                            gbc.insets = new Insets(0, 0, 0, 40);
-                            cambioEmailPanel.add(panelDestra, gbc);
+                            applicaButton.setFont(new Font("Arial", Font.BOLD, 13));
+                            applicaButton.setBackground(blue);
+                            applicaButton.setForeground(blueLabel); // colore testo come "Informazioni"
+                            applicaButton.setFocusPainted(false);
+                            applicaButton.setBorder(BorderFactory.createLineBorder(blue, 1, true));
+                            applicaButton.setMaximumSize(new Dimension(120, 32));
+                            applicaButton.setAlignmentX(0.0f);
+                            applicaButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                            applicaButton.addMouseListener(new MouseAdapter() {
+                                @Override
+                                public void mouseEntered(MouseEvent e) {
+                                    applicaButton.setBackground(new Color(93, 173, 226));
+                                }
+                                @Override
+                                public void mouseExited(MouseEvent e) {
+                                    applicaButton.setBackground(blue);
+                                }
+                            });
+                            panelDestra2.add(applicaButton);
 
                             applicaButton.addActionListener(new ActionListener() {
                                 public void actionPerformed(ActionEvent e) {
@@ -603,6 +657,9 @@ public class HomeMainFrame {
                                     }
                                 }
                             });
+
+                            cambioEmailPanel.add(panelSinistra2, BorderLayout.WEST);
+                            cambioEmailPanel.add(panelDestra2, BorderLayout.CENTER);
 
                             dialog.setContentPane(cambioEmailPanel);
                             dialog.revalidate();
