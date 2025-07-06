@@ -551,6 +551,72 @@ public class ServerSlave extends Thread{
                     }
                     out.writeObject(alLibri);
                     out.flush();
+                }else if(operazione.equals("controlloPassword")){
+                    String passwordVecchia = (String)in.readObject();
+                    String cf = (String)in.readObject();
+                    String comandoQuery = "SELECT password FROM utente WHERE cf = ? AND password = ?";
+                    PreparedStatement ps = con.prepareStatement(comandoQuery);
+                    ps.setString(1,cf);
+                    ps.setString(2,passwordVecchia);
+                    ResultSet rs = ps.executeQuery();
+                    if(rs.next()){
+                        out.writeObject(true);
+                        out.flush();
+                    }else{
+                        out.writeObject(false);
+                        out.flush();
+                    }
+                }else if(operazione.equals("cambiaPassword")){
+                    String cf = (String)in.readObject();
+                    String nuovaPassword = (String)in.readObject();
+                    String comandoQuery = "UPDATE utente set password = ? WHERE cf = ?";
+                    PreparedStatement ps = con.prepareStatement(comandoQuery);
+                    ps.setString(1,nuovaPassword);
+                    ps.setString(2,cf);
+                    ps.executeUpdate();
+                }
+                else if(operazione.equals("cambiaUsername")){
+                    String cf = (String)in.readObject();
+                    String nuovoUsername = (String)in.readObject();
+                    String comandoQuery = "UPDATE utente set username = ? WHERE cf = ?";
+                    PreparedStatement ps = con.prepareStatement(comandoQuery);
+                    ps.setString(1,nuovoUsername);
+                    ps.setString(2,cf);
+                    ps.executeUpdate();
+                }else if(operazione.equals("controlloNuovoUsername")){
+                    String nuovoUsername = (String)in.readObject();
+                    String comandoQuery = "SELECT username FROM utente WHERE username = ?";
+                    PreparedStatement ps = con.prepareStatement(comandoQuery);
+                    ps.setString(1,nuovoUsername);
+                    ResultSet rs = ps.executeQuery();
+                    if(rs.next()){
+                        out.writeObject(false);
+                        out.flush();
+                    }else{
+                        out.writeObject(true);
+                        out.flush();
+                    }
+                }else if(operazione.equals("controlloEmail")){
+                    String nuovaMail = (String)in.readObject();
+                    String comandoQuery = "SELECT email FROM utente WHERE email = ?";
+                    PreparedStatement ps = con.prepareStatement(comandoQuery);
+                    ps.setString(1,nuovaMail);
+                    ResultSet rs = ps.executeQuery();
+                    if(rs.next()){
+                        out.writeObject(false);
+                        out.flush();
+                    }else{
+                        out.writeObject(true);
+                        out.flush();
+                    }
+                }else if(operazione.equals("cambiaEmail")){
+                    String cf =(String)in.readObject();
+                    String nuovaEmail = (String)in.readObject();
+                    String comandoQuery = "UPDATE utente SET email = ? WHERE cf = ?";
+                    PreparedStatement ps = con.prepareStatement(comandoQuery);
+                    ps.setString(1,nuovaEmail);
+                    ps.setString(2,cf);
+                    ps.executeUpdate();
                 }
             }
         } catch (IOException | ClassNotFoundException | SQLException e) {}

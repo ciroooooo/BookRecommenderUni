@@ -32,7 +32,7 @@ public class LgMainFrame {
  * Costruisce il frame principale di login per l'applicazione.
  * Questo frame consente agli utenti di accedere, registrarsi o accedere come ospiti.
  *
- * @param listaLibri un ArrayList contenente l'elenco dei libri.
+ * @param proxy il proxy utilizzato per la comunicazione con il server.
  * 
  */
     @SuppressWarnings("Convert2Lambda")
@@ -230,10 +230,10 @@ public class LgMainFrame {
  * Questo metodo legge l'elenco degli utenti da un file e verifica se
  * l'username e la password forniti corrispondono a un utente esistente.
  *
- * @param username2 l'username inserito dall'utente.
- * @param password2 la password inserita dall'utente.
- * @return l'indice dell'utente autenticato nell'elenco degli utenti se le credenziali sono corrette;
- *         -1 se le credenziali non sono valide.
+ * @param username l'username inserito dall'utente.
+ * @param password la password inserita dall'utente.
+ * @return true se le credenziali sono corrette false altrimenti
+ *         
  */
     private boolean autenticazione(String username, String password) {
         ArrayList<String> listaUsername = proxy.getListaUsernameUtente();

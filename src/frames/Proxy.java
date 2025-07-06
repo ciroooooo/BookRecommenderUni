@@ -11,6 +11,11 @@ public class Proxy{
     private Socket socket;
     private ObjectInputStream in;
     private ObjectOutputStream out;
+
+/**
+ * Costruttore della classe Proxy
+ * Effettua la connessione al Server ed inizializza il flusso d'uscita e di entrata delle infromazioni
+ */
     public Proxy(){
         try{
             this.ip = InetAddress.getByName(null);
@@ -398,5 +403,77 @@ public class Proxy{
             alLibri =(ArrayList<Libro>)in.readObject();
         }catch(IOException | ClassNotFoundException e){}
         return alLibri;
+    }
+      public boolean cambiaPassword(String cf, String passwordVecchia, String nuovaPassword) {
+        try {
+            out.writeObject("controlloPassword");
+            out.flush();
+            out.writeObject(passwordVecchia);
+            out.flush();
+            out.writeObject(cf);
+            out.flush();
+            boolean passwordCorretta = (boolean)in.readObject();
+            if(passwordCorretta){
+                out.writeObject("cambiaPassword");
+                out.flush();
+                out.writeObject(cf);
+                out.flush();
+                out.writeObject(nuovaPassword);
+                out.flush();
+                return true;
+            }else{
+                return false;
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            return false;
+        }
+    }
+    public boolean cambiaUsername(String cf, String nuovoUsername) {
+        try {
+            out.writeObject("controlloNuovoUsername");
+            out.flush();
+            out.writeObject(nuovoUsername);
+            out.flush();
+            boolean usernameNonEsistente = (boolean)in.readObject();
+            if(usernameNonEsistente){
+                out.writeObject("cambiaUsername");
+                out.flush();
+                out.writeObject(cf);
+                out.flush();
+                out.writeObject(nuovoUsername);
+                out.flush();
+                return true;
+            }
+            else{
+                return false;
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            return false;
+        }
+    }
+
+    public boolean cambiaEmail(String cf, String nuovaEmail)
+    {
+        try {
+            out.writeObject("controlloEmail");
+            out.flush();
+            out.writeObject(nuovaEmail);
+            out.flush();
+            boolean emailNonEsistente = (boolean)in.readObject();
+            if(emailNonEsistente)
+            {
+                out.writeObject("cambiaEmail");
+                out.flush();
+                out.writeObject(cf);
+                out.flush();
+                out.writeObject(nuovaEmail);
+                out.flush();
+                return true;
+            }
+            else
+                return false;
+        } catch (IOException | ClassNotFoundException e) {
+            return false;
+        }
     }
 }
