@@ -39,279 +39,702 @@ public class HomeMainFrame {
  */
     @SuppressWarnings("Convert2Lambda")
     public HomeMainFrame(Proxy proxy,String cf) {
-    this.proxy = proxy;
-    frame = new JFrame();
+        this.proxy = proxy;
+        frame = new JFrame();
 
-    topPanel = new JPanel();
-    topPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
-    topPanel.setBackground(new Color(41, 128, 185)); // Cambiato: ora uguale ai bottoni
-    topPanel.setOpaque(true);
+        topPanel = new JPanel();
+        topPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
+        topPanel.setBackground(new Color(41, 128, 185)); 
+        topPanel.setOpaque(true);
 
-    bottoneHome = new JButton("Logout"); // Cambiato da "Home" a "Logout"
-    bottoneLibreria = new JButton("Libreria");
-    bottoneProfilo=new JButton("Profilo");
-    customizeButton(bottoneHome);
-    customizeButton(bottoneLibreria);
-    customizeButton(bottoneProfilo);
+        bottoneHome = new JButton("Logout"); 
+        bottoneLibreria = new JButton("Libreria");
+        bottoneProfilo=new JButton("Profilo");
+        customizeButton(bottoneHome);
+        customizeButton(bottoneLibreria);
+        customizeButton(bottoneProfilo);
 
-    bottoneHome.setBackground(new Color(41, 128, 185)); // Darker blue
-    bottoneLibreria.setBackground(new Color(41, 128, 185));
-    bottoneProfilo.setBackground(new Color(41, 128, 185));
-    bottoneHome.setForeground(Color.WHITE);
-    bottoneLibreria.setForeground(Color.WHITE);
-    bottoneProfilo.setForeground(Color.WHITE);
-     // Azione per il tasto Logout
-    bottoneHome.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            LgMainFrame loginFrame = new LgMainFrame(proxy);
-            loginFrame.initialize();
-            frame.dispose();
-        }
-    });
+        bottoneHome.setBackground(new Color(41, 128, 185)); 
+        bottoneLibreria.setBackground(new Color(41, 128, 185));
+        bottoneProfilo.setBackground(new Color(41, 128, 185));
+        bottoneHome.setForeground(Color.WHITE);
+        bottoneLibreria.setForeground(Color.WHITE);
+        bottoneProfilo.setForeground(Color.WHITE);
 
-    bottoneHome.addMouseListener(new MouseAdapter() {
-        @Override
-        public void mouseEntered(MouseEvent e) {
-            bottoneHome.setBackground(new Color(93, 173, 226)); // Lighter blue
-        }
-        @Override
-        public void mouseExited(MouseEvent e) {
-            bottoneHome.setBackground(new Color(41, 128, 185));
-        }
-    });
-    bottoneLibreria.addMouseListener(new MouseAdapter() {
-        @Override
-        public void mouseEntered(MouseEvent e) {
-            bottoneLibreria.setBackground(new Color(93, 173, 226));
-        }
-        @Override
-        public void mouseExited(MouseEvent e) {
-            bottoneLibreria.setBackground(new Color(41, 128, 185));
-        }
-    });
-    bottoneProfilo.addMouseListener(new MouseAdapter() {
-        @Override
-        public void mouseEntered(MouseEvent e) {
-            bottoneProfilo.setBackground(new Color(93, 173, 226));
-        }
-        @Override
-        public void mouseExited(MouseEvent e) {
-            bottoneProfilo.setBackground(new Color(41, 128, 185));
-        }
-    });
-
-    topPanel.add(bottoneHome);
-    topPanel.add(bottoneLibreria);
-    topPanel.add(bottoneProfilo);
-
-    // Aggiunta dell'azione al bottone Libreria
-    bottoneLibreria.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (cf.equals("Ospite")) {
-                JOptionPane.showMessageDialog(null, "Impossibile effettuare questa operazione come ospite");
-            } else{
-                LibrerieMainFrame myframe = new LibrerieMainFrame(proxy,cf);
-                myframe.initialize();
+        bottoneHome.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                LgMainFrame loginFrame = new LgMainFrame(proxy);
+                loginFrame.initialize();
                 frame.dispose();
             }
-        }
-    });
-    bottoneProfilo.addActionListener(new ActionListener(){
-        @Override
-        public void actionPerformed(ActionEvent e){
-            if(cf.equals("Ospite")){
-                JOptionPane.showMessageDialog(null, "Impossibile effettuare questa operazione come ospite");
-            }else{
-                boolean primaVolta=true;
-                GridBagConstraints menuGrid=new GridBagConstraints();
-                menuGrid.gridx=0;
-                menuGrid.anchor=GridBagConstraints.WEST;
-                menuGrid.insets=new Insets(5, 10, 5,10);
-                JPanel profiloPanel=new JPanel(new GridBagLayout());
-                JPanel buttonPanel = new JPanel();
-               
-                buttonPanel.setBackground(new Color(240, 240, 240));
-                String[] menuLaterale = {"Informazioni","Cambio Password","Cambio Username","Cambio Email"};
-                for(int i=0;i<menuLaterale.length;i++){
-                    JButton bottoneMenuLaterale=new JButton(menuLaterale[i]);
-                    bottoneMenuLaterale.setForeground(Color.WHITE);
-                    bottoneMenuLaterale.setBackground(new Color(41, 128, 185)); // Darker blue
-                    bottoneMenuLaterale.setBorderPainted(false);
-                    bottoneMenuLaterale.setFocusPainted(false);
-                    bottoneMenuLaterale.addMouseListener(new MouseAdapter() {
+        });
+
+        bottoneHome.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                bottoneHome.setBackground(new Color(93, 173, 226)); 
+            }
+            @Override
+            public void mouseExited(MouseEvent e) {
+                bottoneHome.setBackground(new Color(41, 128, 185));
+            }
+        });
+        bottoneLibreria.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                bottoneLibreria.setBackground(new Color(93, 173, 226));
+            }
+            @Override
+            public void mouseExited(MouseEvent e) {
+                bottoneLibreria.setBackground(new Color(41, 128, 185));
+            }
+        });
+        bottoneProfilo.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                bottoneProfilo.setBackground(new Color(93, 173, 226));
+            }
+            @Override
+            public void mouseExited(MouseEvent e) {
+                bottoneProfilo.setBackground(new Color(41, 128, 185));
+            }
+        });
+
+        topPanel.add(bottoneHome);
+        topPanel.add(bottoneLibreria);
+        topPanel.add(bottoneProfilo);
+
+        bottoneLibreria.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (cf.equals("Ospite")) {
+                    JOptionPane.showMessageDialog(null, "Impossibile effettuare questa operazione come ospite");
+                }else{
+                    LibrerieMainFrame myframe = new LibrerieMainFrame(proxy,cf);
+                    myframe.initialize();
+                    frame.dispose();
+                }
+            }
+        });
+
+
+
+        bottoneProfilo.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                if(cf.equals("Ospite")){
+                    JOptionPane.showMessageDialog(null, "Impossibile effettuare questa operazione come ospite");
+                }else{
+                    JPanel profiloPanel=new JPanel(new GridBagLayout());
+                    JButton bottoneInformazioni = new JButton("Informazioni");
+                    bottoneInformazioni.setForeground(Color.WHITE);
+                    bottoneInformazioni.setBackground(new Color(41, 128, 185)); 
+                    bottoneInformazioni.setBorderPainted(false);
+                    bottoneInformazioni.setFocusPainted(false);
+                    bottoneInformazioni.setPreferredSize(new Dimension (125,25));
+                    bottoneInformazioni.addMouseListener(new MouseAdapter() {
                         @Override
                         public void mouseEntered(MouseEvent e) {
-                            bottoneMenuLaterale.setBackground(new Color(93, 173, 226)); // Lighter blue
+                            bottoneInformazioni.setBackground(new Color(93, 173, 226)); 
                         }
                         @Override
                         public void mouseExited(MouseEvent e) {
-                            bottoneMenuLaterale.setBackground(new Color(41, 128, 185));
+                            bottoneInformazioni.setBackground(new Color(41, 128, 185));
                         }
                     });
-                    menuGrid.gridy=i;
-                    buttonPanel.add(bottoneMenuLaterale,menuGrid);
-
-                }
-                profiloPanel.add(buttonPanel); // Aggiunge i pulsanti al pannello laterale
-                if(primaVolta){
-                    menuGrid.gridx=3;
-                    menuGrid.gridy=0;
-                    JLabel usernameLabel=new JLabel("Username:");
-                    profiloPanel.add(usernameLabel,menuGrid);
-                    menuGrid.gridx=4;
-                    menuGrid.gridy=0;
-                    JLabel usernameLabel2=new JLabel(u.getUsername());
-                    profiloPanel.add(usernameLabel2,menuGrid);
-                }
-                JOptionPane profiloOptionPanel = new JOptionPane(
-                profiloPanel,
-                JOptionPane.PLAIN_MESSAGE,
-                JOptionPane.DEFAULT_OPTION,
-                null,
-                new Object[]{},
-                null);
-
-
-                JDialog dialog = profiloOptionPanel.createDialog(frame,"Dettagli profilo");
-                dialog.setSize(400, 400);
-                dialog.getContentPane().setBackground(new Color(236, 240, 241)); // Light gray
-            
-                dialog.setLocationRelativeTo(null);
-                dialog.setVisible(true);
-            }
-        }
-    }); 
-   
-    
-    // Pannello principale per contenere tutto
-    JPanel mainPanel = new JPanel();
-    mainPanel.setLayout(new BorderLayout());
-
-    // Pannello per il testo esplicativo e il box di ricerca
-    JPanel centerPanel = new JPanel();
-    centerPanel.setLayout(new BorderLayout());
-     centerPanel.setBackground(new Color(236, 240, 241)); // Cambiato: grigio chiaro come la parte sottostante
-
-    // Titolo esplicativo sopra il box di ricerca
-    JLabel titoloLabel = new JLabel("<html><div style='text-align: center;'><b>Inserisci un Titolo di un libro, un Autore, oppure Autore ed anno<br>e clicca il pulsante corrispondente per effettuare la ricerca</b></div></html>");
-    titoloLabel.setFont(new Font("Arial", Font.PLAIN, 13)); // Font leggermente più piccolo
-    titoloLabel.setForeground(new Color(70, 70, 70)); // Colore neutro
-    titoloLabel.setHorizontalAlignment(SwingConstants.CENTER);
-    titoloLabel.setBorder(BorderFactory.createEmptyBorder(20, 20, 10, 20)); // Padding laterale e abbassamento
-    titoloLabel.setOpaque(true);
-    titoloLabel.setBackground(new Color(236, 240, 241));
-
-    centerPanel.add(titoloLabel, BorderLayout.NORTH);
-
-    // Pannello di ricerca
-    searchPanel = new JPanel(new GridBagLayout());
-    searchPanel.setBackground(new Color(236, 240, 241)); // Light gray
-    GridBagConstraints gbc = new GridBagConstraints();
-
-    JTextField searchField = new JTextField(20);
-    searchField.setBorder(BorderFactory.createLineBorder(new Color(189, 195, 199))); // Subtle border
-    gbc.gridx = 0;
-    gbc.gridy = 0;
-    gbc.gridwidth = 3;
-    gbc.insets = new Insets(10, 10, 10, 10);
-    searchPanel.add(searchField, gbc);
-
-    JButton searchByTitleButton = new JButton("Titolo");
-    JButton searchByAuthorButton = new JButton("Autore");
-    JButton searchByAuthorAndYearButton = new JButton("Autore e Anno");
-
-    gbc.gridwidth = 1;
-    gbc.gridy = 1;
-    gbc.gridx = 0;
-    searchPanel.add(searchByTitleButton, gbc);
-    gbc.gridx = 1;
-    searchPanel.add(searchByAuthorButton, gbc);
-    gbc.gridx = 2;
-    searchPanel.add(searchByAuthorAndYearButton, gbc);
-
-    // Azioni per i bottoni di ricerca
-    searchByTitleButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            String searchText = searchField.getText();
-            if (searchText.length() > 0) {
-                ArrayList<Libro> risultati = proxy.ricercaPerTitolo(searchText);
-                if (risultati.isEmpty()) {
-                    JOptionPane.showMessageDialog(frame, "Non esiste nessun libro con questo titolo");
-                } else {
-                    mostraRisultati(risultati);
-                }
-            } else {
-                JOptionPane.showMessageDialog(frame, "Inserire almeno un carattere");
-            }
-        }
-    });
-
-    searchByAuthorButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            String searchText = searchField.getText();
-            if (searchText.length() > 0) {
-                ArrayList<Libro> risultati = proxy.ricercaPerAutore(new Autore(searchText));
-                if (risultati.isEmpty()) {
-                    JOptionPane.showMessageDialog(frame, "Non esiste nessun libro di questo autore");
-                } else {
-                    mostraRisultati(risultati);
-                }
-            } else {
-                JOptionPane.showMessageDialog(frame, "Inserire almeno un carattere");
-            }
-        }
-    });
-
-    searchByAuthorAndYearButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            String searchText = searchField.getText();
-            String[] parts = searchText.split("z,");
-            if (searchText.length() > 0) {
-                if (parts.length == 2) {
-                    try {
-                        String autore = parts[0].trim();
-                        int anno = Integer.parseInt(parts[1].trim());
-                        ArrayList<Libro> risultati = proxy.ricercaPerAutoreEAnno(new Autore(autore), anno);
-                        if (risultati.isEmpty()) {
-                            JOptionPane.showMessageDialog(frame, "Non esiste nessun libro con questo autore e anno");
-                        } else {
-                            mostraRisultati(risultati);
+                    JButton bottoneCambioPassword = new JButton("Cambia Password");
+                    bottoneCambioPassword.setForeground(Color.WHITE);
+                    bottoneCambioPassword.setBackground(new Color(41, 128, 185));
+                    bottoneCambioPassword.setBorderPainted(false);
+                    bottoneCambioPassword.setFocusPainted(false);
+                    bottoneCambioPassword.setPreferredSize(new Dimension (125,25));
+                    bottoneCambioPassword.addMouseListener(new MouseAdapter() {
+                        @Override
+                        public void mouseEntered(MouseEvent e) {
+                            bottoneCambioPassword.setBackground(new Color(93, 173, 226));
                         }
-                    } catch (NumberFormatException ex) {
-                        JOptionPane.showMessageDialog(frame, "Formato anno non valido. Usare 'Autore, Anno'.", "Errore", JOptionPane.ERROR_MESSAGE);
+                        @Override
+                        public void mouseExited(MouseEvent e) {
+                            bottoneCambioPassword.setBackground(new Color(41, 128, 185));
+                        }
+                    });
+                    JButton bottoneCambioUsername = new JButton("Cambia Username");
+                    bottoneCambioUsername.setForeground(Color.WHITE);
+                    bottoneCambioUsername.setBackground(new Color(41, 128, 185));
+                    bottoneCambioUsername.setBorderPainted(false);
+                    bottoneCambioUsername.setFocusPainted(false);
+                    bottoneCambioUsername.setPreferredSize(new Dimension (125,25));
+
+                    bottoneCambioUsername.addMouseListener(new MouseAdapter() {
+                        @Override
+                        public void mouseEntered(MouseEvent e) {
+                            bottoneCambioUsername.setBackground(new Color(93, 173, 226)); 
+                        }
+                        @Override
+                        public void mouseExited(MouseEvent e) {
+                            bottoneCambioUsername.setBackground(new Color(41, 128, 185));
+                        }
+                    });
+                    JButton bottoneCambioEmail= new JButton("Cambia Email");
+                    bottoneCambioEmail.setForeground(Color.WHITE);
+                    bottoneCambioEmail.setBackground(new Color(41, 128, 185));
+                    bottoneCambioEmail.setBorderPainted(false);
+                    bottoneCambioEmail.setFocusPainted(false);
+                    bottoneCambioEmail.setPreferredSize(new Dimension (125,25));
+                    bottoneCambioEmail.addMouseListener(new MouseAdapter() {
+                        @Override
+                        public void mouseEntered(MouseEvent e) {
+                            bottoneCambioEmail.setBackground(new Color(93, 173, 226));
+                        }
+                        @Override
+                        public void mouseExited(MouseEvent e) {
+                            bottoneCambioEmail.setBackground(new Color(41, 128, 185));
+                        }
+                    });
+                        
+                    JPanel panelSinistra = new JPanel();
+                    panelSinistra.setLayout(new BoxLayout(panelSinistra, BoxLayout.Y_AXIS));
+                    panelSinistra.setBackground(new Color(236, 240, 241));
+                    panelSinistra.setBorder(BorderFactory.createEmptyBorder(30, 10, 30, 30));
+
+                    Dimension buttonSize = new Dimension(120, 30);
+                    JButton[] bottoni = {
+                        bottoneInformazioni,
+                        bottoneCambioUsername,
+                        bottoneCambioPassword,
+                        bottoneCambioEmail
+                    };
+
+                    for (JButton b : bottoni) {
+                        b.setMaximumSize(buttonSize);
+                        b.setPreferredSize(buttonSize);
+                        b.setMinimumSize(buttonSize);
+                        b.setAlignmentX(0.5f);
+                        panelSinistra.add(b);
+                        panelSinistra.add(Box.createVerticalStrut(10));
+                    }
+
+                    JPanel panelDestra = new JPanel();
+                    GridBagConstraints gbc = new GridBagConstraints();
+
+                    panelDestra.setLayout(new GridBagLayout());
+                    panelDestra.setBackground(new Color(236, 240, 241));
+                    GridBagConstraints rightGbc = new GridBagConstraints();
+                    rightGbc.insets = new Insets(10, 10, 10, 10);
+                    rightGbc.fill = GridBagConstraints.HORIZONTAL;
+                    rightGbc.gridx = 0;
+                    rightGbc.gridy = 0;
+
+                    Utente u = proxy.getUtenteDaCF(cf);
+                    JLabel nome = new JLabel("Nome: " + u.getNome());
+                    JLabel cognome = new JLabel("Cognome: " + u.getCognome());
+                    JLabel codf = new JLabel("Codice Fiscale: " + u.getCF());
+                    JLabel username = new JLabel("Username: " + u.getUsername());
+                    JLabel email = new JLabel("Email: " + u.getEmail());
+
+                    panelDestra.add(nome, rightGbc);
+                    rightGbc.gridy++;
+                    panelDestra.add(cognome, rightGbc);
+                    rightGbc.gridy++;
+                    panelDestra.add(codf, rightGbc);
+                    rightGbc.gridy++;
+                    panelDestra.add(username, rightGbc);
+                    rightGbc.gridy++;
+                    panelDestra.add(email, rightGbc);
+                    rightGbc.gridy++;
+                    rightGbc.insets = new Insets(20, 10, 10, 10); 
+
+                    gbc.gridx = 0;
+                    gbc.gridy = 0;
+                    gbc.anchor = GridBagConstraints.NORTHWEST;
+                    gbc.insets = new Insets(0, 10, 0, 10);
+                    profiloPanel.add(panelSinistra, gbc);
+
+                    gbc.gridx = 1;
+                    gbc.gridy = 0;
+                    gbc.anchor = GridBagConstraints.CENTER;
+                    gbc.insets = new Insets(0, 0, 0, 40);
+                    profiloPanel.add(panelDestra, gbc);
+
+                    JDialog dialog = new JDialog(frame, "Dettagli profilo", false);
+                    dialog.setSize(400, 400);
+                    dialog.getContentPane().setBackground(new Color(236, 240, 241));
+                    dialog.setLayout(new BorderLayout());
+                    dialog.setLocationRelativeTo(null);
+                    dialog.add(profiloPanel, BorderLayout.CENTER);
+                    dialog.setVisible(true);
+
+
+
+                    bottoneInformazioni.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent e) {
+                            dialog.getContentPane().removeAll();
+                            GridBagConstraints gbc = new GridBagConstraints();
+                            JPanel informazioniPanel = new JPanel(new GridBagLayout());
+
+                            JPanel panelSinistra = new JPanel();
+                            panelSinistra.setLayout(new BoxLayout(panelSinistra, BoxLayout.Y_AXIS));
+                            panelSinistra.setBackground(new Color(236, 240, 241));
+                            panelSinistra.setBorder(BorderFactory.createEmptyBorder(30, 10, 30, 30));
+
+                            Dimension buttonSize = new Dimension(120, 30);
+                            JButton[] bottoni = {
+                                bottoneInformazioni,
+                                bottoneCambioUsername,
+                                bottoneCambioPassword,
+                                bottoneCambioEmail
+                            };
+
+                            for (JButton b : bottoni) {
+                                b.setMaximumSize(buttonSize);
+                                b.setPreferredSize(buttonSize);
+                                b.setMinimumSize(buttonSize);
+                                b.setAlignmentX(0.5f);
+                                panelSinistra.add(b);
+                                panelSinistra.add(Box.createVerticalStrut(10));
+                            }
+
+                            JPanel panelDestra = new JPanel();
+                            panelDestra.setLayout(new GridBagLayout());
+                            panelDestra.setBackground(new Color(236, 240, 241));
+                            GridBagConstraints rightGbc = new GridBagConstraints();
+                            rightGbc.insets = new Insets(10, 10, 10, 10);
+                            rightGbc.fill = GridBagConstraints.HORIZONTAL;
+                            rightGbc.gridx = 0;
+                            rightGbc.gridy = 0;
+
+                            Utente u = proxy.getUtenteDaCF(cf);
+                            JLabel nome = new JLabel("Nome: " + u.getNome());
+                            JLabel cognome = new JLabel("Cognome: " + u.getCognome());
+                            JLabel codf = new JLabel("Codice Fiscale: " + u.getCF());
+                            JLabel username = new JLabel("Username: " + u.getUsername());
+                            JLabel email = new JLabel("Email: " + u.getEmail());
+
+                            panelDestra.add(nome, rightGbc);
+                            rightGbc.gridy++;
+                            panelDestra.add(cognome, rightGbc);
+                            rightGbc.gridy++;
+                            panelDestra.add(codf, rightGbc);
+                            rightGbc.gridy++;
+                            panelDestra.add(username, rightGbc);
+                            rightGbc.gridy++;
+                            panelDestra.add(email, rightGbc);
+                            rightGbc.gridy++;
+                            rightGbc.insets = new Insets(20, 10, 10, 10);
+
+                            gbc.gridx = 0;
+                            gbc.gridy = 0;
+                            gbc.anchor = GridBagConstraints.NORTHWEST;
+                            gbc.insets = new Insets(0, 10, 0, 10);
+                            informazioniPanel.add(panelSinistra, gbc);
+
+                            gbc.gridx = 1;
+                            gbc.gridy = 0;
+                            gbc.anchor = GridBagConstraints.CENTER;
+                            gbc.insets = new Insets(0, 0, 0, 40);
+                            informazioniPanel.add(panelDestra, gbc);
+
+                                
+
+                            dialog.setContentPane(informazioniPanel);
+                            dialog.getContentPane().revalidate();
+                            dialog.getContentPane().repaint();
+                        }
+                    });
+
+
+
+
+                    bottoneCambioPassword.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent e) {
+                            dialog.getContentPane().removeAll();
+
+                            JPanel cambioPasswordPanel = new JPanel(new GridBagLayout());
+                            GridBagConstraints gbc = new GridBagConstraints();
+
+                            JPanel panelSinistra = new JPanel();
+                            panelSinistra.setLayout(new BoxLayout(panelSinistra, BoxLayout.Y_AXIS));
+                            panelSinistra.setBackground(new Color(236, 240, 241));
+                            panelSinistra.setBorder(BorderFactory.createEmptyBorder(30, 10, 30, 30));
+
+                            Dimension buttonSize = new Dimension(120, 30);
+                            JButton[] bottoni = {
+                                bottoneInformazioni,
+                                bottoneCambioUsername,
+                                bottoneCambioPassword,
+                                bottoneCambioEmail
+                            };
+
+                            for (JButton b : bottoni) {
+                                b.setMaximumSize(buttonSize);
+                                b.setPreferredSize(buttonSize);
+                                b.setMinimumSize(buttonSize);
+                                b.setAlignmentX(0.5f);
+                                panelSinistra.add(b);
+                                panelSinistra.add(Box.createVerticalStrut(10));
+                            }
+
+                            JPanel panelDestra = new JPanel();
+                            panelDestra.setLayout(new GridBagLayout());
+                            panelDestra.setBackground(new Color(236, 240, 241));
+                            GridBagConstraints rightGbc = new GridBagConstraints();
+                            rightGbc.insets = new Insets(10, 10, 10, 10);
+                            rightGbc.fill = GridBagConstraints.HORIZONTAL;
+                            rightGbc.gridx = 0;
+                            rightGbc.gridy = 0;
+
+                            JLabel vecchiaPasswordLabel = new JLabel("Inserisci vecchia password");
+                            JTextField vecchiaPasswordField = new JTextField(20);
+                            JLabel nuovaPasswordLabel = new JLabel("Inserisci nuova password");
+                            JTextField nuovaPasswordField = new JTextField(20);
+                            JButton applicaButton = new JButton("Applica");
+
+                            Dimension fieldSize = new Dimension(250, 25);
+                            vecchiaPasswordField.setPreferredSize(fieldSize);
+                            nuovaPasswordField.setPreferredSize(fieldSize);
+                            applicaButton.setPreferredSize(fieldSize);
+
+                            panelDestra.add(vecchiaPasswordLabel, rightGbc);
+                            rightGbc.gridy++;
+                            panelDestra.add(vecchiaPasswordField, rightGbc);
+                            rightGbc.gridy++;
+                            panelDestra.add(nuovaPasswordLabel, rightGbc);
+                            rightGbc.gridy++;
+                            panelDestra.add(nuovaPasswordField, rightGbc);
+                            rightGbc.gridy++;
+                            rightGbc.insets = new Insets(20, 10, 10, 10);
+                            panelDestra.add(applicaButton, rightGbc);
+
+                            gbc.gridx = 0;
+                            gbc.gridy = 0;
+                            gbc.anchor = GridBagConstraints.NORTHWEST;
+                            gbc.insets = new Insets(0, 10, 0, 10);
+                            cambioPasswordPanel.add(panelSinistra, gbc);
+
+                            gbc.gridx = 1;
+                            gbc.gridy = 0;
+                            gbc.anchor = GridBagConstraints.CENTER;
+                            gbc.insets = new Insets(0, 0, 0, 40);
+                            cambioPasswordPanel.add(panelDestra, gbc);
+
+                            applicaButton.addActionListener(new ActionListener() {
+                                public void actionPerformed(ActionEvent e) {
+                                    String passwordVecchia = vecchiaPasswordField.getText();
+                                    String passwordNuova = nuovaPasswordField.getText();
+                                    boolean risultato = proxy.cambiaPassword(cf, passwordVecchia, passwordNuova);
+                                    if (risultato) {
+                                        JOptionPane.showMessageDialog(dialog, "Aggiornamento password avvenuto con successo");
+                                    } else {
+                                        JOptionPane.showMessageDialog(dialog, "Password vecchia errata, Riprovare");
+                                    }
+                                }
+                            });
+
+                            dialog.setContentPane(cambioPasswordPanel);
+                            dialog.revalidate();
+                            dialog.repaint();
+                        }
+                    });
+
+
+
+                    bottoneCambioUsername.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent e) {
+                            dialog.getContentPane().removeAll();
+
+                            JPanel cambioUsernamePanel = new JPanel(new GridBagLayout());
+                            GridBagConstraints gbc = new GridBagConstraints();
+
+                            JPanel panelSinistra = new JPanel();
+                            panelSinistra.setLayout(new BoxLayout(panelSinistra, BoxLayout.Y_AXIS));
+                            panelSinistra.setBackground(new Color(236, 240, 241));
+                            panelSinistra.setBorder(BorderFactory.createEmptyBorder(30, 10, 30, 30));
+
+                            Dimension buttonSize = new Dimension(120, 30);
+                            JButton[] bottoni = {
+                                bottoneInformazioni,
+                                bottoneCambioUsername,
+                                bottoneCambioPassword,
+                                bottoneCambioEmail
+                            };
+
+                            for (JButton b : bottoni) {
+                                b.setMaximumSize(buttonSize);
+                                b.setPreferredSize(buttonSize);
+                                b.setMinimumSize(buttonSize);
+                                b.setAlignmentX(0.5f);
+                                panelSinistra.add(b);
+                                panelSinistra.add(Box.createVerticalStrut(10));
+                            }
+
+                            JPanel panelDestra = new JPanel();
+                            panelDestra.setLayout(new GridBagLayout());
+                            panelDestra.setBackground(new Color(236, 240, 241));
+                            GridBagConstraints rightGbc = new GridBagConstraints();
+                            rightGbc.insets = new Insets(10, 10, 10, 10);
+                            rightGbc.fill = GridBagConstraints.HORIZONTAL;
+                            rightGbc.gridx = 0;
+                            rightGbc.gridy = 0;
+
+                            JLabel nuovoUsernameLabel = new JLabel("Inserisci nuovo username");
+                            JTextField nuovoUsernameField = new JTextField(20);
+                            JButton applicaButton = new JButton("Applica");
+
+                            Dimension fieldSize = new Dimension(250, 25);
+                            nuovoUsernameField.setPreferredSize(fieldSize);
+                            applicaButton.setPreferredSize(fieldSize);
+
+                            panelDestra.add(nuovoUsernameLabel, rightGbc);
+                            rightGbc.gridy++;
+                            panelDestra.add(nuovoUsernameField, rightGbc);
+                            rightGbc.gridy++;
+                            rightGbc.insets = new Insets(20, 10, 10, 10);
+                            panelDestra.add(applicaButton, rightGbc);
+
+                            gbc.gridx = 0;
+                            gbc.gridy = 0;
+                            gbc.anchor = GridBagConstraints.NORTHWEST;
+                            gbc.insets = new Insets(0, 10, 0, 10);
+                            cambioUsernamePanel.add(panelSinistra, gbc);
+
+                            gbc.gridx = 1;
+                            gbc.gridy = 0;
+                            gbc.anchor = GridBagConstraints.CENTER;
+                            gbc.insets = new Insets(0, 0, 0, 40);
+                            cambioUsernamePanel.add(panelDestra, gbc);
+
+                            applicaButton.addActionListener(new ActionListener() {
+                                public void actionPerformed(ActionEvent e) {
+                                    String usernameNuovo = nuovoUsernameField.getText();
+                                    boolean risultato = proxy.cambiaUsername(cf, usernameNuovo);
+                                    if (risultato) {
+                                        JOptionPane.showMessageDialog(dialog, "Aggiornamento username avvenuto con successo");
+                                    } else {
+                                        JOptionPane.showMessageDialog(dialog, "Username già in uso, Riprovare");
+                                    }
+                                }
+                            });
+
+                            dialog.setContentPane(cambioUsernamePanel);
+                            dialog.revalidate();
+                            dialog.repaint();
+                        }
+                    });
+                        
+
+
+                    bottoneCambioEmail.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent e) {
+                            dialog.getContentPane().removeAll();
+
+                            JPanel cambioEmailPanel = new JPanel(new GridBagLayout());
+                            GridBagConstraints gbc = new GridBagConstraints();
+
+                            JPanel panelSinistra = new JPanel();
+                            panelSinistra.setLayout(new BoxLayout(panelSinistra, BoxLayout.Y_AXIS));
+                            panelSinistra.setBackground(new Color(236, 240, 241));
+                            panelSinistra.setBorder(BorderFactory.createEmptyBorder(30, 10, 30, 30));
+
+                            Dimension buttonSize = new Dimension(120, 30);
+                            JButton[] bottoni = {
+                                bottoneInformazioni,
+                                bottoneCambioUsername,
+                                bottoneCambioPassword,
+                                bottoneCambioEmail
+                            };
+
+                            for (JButton b : bottoni) {
+                                b.setMaximumSize(buttonSize);
+                                b.setPreferredSize(buttonSize);
+                                b.setMinimumSize(buttonSize);
+                                b.setAlignmentX(0.5f);
+                                panelSinistra.add(b);
+                                panelSinistra.add(Box.createVerticalStrut(10));
+                            }
+
+                            JPanel panelDestra = new JPanel();
+                            panelDestra.setLayout(new GridBagLayout());
+                            panelDestra.setBackground(new Color(236, 240, 241));
+                            GridBagConstraints rightGbc = new GridBagConstraints();
+                            rightGbc.insets = new Insets(10, 10, 10, 10);
+                            rightGbc.fill = GridBagConstraints.HORIZONTAL;
+                            rightGbc.gridx = 0;
+                            rightGbc.gridy = 0;
+
+                            JLabel nuovaEmailLabel = new JLabel("Inserisci nuova Email");
+                            JTextField nuovaEmailField = new JTextField(20);
+                            JButton applicaButton = new JButton("Applica");
+
+                            Dimension fieldSize = new Dimension(250, 25);
+                            nuovaEmailField.setPreferredSize(fieldSize);
+                            applicaButton.setPreferredSize(fieldSize);
+
+                            panelDestra.add(nuovaEmailLabel, rightGbc);
+                            rightGbc.gridy++;
+                            panelDestra.add(nuovaEmailField, rightGbc);
+                            rightGbc.gridy++;
+                            rightGbc.insets = new Insets(20, 10, 10, 10);
+                            panelDestra.add(applicaButton, rightGbc);
+
+                            gbc.gridx = 0;
+                            gbc.gridy = 0;
+                            gbc.anchor = GridBagConstraints.NORTHWEST;
+                            gbc.insets = new Insets(0, 10, 0, 10);
+                            cambioEmailPanel.add(panelSinistra, gbc);
+
+                            gbc.gridx = 1;
+                            gbc.gridy = 0;
+                            gbc.anchor = GridBagConstraints.CENTER;
+                            gbc.insets = new Insets(0, 0, 0, 40);
+                            cambioEmailPanel.add(panelDestra, gbc);
+
+                            applicaButton.addActionListener(new ActionListener() {
+                                public void actionPerformed(ActionEvent e) {
+                                    String emailNuova = nuovaEmailField.getText();
+                                    boolean risultato = proxy.cambiaEmail(cf, emailNuova);
+                                    if(emailNuova.contains("@")){
+                                        if (risultato) {
+                                            JOptionPane.showMessageDialog(dialog, "Aggiornamento email avvenuto con successo");
+                                        } else {
+                                            JOptionPane.showMessageDialog(dialog, "Email già in uso, Riprovare");
+                                        }
+                                    }else{
+                                        JOptionPane.showMessageDialog(dialog, "Formato email errato");
+                                    }
+                                }
+                            });
+
+                            dialog.setContentPane(cambioEmailPanel);
+                            dialog.revalidate();
+                            dialog.repaint();
+                        }
+                    });
+                }
+            }
+        });
+    
+        
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BorderLayout());
+
+        JPanel centerPanel = new JPanel();
+        centerPanel.setLayout(new BorderLayout());
+        centerPanel.setBackground(new Color(236, 240, 241));
+
+        JLabel titoloLabel = new JLabel("<html><div style='text-align: center;'><b>Inserisci un Titolo di un libro, un Autore, oppure Autore ed anno<br>e clicca il pulsante corrispondente per effettuare la ricerca</b></div></html>");
+        titoloLabel.setFont(new Font("Arial", Font.PLAIN, 13));
+        titoloLabel.setForeground(new Color(70, 70, 70));
+        titoloLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        titoloLabel.setBorder(BorderFactory.createEmptyBorder(20, 20, 10, 20));
+        titoloLabel.setOpaque(true);
+        titoloLabel.setBackground(new Color(236, 240, 241));
+
+        centerPanel.add(titoloLabel, BorderLayout.NORTH);
+
+        searchPanel = new JPanel(new GridBagLayout());
+        searchPanel.setBackground(new Color(236, 240, 241));
+        GridBagConstraints gbc = new GridBagConstraints();
+
+        JTextField searchField = new JTextField(20);
+        searchField.setBorder(BorderFactory.createLineBorder(new Color(189, 195, 199)));
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 3;
+        gbc.insets = new Insets(10, 10, 10, 10);
+        searchPanel.add(searchField, gbc);
+
+        JButton searchByTitleButton = new JButton("Titolo");
+        JButton searchByAuthorButton = new JButton("Autore");
+        JButton searchByAuthorAndYearButton = new JButton("Autore e Anno");
+
+        gbc.gridwidth = 1;
+        gbc.gridy = 1;
+        gbc.gridx = 0;
+        searchPanel.add(searchByTitleButton, gbc);
+        gbc.gridx = 1;
+        searchPanel.add(searchByAuthorButton, gbc);
+        gbc.gridx = 2;
+        searchPanel.add(searchByAuthorAndYearButton, gbc);
+
+        searchByTitleButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String searchText = searchField.getText();
+                if (searchText.length() > 0) {
+                    ArrayList<Libro> risultati = proxy.ricercaPerTitolo(searchText);
+                    if (risultati.isEmpty()) {
+                        JOptionPane.showMessageDialog(frame, "Non esiste nessun libro con questo titolo");
+                    } else {
+                        mostraRisultati(risultati);
                     }
                 } else {
-                    JOptionPane.showMessageDialog(frame, "Formato input non valido. Usare 'Autore, Anno'.", "Errore", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(frame, "Inserire almeno un carattere");
                 }
-            } else {
-                JOptionPane.showMessageDialog(frame, "Inserire almeno un carattere");
             }
-        }
-    });
+        });
 
-    centerPanel.add(searchPanel, BorderLayout.CENTER);
+        searchByAuthorButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String searchText = searchField.getText();
+                if (searchText.length() > 0) {
+                    ArrayList<Libro> risultati = proxy.ricercaPerAutore(new Autore(searchText));
+                    if (risultati.isEmpty()) {
+                        JOptionPane.showMessageDialog(frame, "Non esiste nessun libro di questo autore");
+                    } else {
+                        mostraRisultati(risultati);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(frame, "Inserire almeno un carattere");
+                }
+            }
+        });
 
-    // Pannello dei risultati
-    resultsPanel = new JPanel();
-    resultsPanel.setBackground(new Color(236, 240, 241)); // Light gray
-    resultsPanel.setLayout(new BoxLayout(resultsPanel, BoxLayout.Y_AXIS));
-    risultatoScrollPane = new JScrollPane(resultsPanel);
-    risultatoScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-    risultatoScrollPane.setPreferredSize(new Dimension(300, 200));
-    risultatoScrollPane.setBorder(BorderFactory.createLineBorder(new Color(189, 195, 199))); // Subtle border
+        searchByAuthorAndYearButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String searchText = searchField.getText();
+                String[] parts = searchText.split("z,");
+                if (searchText.length() > 0) {
+                    if (parts.length == 2) {
+                        try {
+                            String autore = parts[0].trim();
+                            int anno = Integer.parseInt(parts[1].trim());
+                            ArrayList<Libro> risultati = proxy.ricercaPerAutoreEAnno(new Autore(autore), anno);
+                            if (risultati.isEmpty()) {
+                                JOptionPane.showMessageDialog(frame, "Non esiste nessun libro con questo autore e anno");
+                            } else {
+                                mostraRisultati(risultati);
+                            }
+                        } catch (NumberFormatException ex) {
+                            JOptionPane.showMessageDialog(frame, "Formato anno non valido. Usare 'Autore, Anno'.", "Errore", JOptionPane.ERROR_MESSAGE);
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(frame, "Formato input non valido. Usare 'Autore, Anno'.", "Errore", JOptionPane.ERROR_MESSAGE);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(frame, "Inserire almeno un carattere");
+                }
+            }
+        });
 
-    mainPanel.add(topPanel, BorderLayout.NORTH);
-    mainPanel.add(centerPanel, BorderLayout.CENTER);
-    mainPanel.add(risultatoScrollPane, BorderLayout.SOUTH);
+        centerPanel.add(searchPanel, BorderLayout.CENTER);
 
-    frame.setLayout(new BorderLayout());
-    frame.add(mainPanel, BorderLayout.CENTER);
-}
+        resultsPanel = new JPanel();
+        resultsPanel.setBackground(new Color(236, 240, 241));
+        resultsPanel.setLayout(new BoxLayout(resultsPanel, BoxLayout.Y_AXIS));
+        risultatoScrollPane = new JScrollPane(resultsPanel);
+        risultatoScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        risultatoScrollPane.setPreferredSize(new Dimension(300, 200));
+        risultatoScrollPane.setBorder(BorderFactory.createLineBorder(new Color(189, 195, 199)));
+
+        mainPanel.add(topPanel, BorderLayout.NORTH);
+        mainPanel.add(centerPanel, BorderLayout.CENTER);
+        mainPanel.add(risultatoScrollPane, BorderLayout.SOUTH);
+
+        frame.setLayout(new BorderLayout());
+        frame.add(mainPanel, BorderLayout.CENTER);
+    }
 
 
 
@@ -323,26 +746,26 @@ public class HomeMainFrame {
  *
  * @param bottone Il JButton da personalizzare.
  */
-private void customizeButton(JButton bottone) {
-    bottone.setFont(new Font("Arial", Font.BOLD, 14));
-    bottone.setBackground(new Color(135, 206, 250));
-    bottone.setForeground(Color.BLACK);
-    bottone.setPreferredSize(new Dimension(100, 50));
-    bottone.setBorderPainted(false);
-    bottone.setFocusPainted(false);
-    bottone.setContentAreaFilled(false);
-    bottone.setOpaque(true);
-    bottone.addMouseListener(new MouseAdapter() {
-        @Override
-        public void mousePressed(MouseEvent e) {
-            bottone.setBackground(new Color(135, 255, 255));
-        }
-        @Override
-        public void mouseReleased(MouseEvent e) {
-            bottone.setBackground(new Color(135, 206, 250));
-        }
-    });
-}
+    private void customizeButton(JButton bottone) {
+        bottone.setFont(new Font("Arial", Font.BOLD, 14));
+        bottone.setBackground(new Color(135, 206, 250));
+        bottone.setForeground(Color.BLACK);
+        bottone.setPreferredSize(new Dimension(100, 50));
+        bottone.setBorderPainted(false);
+        bottone.setFocusPainted(false);
+        bottone.setContentAreaFilled(false);
+        bottone.setOpaque(true);
+        bottone.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                bottone.setBackground(new Color(135, 255, 255));
+            }
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                bottone.setBackground(new Color(135, 206, 250));
+            }
+        });
+    }
 
     
 /**
@@ -350,21 +773,21 @@ private void customizeButton(JButton bottone) {
  * Imposta il titolo, le dimensioni, le dimensioni minime, l'operazione di chiusura predefinita,
  * e centra il frame nello schermo.
  */
-public void initialize() {
-    frame.setTitle("Home");
-    frame.setSize(350, 500);
-    frame.setMinimumSize(new Dimension(300, 400)); 
-    frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-    frame.addWindowListener(new WindowAdapter() {
-        public void windowClosing(WindowEvent e){
-            proxy.fineComunicazione();
-            frame.dispose();
-            
-        }
-    });
-    frame.setLocationRelativeTo(null);
-    frame.setVisible(true);
-}
+    public void initialize() {
+        frame.setTitle("Home");
+        frame.setSize(350, 500);
+        frame.setMinimumSize(new Dimension(300, 400)); 
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        frame.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e){
+                proxy.fineComunicazione();
+                frame.dispose();
+                
+            }
+        });
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+    }
 
 /**
  * Mostra i risultati della ricerca dei libri in un pannello.
@@ -374,58 +797,57 @@ public void initialize() {
  *
  * @param risultati ArrayList di Libro contenente i libri da mostrare nei risultati della ricerca.
  */
-private void mostraRisultati(ArrayList<Libro> risultati) {
-    resultsPanel.removeAll();
-    for (Libro libro : risultati) {
-        JPanel libroPanel = new JPanel(new BorderLayout()) {
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                // Bordo arrotondato
-                Graphics2D g2 = (Graphics2D) g;
-                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(new Color(245, 250, 255));
-                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 18, 18);
-            }
-        };
-        libroPanel.setOpaque(false);
-        libroPanel.setBorder(BorderFactory.createEmptyBorder(8, 12, 8, 12));
+    private void mostraRisultati(ArrayList<Libro> risultati) {
+        resultsPanel.removeAll();
+        for (Libro libro : risultati) {
+            JPanel libroPanel = new JPanel(new BorderLayout()) {
+                @Override
+                protected void paintComponent(Graphics g) {
+                    super.paintComponent(g);
+                    Graphics2D g2 = (Graphics2D) g;
+                    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                    g2.setColor(new Color(245, 250, 255));
+                    g2.fillRoundRect(0, 0, getWidth(), getHeight(), 18, 18);
+                }
+            };
+            libroPanel.setOpaque(false);
+            libroPanel.setBorder(BorderFactory.createEmptyBorder(8, 12, 8, 12));
 
-        JLabel libroLabel = new JLabel(
-            "<html><b>" + Libro.getTitolo(libro) + "</b><br>"
-            + "<span style='color:#555;'>" + Libro.getAutore(libro) + " &middot; " + Libro.getAnno(libro) + "</span></html>"
-        );
-        libroLabel.setFont(new Font("Arial", Font.PLAIN, 14));
-        libroLabel.setForeground(new Color(33, 97, 140));
-        libroLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        libroLabel.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
+            JLabel libroLabel = new JLabel(
+                "<html><b>" + Libro.getTitolo(libro) + "</b><br>"
+                + "<span style='color:#555;'>" + Libro.getAutore(libro) + " &middot; " + Libro.getAnno(libro) + "</span></html>"
+            );
+            libroLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+            libroLabel.setForeground(new Color(33, 97, 140));
+            libroLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            libroLabel.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
 
-        libroLabel.addMouseListener(new MouseAdapter() {
-            Color orig = libroLabel.getForeground();
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                libroLabel.setForeground(new Color(21, 67, 96));
-                libroPanel.setBorder(BorderFactory.createLineBorder(new Color(93, 173, 226), 2, true));
-            }
-            @Override
-            public void mouseExited(MouseEvent e) {
-                libroLabel.setForeground(orig);
-                libroPanel.setBorder(BorderFactory.createEmptyBorder(8, 12, 8, 12));
-            }
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                mostraDettagliLibro(libro, 1);
-            }
-        });
+            libroLabel.addMouseListener(new MouseAdapter() {
+                Color orig = libroLabel.getForeground();
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    libroLabel.setForeground(new Color(21, 67, 96));
+                    libroPanel.setBorder(BorderFactory.createLineBorder(new Color(93, 173, 226), 2, true));
+                }
+                @Override
+                public void mouseExited(MouseEvent e) {
+                    libroLabel.setForeground(orig);
+                    libroPanel.setBorder(BorderFactory.createEmptyBorder(8, 12, 8, 12));
+                }
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    mostraDettagliLibro(libro, 1);
+                }
+            });
 
-        libroPanel.add(libroLabel, BorderLayout.CENTER);
-        resultsPanel.add(libroPanel);
-        resultsPanel.add(Box.createVerticalStrut(8));
+            libroPanel.add(libroLabel, BorderLayout.CENTER);
+            resultsPanel.add(libroPanel);
+            resultsPanel.add(Box.createVerticalStrut(8));
+        }
+
+        resultsPanel.revalidate();
+        resultsPanel.repaint();
     }
-
-    resultsPanel.revalidate();
-    resultsPanel.repaint();
-}
 /**
  * Mostra l'elenco degli utenti che hanno recensito il libro specificato in un pannello.
  * Rimuove tutti i componenti dal pannello dei risultati e aggiunge un pannello separato per ogni utente trovato.
@@ -435,89 +857,89 @@ private void mostraRisultati(ArrayList<Libro> risultati) {
  * @param risultato ArrayList di Utente contenente gli utenti che hanno recensito il libro.
  * @param l Il Libro per il quale si vogliono mostrare le recensioni degli utenti.
  */
-private void mostraUtentiRecensioni(ArrayList<Utente> risultato, Libro l) {
-    panelRisultatoNESugg.removeAll();
+    private void mostraUtentiRecensioni(ArrayList<Utente> risultato, Libro l) {
+        panelRisultatoNESugg.removeAll();
 
-    JPanel utentiGridPanel = new JPanel(new GridBagLayout());
-    utentiGridPanel.setBackground(new Color(245, 250, 255));
-    GridBagConstraints gbc = new GridBagConstraints();
-    gbc.insets = new Insets(6, 6, 6, 6);
-    gbc.fill = GridBagConstraints.HORIZONTAL;
+        JPanel utentiGridPanel = new JPanel(new GridBagLayout());
+        utentiGridPanel.setBackground(new Color(245, 250, 255));
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(6, 6, 6, 6);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
-    int col = 0, row = 0;
-    for (Utente utente : risultato) {
-        JPanel utentePanel = new JPanel(new BorderLayout()) {
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                Graphics2D g2 = (Graphics2D) g;
-                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(new Color(245, 250, 255));
-                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 14, 14);
+        int col = 0, row = 0;
+        for (Utente utente : risultato) {
+            JPanel utentePanel = new JPanel(new BorderLayout()) {
+                @Override
+                protected void paintComponent(Graphics g) {
+                    super.paintComponent(g);
+                    Graphics2D g2 = (Graphics2D) g;
+                    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                    g2.setColor(new Color(245, 250, 255));
+                    g2.fillRoundRect(0, 0, getWidth(), getHeight(), 14, 14);
+                }
+            };
+            utentePanel.setOpaque(false);
+            utentePanel.setBackground(new Color(245, 250, 255));
+            utentePanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(189, 195, 199), 1, true),
+                BorderFactory.createEmptyBorder(6, 16, 6, 16)
+            ));
+            utentePanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 38));
+            utentePanel.setPreferredSize(new Dimension(180, 38));
+            utentePanel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+            JLabel utenteLabel = new JLabel("<html><b>" + utente.getUsername() + "</b></html>");
+            utenteLabel.setFont(new Font("Arial", Font.BOLD, 14));
+            utenteLabel.setForeground(new Color(41, 128, 185));
+            utenteLabel.setBorder(BorderFactory.createEmptyBorder(0, 8, 0, 8));
+            utenteLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+            utentePanel.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    utentePanel.setBackground(new Color(220, 240, 255));
+                    utenteLabel.setForeground(new Color(21, 67, 96));
+                    utentePanel.repaint();
+                }
+                @Override
+                public void mouseExited(MouseEvent e) {
+                    utentePanel.setBackground(new Color(245, 250, 255));
+                    utenteLabel.setForeground(new Color(41, 128, 185));
+                    utentePanel.repaint();
+                }
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    mostraValUtente(utente, l);
+                }
+            });
+
+            utentePanel.add(utenteLabel, BorderLayout.CENTER);
+
+            gbc.gridx = col;
+            gbc.gridy = row;
+            utentiGridPanel.add(utentePanel, gbc);
+
+            col++;
+            if (col > 1) {
+                col = 0;
+                row++;
             }
-        };
-        utentePanel.setOpaque(false);
-        utentePanel.setBackground(new Color(245, 250, 255));
-        utentePanel.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(new Color(189, 195, 199), 1, true),
-            BorderFactory.createEmptyBorder(6, 16, 6, 16)
-        ));
-        utentePanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 38));
-        utentePanel.setPreferredSize(new Dimension(180, 38));
-        utentePanel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-
-        JLabel utenteLabel = new JLabel("<html><b>" + utente.getUsername() + "</b></html>");
-        utenteLabel.setFont(new Font("Arial", Font.BOLD, 14));
-        utenteLabel.setForeground(new Color(41, 128, 185));
-        utenteLabel.setBorder(BorderFactory.createEmptyBorder(0, 8, 0, 8));
-        utenteLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-
-        utentePanel.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                utentePanel.setBackground(new Color(220, 240, 255));
-                utenteLabel.setForeground(new Color(21, 67, 96));
-                utentePanel.repaint();
-            }
-            @Override
-            public void mouseExited(MouseEvent e) {
-                utentePanel.setBackground(new Color(245, 250, 255));
-                utenteLabel.setForeground(new Color(41, 128, 185));
-                utentePanel.repaint();
-            }
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                mostraValUtente(utente, l);
-            }
-        });
-
-        utentePanel.add(utenteLabel, BorderLayout.CENTER);
-
-        gbc.gridx = col;
-        gbc.gridy = row;
-        utentiGridPanel.add(utentePanel, gbc);
-
-        col++;
-        if (col > 1) {
-            col = 0;
-            row++;
         }
+
+        JScrollPane utentiScrollPane = new JScrollPane(utentiGridPanel);
+        utentiScrollPane.setBorder(null);
+        utentiScrollPane.getViewport().setBackground(new Color(245, 250, 255));
+        utentiScrollPane.setBackground(new Color(245, 250, 255));
+        utentiScrollPane.setPreferredSize(new Dimension(400, 90));
+        utentiScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+        panelRisultatoNESugg.setLayout(new BorderLayout());
+        panelRisultatoNESugg.setBackground(new Color(245, 250, 255));
+        panelRisultatoNESugg.add(utentiScrollPane, BorderLayout.CENTER);
+
+        panelRisultatoNESugg.revalidate();
+        panelRisultatoNESugg.repaint();
     }
-
-    JScrollPane utentiScrollPane = new JScrollPane(utentiGridPanel);
-    utentiScrollPane.setBorder(null);
-    utentiScrollPane.getViewport().setBackground(new Color(245, 250, 255));
-    utentiScrollPane.setBackground(new Color(245, 250, 255));
-    utentiScrollPane.setPreferredSize(new Dimension(400, 90));
-    utentiScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-
-    panelRisultatoNESugg.setLayout(new BorderLayout());
-    panelRisultatoNESugg.setBackground(new Color(245, 250, 255));
-    panelRisultatoNESugg.add(utentiScrollPane, BorderLayout.CENTER);
-
-    panelRisultatoNESugg.revalidate();
-    panelRisultatoNESugg.repaint();
-}
    
 /**
  * Mostra i dettagli del libro specificato in una finestra di dialogo.
@@ -526,132 +948,125 @@ private void mostraUtentiRecensioni(ArrayList<Utente> risultato, Libro l) {
  * @param libro Il libro di cui mostrare i dettagli.
  * @param n Un intero che determina se mostrare le recensioni degli utenti (1 per mostrare, 0 per non mostrare).
  */
-private void mostraDettagliLibro(Libro libro, int n) {
-    panelRisultatoNESugg = new JPanel();
-    panelRisultatoNESugg.removeAll();
+    private void mostraDettagliLibro(Libro libro, int n) {
+        panelRisultatoNESugg = new JPanel();
+        panelRisultatoNESugg.removeAll();
 
-    String infoLibro = Libro.getInfoBase(libro);
+        String infoLibro = Libro.getInfoBase(libro);
 
-    String infoValutazioni;
-    MediaValutazioneLibri(libro);
+        String infoValutazioni;
+        MediaValutazioneLibri(libro);
 
-    if (esisteValutazione) {
-        infoValutazioni = "<html><b>Media Stile:</b> " + mediaStile + "<br><b>Media Contenuto:</b> " + mediaContenuto +
-                          "<br><b>Media Gradevolezza:</b> " + mediaGradevolezza +
-                          "<br><b>Media Originalita:</b> " + mediaOriginalita +
-                          "<br><b>Media Edizione:</b> " + mediaEdizione +
-                          "<br><b>Media Voto finale:</b> " + mediaVotoFinale + "</html>";
-    } else {
-        infoValutazioni = "<html><b>Non ci sono valutazioni per questo libro</b></html>";
-    }
+        if (esisteValutazione) {
+            infoValutazioni = "<html><b>Media Stile:</b> " + mediaStile + "<br><b>Media Contenuto:</b> " + mediaContenuto +
+                            "<br><b>Media Gradevolezza:</b> " + mediaGradevolezza +
+                            "<br><b>Media Originalita:</b> " + mediaOriginalita +
+                            "<br><b>Media Edizione:</b> " + mediaEdizione +
+                            "<br><b>Media Voto finale:</b> " + mediaVotoFinale + "</html>";
+        } else {
+            infoValutazioni = "<html><b>Non ci sono valutazioni per questo libro</b></html>";
+        }
 
-    JLabel exLabel = new JLabel("");
-    ArrayList<Utente> alUtentiSuggerimenti = proxy.getUtentiSuggeritori(libro);
-    if (!(alUtentiSuggerimenti.isEmpty()) && n == 1) {
-        exLabel = new JLabel("<html><b>Suggerimenti degli utenti:</b></html>");
-    } else if (alUtentiSuggerimenti.isEmpty() && n == 1) {
-        exLabel = new JLabel("<html><b>Nessun utente ha lasciato recensioni</b></html>");
-    }
+        JLabel exLabel = new JLabel("");
+        ArrayList<Utente> alUtentiSuggerimenti = proxy.getUtentiSuggeritori(libro);
+        if (!(alUtentiSuggerimenti.isEmpty()) && n == 1) {
+            exLabel = new JLabel("<html><b>Suggerimenti degli utenti:</b></html>");
+        } else if (alUtentiSuggerimenti.isEmpty() && n == 1) {
+            exLabel = new JLabel("<html><b>Nessun utente ha lasciato recensioni</b></html>");
+        }
 
-    JPanel contentPanel = new JPanel(new GridBagLayout());
-    contentPanel.setBackground(new Color(245, 250, 255));
-    contentPanel.setBorder(BorderFactory.createCompoundBorder(
-        BorderFactory.createLineBorder(new Color(189, 195, 199), 1, true),
-        BorderFactory.createEmptyBorder(12, 16, 12, 16)
-    ));
-    GridBagConstraints c = new GridBagConstraints();
-    c.fill = GridBagConstraints.HORIZONTAL;
-    c.insets = new Insets(6, 6, 6, 6);
+        JPanel contentPanel = new JPanel(new GridBagLayout());
+        contentPanel.setBackground(new Color(245, 250, 255));
+        contentPanel.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(189, 195, 199), 1, true),
+            BorderFactory.createEmptyBorder(12, 16, 12, 16)
+        ));
+        GridBagConstraints c = new GridBagConstraints();
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.insets = new Insets(6, 6, 6, 6);
 
-    int row = 0;
+        int row = 0;
 
-    // Titolo libro
-    JLabel titoloLabel = new JLabel("<html><span style='font-size:13px'><b>Dettagli libro</b></span></html>");
-    titoloLabel.setFont(new Font("Arial", Font.BOLD, 13));
-    titoloLabel.setForeground(new Color(41, 128, 185));
-    c.gridx = 0;
-    c.gridy = row++;
-    c.gridwidth = 3;
-    contentPanel.add(titoloLabel, c);
+        JLabel titoloLabel = new JLabel("<html><span style='font-size:13px'><b>Dettagli libro</b></span></html>");
+        titoloLabel.setFont(new Font("Arial", Font.BOLD, 13));
+        titoloLabel.setForeground(new Color(41, 128, 185));
+        c.gridx = 0;
+        c.gridy = row++;
+        c.gridwidth = 3;
+        contentPanel.add(titoloLabel, c);
 
-    // Divider
-    JSeparator sep = new JSeparator();
-    sep.setForeground(new Color(189, 195, 199));
-    c.gridy = row++;
-    c.gridwidth = 3;
-    c.fill = GridBagConstraints.HORIZONTAL;
-    contentPanel.add(sep, c);
+        JSeparator sep = new JSeparator();
+        sep.setForeground(new Color(189, 195, 199));
+        c.gridy = row++;
+        c.gridwidth = 3;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        contentPanel.add(sep, c);
 
-    // Info libro
-    JLabel infoLabel = new JLabel(infoLibro);
-    infoLabel.setFont(new Font("Arial", Font.PLAIN, 12));
-    infoLabel.setForeground(new Color(33, 97, 140));
-    c.gridy = row++;
-    c.gridx = 0;
-    c.gridwidth = 3;
-    contentPanel.add(infoLabel, c);
-
-    // Divider
-    JSeparator sep2 = new JSeparator();
-    sep2.setForeground(new Color(189, 195, 199));
-    c.gridy = row++;
-    c.gridwidth = 3;
-    c.fill = GridBagConstraints.HORIZONTAL;
-    contentPanel.add(sep2, c);
-
-    // Valutazioni
-    JLabel panelValutazioni = new JLabel(infoValutazioni);
-    panelValutazioni.setFont(new Font("Arial", Font.PLAIN, 12));
-    panelValutazioni.setForeground(new Color(21, 67, 96));
-    c.gridy = row++;
-    c.gridx = 0;
-    c.gridwidth = 3;
-    contentPanel.add(panelValutazioni, c);
-
-    // Divider
-    JSeparator sep3 = new JSeparator();
-    sep3.setForeground(new Color(189, 195, 199));
-    c.gridy = row++;
-    c.gridwidth = 3;
-    c.fill = GridBagConstraints.HORIZONTAL;
-    contentPanel.add(sep3, c);
-
-    // Suggerimenti utenti
-    c.gridy = row++;
-    c.gridx = 0;
-    c.gridwidth = 3;
-    exLabel.setFont(new Font("Arial", Font.BOLD, 12));
-    exLabel.setForeground(new Color(41, 128, 185));
-    contentPanel.add(exLabel, c);
-
-    if (!(alUtentiSuggerimenti.isEmpty()) && n == 1) {
-        mostraUtentiRecensioni(alUtentiSuggerimenti, libro);
+        JLabel infoLabel = new JLabel(infoLibro);
+        infoLabel.setFont(new Font("Arial", Font.PLAIN, 12));
+        infoLabel.setForeground(new Color(33, 97, 140));
         c.gridy = row++;
         c.gridx = 0;
         c.gridwidth = 3;
-        contentPanel.add(panelRisultatoNESugg, c);
+        contentPanel.add(infoLabel, c);
+
+        JSeparator sep2 = new JSeparator();
+        sep2.setForeground(new Color(189, 195, 199));
+        c.gridy = row++;
+        c.gridwidth = 3;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        contentPanel.add(sep2, c);
+
+        JLabel panelValutazioni = new JLabel(infoValutazioni);
+        panelValutazioni.setFont(new Font("Arial", Font.PLAIN, 12));
+        panelValutazioni.setForeground(new Color(21, 67, 96));
+        c.gridy = row++;
+        c.gridx = 0;
+        c.gridwidth = 3;
+        contentPanel.add(panelValutazioni, c);
+
+        JSeparator sep3 = new JSeparator();
+        sep3.setForeground(new Color(189, 195, 199));
+        c.gridy = row++;
+        c.gridwidth = 3;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        contentPanel.add(sep3, c);
+
+        c.gridy = row++;
+        c.gridx = 0;
+        c.gridwidth = 3;
+        exLabel.setFont(new Font("Arial", Font.BOLD, 12));
+        exLabel.setForeground(new Color(41, 128, 185));
+        contentPanel.add(exLabel, c);
+
+        if (!(alUtentiSuggerimenti.isEmpty()) && n == 1) {
+            mostraUtentiRecensioni(alUtentiSuggerimenti, libro);
+            c.gridy = row++;
+            c.gridx = 0;
+            c.gridwidth = 3;
+            contentPanel.add(panelRisultatoNESugg, c);
+        }
+
+        JScrollPane scrollPane = new JScrollPane(contentPanel);
+        scrollPane.setBorder(null);
+        scrollPane.setPreferredSize(new Dimension(420, 300));
+        scrollPane.setMinimumSize(new Dimension(300, 200));
+
+        JOptionPane pane = new JOptionPane(
+            scrollPane,
+            JOptionPane.PLAIN_MESSAGE,
+            JOptionPane.DEFAULT_OPTION,
+            null,
+            new Object[]{},
+            null);
+
+        JDialog dialog = pane.createDialog(frame, "Dettagli Libro");
+        dialog.setSize(600, 500);
+        dialog.setMinimumSize(new Dimension(350, 320));
+        dialog.setResizable(true);
+        dialog.setLocationRelativeTo(frame);
+        dialog.setVisible(true);
     }
-
-    JScrollPane scrollPane = new JScrollPane(contentPanel);
-    scrollPane.setBorder(null);
-    scrollPane.setPreferredSize(new Dimension(420, 300));
-    scrollPane.setMinimumSize(new Dimension(300, 200));
-
-    JOptionPane pane = new JOptionPane(
-        scrollPane,
-        JOptionPane.PLAIN_MESSAGE,
-        JOptionPane.DEFAULT_OPTION,
-        null,
-        new Object[]{},
-        null);
-
-    JDialog dialog = pane.createDialog(frame, "Dettagli Libro");
-    dialog.setSize(600, 500);
-    dialog.setMinimumSize(new Dimension(350, 320));
-    dialog.setResizable(true);
-    dialog.setLocationRelativeTo(frame);
-    dialog.setVisible(true);
-}
 
 /** 
  * Calcola le medie delle valutazioni degli utenti per un determinato libro e 
@@ -659,23 +1074,21 @@ private void mostraDettagliLibro(Libro libro, int n) {
  *
  * @param libro Il libro per cui calcolare le medie delle valutazioni.
  */
-private void MediaValutazioneLibri(Libro libro){
-    ArrayList<Double> alMediaVal = proxy.getMediaValutazioniLibro(libro);
-    if(alMediaVal!=null){
-        mediaStile = alMediaVal.get(0);
-        mediaContenuto = alMediaVal.get(1);
-        mediaGradevolezza = alMediaVal.get(2);
-        mediaOriginalita = alMediaVal.get(3);
-        mediaEdizione = alMediaVal.get(4);
-        mediaVotoFinale = alMediaVal.get(5);
-        esisteValutazione = true;
+    private void MediaValutazioneLibri(Libro libro){
+        ArrayList<Double> alMediaVal = proxy.getMediaValutazioniLibro(libro);
+        if(alMediaVal!=null){
+            mediaStile = alMediaVal.get(0);
+            mediaContenuto = alMediaVal.get(1);
+            mediaGradevolezza = alMediaVal.get(2);
+            mediaOriginalita = alMediaVal.get(3);
+            mediaEdizione = alMediaVal.get(4);
+            mediaVotoFinale = alMediaVal.get(5);
+            esisteValutazione = true;
 
-    }else{
-        esisteValutazione = false;
+        }else{
+            esisteValutazione = false;
+        }
     }
-    
-    
-}
 
 /**
  * Mostra i dettagli delle valutazioni e dei suggerimenti di un libro dato da un specifico utente 
@@ -683,146 +1096,144 @@ private void MediaValutazioneLibri(Libro libro){
  * @param u L'utente di cui mostrare le valutazioni e i suggerimenti.
  * @param l Il libro di cui mostrare le valutazioni e i suggerimenti.
  */
-private void mostraValUtente(Utente utente, Libro l) {
-    JPanel contentPanel = new JPanel(new GridBagLayout());
-    contentPanel.setBackground(new Color(245, 250, 255));
-    contentPanel.setBorder(BorderFactory.createCompoundBorder(
-        BorderFactory.createLineBorder(new Color(189, 195, 199), 1, true),
-        BorderFactory.createEmptyBorder(12, 16, 12, 16)
-    ));
-    GridBagConstraints c = new GridBagConstraints();
-    c.fill = GridBagConstraints.HORIZONTAL;
-    c.insets = new Insets(6, 6, 6, 6);
+    private void mostraValUtente(Utente utente, Libro l) {
+        JPanel contentPanel = new JPanel(new GridBagLayout());
+        contentPanel.setBackground(new Color(245, 250, 255));
+        contentPanel.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(189, 195, 199), 1, true),
+            BorderFactory.createEmptyBorder(12, 16, 12, 16)
+        ));
+        GridBagConstraints c = new GridBagConstraints();
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.insets = new Insets(6, 6, 6, 6);
 
-    ValutazioniLibro valLibro = proxy.getValutazioneLibro(utente, l);
-    ArrayList<Libro> libriSuggeriti = proxy.getLibriSuggeriti(utente, l);
+        ValutazioniLibro valLibro = proxy.getValutazioneLibro(utente, l);
+        ArrayList<Libro> libriSuggeriti = proxy.getLibriSuggeriti(utente, l);
 
-    int row = 0;
+        int row = 0;
 
-    JLabel utenteTitle = new JLabel("<html><span style='font-size:13px'><b>Recensione di " + utente.getUsername() + "</b></span></html>");
-    utenteTitle.setFont(new Font("Arial", Font.BOLD, 13));
-    utenteTitle.setForeground(new Color(41, 128, 185));
-    c.gridx = 0;
-    c.gridy = row++;
-    c.gridwidth = 3;
-    contentPanel.add(utenteTitle, c);
-
-    JSeparator sep = new JSeparator();
-    sep.setForeground(new Color(189, 195, 199));
-    c.gridy = row++;
-    c.gridwidth = 3;
-    c.fill = GridBagConstraints.HORIZONTAL;
-    contentPanel.add(sep, c);
-
-    if (valLibro != null) {
-        String[] labels = {
-            "Stile", "Contenuto", "Gradevolezza", "Originalità", "Edizione", "Voto finale"
-        };
-        int[] voti = {
-            valLibro.getStile(), valLibro.getContenuto(), valLibro.getGradevolezza(),
-            valLibro.getOriginalita(), valLibro.getEdizione(), valLibro.getVotoFinale()
-        };
-        String[] note = {
-            valLibro.getNoteStile(), valLibro.getNoteContenuto(), valLibro.getNoteGradevolezza(),
-            valLibro.getNoteOriginalita(), valLibro.getNoteEdizione(), valLibro.getNoteVotoFinale()
-        };
-
-        for (int i = 0; i < labels.length; i++) {
-            JLabel label = new JLabel("<html><b>" + labels[i] + ":</b></html>");
-            label.setFont(new Font("Arial", Font.BOLD, 11));
-            label.setForeground(new Color(33, 97, 140));
-            c.gridx = 0;
-            c.gridy = row;
-            c.gridwidth = 1;
-            contentPanel.add(label, c);
-
-            JLabel voto = new JLabel(String.valueOf(voti[i]));
-            voto.setFont(new Font("Arial", Font.BOLD, 11));
-            voto.setForeground(new Color(21, 67, 96));
-            c.gridx = 1;
-            contentPanel.add(voto, c);
-
-            JTextArea noteArea = new JTextArea(note[i]);
-            noteArea.setFont(new Font("Arial", Font.PLAIN, 10));
-            noteArea.setLineWrap(true);
-            noteArea.setWrapStyleWord(true);
-            noteArea.setEditable(false);
-            noteArea.setBackground(new Color(245, 250, 255));
-            noteArea.setBorder(BorderFactory.createEmptyBorder(2, 4, 2, 4));
-            noteArea.setRows(1);
-            c.gridx = 2;
-            c.weightx = 1.0;
-            c.fill = GridBagConstraints.HORIZONTAL;
-            contentPanel.add(noteArea, c);
-
-            row++;
-        }
-    } else {
-        JLabel labelVotiNF = new JLabel("L'utente non ha inserito voti per questo libro");
-        labelVotiNF.setFont(new Font("Arial", Font.ITALIC, 11));
-        labelVotiNF.setForeground(new Color(120, 120, 120));
-        c.gridwidth = 3;
+        JLabel utenteTitle = new JLabel("<html><span style='font-size:13px'><b>Recensione di " + utente.getUsername() + "</b></span></html>");
+        utenteTitle.setFont(new Font("Arial", Font.BOLD, 13));
+        utenteTitle.setForeground(new Color(41, 128, 185));
         c.gridx = 0;
         c.gridy = row++;
-        contentPanel.add(labelVotiNF, c);
-    }
-
-    JSeparator sep2 = new JSeparator();
-    sep2.setForeground(new Color(189, 195, 199));
-    c.gridy = row++;
-    c.gridwidth = 3;
-    c.fill = GridBagConstraints.HORIZONTAL;
-    contentPanel.add(sep2, c);
-
-    c.gridx = 0;
-    c.gridy = row++;
-    c.gridwidth = 3;
-    JLabel labelSuggF = new JLabel("<html><b>Libri Suggeriti:</b></html>");
-    labelSuggF.setFont(new Font("Arial", Font.BOLD, 12));
-    labelSuggF.setForeground(new Color(41, 128, 185));
-    contentPanel.add(labelSuggF, c);
-
-    for (Libro libro : libriSuggeriti) {
-        JLabel libroLabel = new JLabel(
-            "<html><b>" + Libro.getTitolo(libro) + "</b> <span style='color:#888;'>" +
-            Libro.getAutore(libro) + " &middot; " + Libro.getAnno(libro) + "</span></html>"
-        );
-        libroLabel.setFont(new Font("Arial", Font.BOLD, 11));
-        libroLabel.setForeground(new Color(33, 97, 140));
-        libroLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        libroLabel.setBorder(BorderFactory.createEmptyBorder(6, 8, 6, 8));
-        c.gridy = row++;
-        c.gridx = 0;
         c.gridwidth = 3;
-        contentPanel.add(libroLabel, c);
+        contentPanel.add(utenteTitle, c);
 
-        libroLabel.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                mostraDettagliLibro(libro, 0);
+        JSeparator sep = new JSeparator();
+        sep.setForeground(new Color(189, 195, 199));
+        c.gridy = row++;
+        c.gridwidth = 3;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        contentPanel.add(sep, c);
+
+        if (valLibro != null) {
+            String[] labels = {
+                "Stile", "Contenuto", "Gradevolezza", "Originalità", "Edizione", "Voto finale"
+            };
+            int[] voti = {
+                valLibro.getStile(), valLibro.getContenuto(), valLibro.getGradevolezza(),
+                valLibro.getOriginalita(), valLibro.getEdizione(), valLibro.getVotoFinale()
+            };
+            String[] note = {
+                valLibro.getNoteStile(), valLibro.getNoteContenuto(), valLibro.getNoteGradevolezza(),
+                valLibro.getNoteOriginalita(), valLibro.getNoteEdizione(), valLibro.getNoteVotoFinale()
+            };
+
+            for (int i = 0; i < labels.length; i++) {
+                JLabel label = new JLabel("<html><b>" + labels[i] + ":</b></html>");
+                label.setFont(new Font("Arial", Font.BOLD, 11));
+                label.setForeground(new Color(33, 97, 140));
+                c.gridx = 0;
+                c.gridy = row;
+                c.gridwidth = 1;
+                contentPanel.add(label, c);
+
+                JLabel voto = new JLabel(String.valueOf(voti[i]));
+                voto.setFont(new Font("Arial", Font.BOLD, 11));
+                voto.setForeground(new Color(21, 67, 96));
+                c.gridx = 1;
+                contentPanel.add(voto, c);
+
+                JTextArea noteArea = new JTextArea(note[i]);
+                noteArea.setFont(new Font("Arial", Font.PLAIN, 10));
+                noteArea.setLineWrap(true);
+                noteArea.setWrapStyleWord(true);
+                noteArea.setEditable(false);
+                noteArea.setBackground(new Color(245, 250, 255));
+                noteArea.setBorder(BorderFactory.createEmptyBorder(2, 4, 2, 4));
+                noteArea.setRows(1);
+                c.gridx = 2;
+                c.weightx = 1.0;
+                c.fill = GridBagConstraints.HORIZONTAL;
+                contentPanel.add(noteArea, c);
+
+                row++;
             }
-        });
+        } else {
+            JLabel labelVotiNF = new JLabel("L'utente non ha inserito voti per questo libro");
+            labelVotiNF.setFont(new Font("Arial", Font.ITALIC, 11));
+            labelVotiNF.setForeground(new Color(120, 120, 120));
+            c.gridwidth = 3;
+            c.gridx = 0;
+            c.gridy = row++;
+            contentPanel.add(labelVotiNF, c);
+        }
+
+        JSeparator sep2 = new JSeparator();
+        sep2.setForeground(new Color(189, 195, 199));
+        c.gridy = row++;
+        c.gridwidth = 3;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        contentPanel.add(sep2, c);
+
+        c.gridx = 0;
+        c.gridy = row++;
+        c.gridwidth = 3;
+        JLabel labelSuggF = new JLabel("<html><b>Libri Suggeriti:</b></html>");
+        labelSuggF.setFont(new Font("Arial", Font.BOLD, 12));
+        labelSuggF.setForeground(new Color(41, 128, 185));
+        contentPanel.add(labelSuggF, c);
+
+        for (Libro libro : libriSuggeriti) {
+            JLabel libroLabel = new JLabel(
+                "<html><b>" + Libro.getTitolo(libro) + "</b> <span style='color:#888;'>" +
+                Libro.getAutore(libro) + " &middot; " + Libro.getAnno(libro) + "</span></html>"
+            );
+            libroLabel.setFont(new Font("Arial", Font.BOLD, 11));
+            libroLabel.setForeground(new Color(33, 97, 140));
+            libroLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            libroLabel.setBorder(BorderFactory.createEmptyBorder(6, 8, 6, 8));
+            c.gridy = row++;
+            c.gridx = 0;
+            c.gridwidth = 3;
+            contentPanel.add(libroLabel, c);
+
+            libroLabel.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    mostraDettagliLibro(libro, 0);
+                }
+            });
+        }
+
+        JScrollPane scrollPane = new JScrollPane(contentPanel);
+        scrollPane.setBorder(null);
+        scrollPane.setPreferredSize(new Dimension(420, 300));
+        scrollPane.setMinimumSize(new Dimension(300, 200));
+
+        JOptionPane pane = new JOptionPane(
+                scrollPane,
+                JOptionPane.PLAIN_MESSAGE,
+                JOptionPane.DEFAULT_OPTION,
+                null,
+                new Object[] {},
+                null);
+        JDialog dialog = pane.createDialog(frame, "Dettagli Utente");
+        dialog.setSize(600, 500);
+        dialog.setMinimumSize(new Dimension(350, 320));
+        dialog.setResizable(true);
+        dialog.setLocationRelativeTo(frame);
+        dialog.setVisible(true);
     }
-
-    JScrollPane scrollPane = new JScrollPane(contentPanel);
-    scrollPane.setBorder(null);
-    scrollPane.setPreferredSize(new Dimension(420, 300));
-    scrollPane.setMinimumSize(new Dimension(300, 200));
-
-    JOptionPane pane = new JOptionPane(
-            scrollPane,
-            JOptionPane.PLAIN_MESSAGE,
-            JOptionPane.DEFAULT_OPTION,
-            null,
-            new Object[] {},
-            null);
-    JDialog dialog = pane.createDialog(frame, "Dettagli Utente");
-    dialog.setSize(600, 500);
-    dialog.setMinimumSize(new Dimension(350, 320));
-    dialog.setResizable(true);
-    dialog.setLocationRelativeTo(frame);
-    dialog.setVisible(true);
-}
-
-
 }

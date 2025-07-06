@@ -32,7 +32,7 @@ public class RgMainFrame {
 /**
  * Costruttore per la finestra di registrazione utente.
  * 
- * @param listaLibri La lista dei libri disponibili nel sistema.
+ * @param proxy Per la comunicazione con il server.
  */
     @SuppressWarnings("Convert2Lambda")
     public RgMainFrame(Proxy proxy) {
@@ -261,31 +261,34 @@ public class RgMainFrame {
  * Imposta il titolo della finestra, le dimensioni minime, l'operazione di chiusura predefinita,
  * la posizione relativa al centro dello schermo e rende la finestra visibile.
  */
-public void initialize() {
-    frame.setTitle("Registrazione");
-    frame.setSize(350, 450);
-    frame.setMinimumSize(new Dimension(1, 1)); 
-    frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-    frame.addWindowListener(new WindowAdapter() {
-        @Override
-        public void windowClosing(WindowEvent e){
-            proxy.fineComunicazione();
-            frame.dispose();
-            
-        }
-    });
+    public void initialize() {
+        frame.setTitle("Registrazione");
+        frame.setSize(350, 450);
+        frame.setMinimumSize(new Dimension(1, 1)); 
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e){
+                proxy.fineComunicazione();
+                frame.dispose();
+                
+            }
+        });
     frame.setLocationRelativeTo(null); 
     frame.setVisible(true); 
 }
 
-public String getPassword() {
-    String testoPassword = "";
-    char[] charPass = password.getPassword();
-    // Concatena i caratteri della password in una stringa
-    for (int i = 0; i < password.getPassword().length; i++) {
-        testoPassword = testoPassword + charPass[i];
+/**
+ * 
+ * Restituisce la password del TextField password nel caso in cui sia invisibile
+ * @return La password inserita all'interno del TextField
+ */
+    private String getPassword() {
+        String testoPassword = "";
+        char[] charPass = password.getPassword();
+        for (int i = 0; i < password.getPassword().length; i++) {
+            testoPassword = testoPassword + charPass[i];
+        }
+        return testoPassword;
     }
-    return testoPassword;
-}
-
 }

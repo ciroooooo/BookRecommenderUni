@@ -39,10 +39,9 @@ public class LibrerieMainFrame {
  * Inizializza il frame principale per la gestione delle librerie di libri.
  * Configura il layout, i pannelli e i bottoni necessari per l'interfaccia utente.
  *
- * @param listaLibri una lista di oggetti {@code Libro} da visualizzare e gestire.
+ * @param proxy per la comunicazione con il server
+ * @param cf indica il codice fiscale dell'utente che ha effettuato l'accesso
  * 
- * @throws IOException se si verifica un errore durante la lettura dei file di librerie o suggerimenti.
- * @throws ClassNotFoundException se la classe degli oggetti letti dai file non viene trovata.
  */
     @SuppressWarnings("Convert2Lambda")
     public LibrerieMainFrame(Proxy proxy, String cf) {
@@ -60,13 +59,11 @@ public class LibrerieMainFrame {
         customizeButton(bottoneHome);
         customizeButton(bottoneCLibrerie);
 
-        // Imposta colore dei bottoni come HomeMainFrame
         bottoneHome.setBackground(new Color(41, 128, 185));
         bottoneCLibrerie.setBackground(new Color(41, 128, 185));
         bottoneHome.setForeground(Color.WHITE);
         bottoneCLibrerie.setForeground(Color.WHITE);
 
-        // Effetto hover come HomeMainFrame
         bottoneHome.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -484,7 +481,7 @@ private void apriTabLibreria(Librerie libreria) {
   /**
  * Mostra un dialogo per inserire o modificare le valutazioni di un libro da parte di un utente.
  * 
- * @param libro Il libro per il quale inserire o modificare le valutazioni.
+ * @param libro libro per il quale si vogliono inserire o modificare le valutazioni
  */  
     @SuppressWarnings("Convert2Lambda")
     private void mostraInserimentoValutazioni(Libro libro) { 
@@ -666,8 +663,8 @@ private void apriTabLibreria(Librerie libreria) {
  * 
  * @param risultati ArrayList dei libri da mostrare come risultato della ricerca.
  * @param n Indica il contesto in cui vengono mostrati i risultati:
- *          - 0 per la visualizzazione nella lista delle librerie.
- *          - 1 per la visualizzazione in un altro contesto.
+ *          - 0 per la visualizzazione all'interno della lista delle librerie
+ *          - 1 per la visualizzazione all'interno dei suggerimenti
  * @param panel Il pannello su cui aggiungere i risultati della ricerca.
  */  
     private void mostraRisultati(ArrayList<Libro> risultati,int n,JPanel panel) {
@@ -953,7 +950,7 @@ private void apriTabLibreria(Librerie libreria) {
 /**
  * Mostra una serie di opzioni per un libro, tra cui valutazioni e suggerimenti.
  * 
- * @param libro Il libro per il quale si vogliono visualizzare le opzioni.
+ * @param libro Il libro utilizzato per applicare le valutazioni o suggerimenti
  */
     @SuppressWarnings("Convert2Lambda")  
     private void Opzioni(Libro libro){  
