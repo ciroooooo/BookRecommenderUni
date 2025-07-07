@@ -7,6 +7,7 @@
 package frames;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
 import java.util.ArrayList;
 import javax.swing.*;
 import parametri.*;
@@ -832,6 +833,11 @@ public class HomeMainFrame {
  */
     public void initialize() {
         frame.setTitle("Home");
+        File fileIcona = new File(".");
+        String pathIcona= fileIcona.getAbsolutePath().substring(0,fileIcona.getAbsolutePath().length()-1);
+        pathIcona = pathIcona+"src\\immagini\\icona.png";
+        Image icona = (new ImageIcon(pathIcona)).getImage();
+        frame.setIconImage(icona);
         frame.setSize(350, 500);
         frame.setMinimumSize(new Dimension(300, 400)); 
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);

@@ -8,6 +8,7 @@
 package frames;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.swing.*;
@@ -310,6 +311,11 @@ private void apriTabLibreria(Librerie libreria) {
     Color libroBg = new Color(240, 248, 255);
 
     JFrame tabFrame = new JFrame(libreria.getNome()); // Titolo della finestra con il nome della libreria
+    File fileIcona = new File(".");
+    String pathIcona= fileIcona.getAbsolutePath().substring(0,fileIcona.getAbsolutePath().length()-1);
+    pathIcona = pathIcona+"src\\immagini\\icona.png";
+    Image icona = (new ImageIcon(pathIcona)).getImage();
+    tabFrame.setIconImage(icona);
     tabFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     tabFrame.setSize(350, 500); // stessa size di LibrerieMainFrame
     tabFrame.setMinimumSize(new Dimension(300, 400));
@@ -463,6 +469,11 @@ private void apriTabLibreria(Librerie libreria) {
  */
     public void initialize() {
         frame.setTitle("Librerie");
+        File fileIcona = new File(".");
+        String pathIcona= fileIcona.getAbsolutePath().substring(0,fileIcona.getAbsolutePath().length()-1);
+        pathIcona = pathIcona+"src\\immagini\\icona.png";
+        Image icona = (new ImageIcon(pathIcona)).getImage();
+        frame.setIconImage(icona);
         frame.setSize(350, 500); // Stesse dimensioni di HomeMainFrame
         frame.setMinimumSize(new Dimension(300, 400)); // Stesse dimensioni minime di HomeMainFrame
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
