@@ -4,7 +4,7 @@
 //Matteo Corda 757928 (VA)
 //Gabriele Schioppa 756634 (VA)
 
-package frames;
+package bookrecommender;
 
 public class Main {
     public static void main(String[] args) {

@@ -4,7 +4,7 @@
 //Matteo Corda 757928 (VA)
 //Gabriele Schioppa 756634 (VA)
 
-package frames;
+package bookrecommender;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,6 +18,9 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
+/**
+ * Classe LgMainFrame, rappresenta il frame per poter far effettuare il login ad un certo utente.
+ */
 public class LgMainFrame {
     private final JButton accesso;
     JFrame frame;
@@ -31,9 +34,7 @@ public class LgMainFrame {
 /**
  * Costruisce il frame principale di login per l'applicazione.
  * Questo frame consente agli utenti di accedere, registrarsi o accedere come ospiti.
- *
  * @param proxy il proxy utilizzato per la comunicazione con il server.
- * 
  */
     @SuppressWarnings("Convert2Lambda")
     public LgMainFrame(Proxy proxy) {
@@ -47,11 +48,11 @@ public class LgMainFrame {
         pathSfondo = pathSfondo+"src\\immagini\\sfondoLG.jpg";
         System.out.println(pathSfondo);
         try {
-            sfondo = ImageIO.read(new File(pathSfondo)); // cambia path se necessario
+            sfondo = ImageIO.read(new File(pathSfondo));
         } catch (IOException e) {}
         BackGroundPanel contentPanel = new BackGroundPanel(sfondo);
         contentPanel.setLayout(new GridBagLayout());
-        contentPanel.setOpaque(false); // trasparente per vedere lo sfondo
+        contentPanel.setOpaque(false); 
 
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -204,9 +205,9 @@ public class LgMainFrame {
     }
 
 /**
- * Inizializza e visualizza il frame di login.
- * Imposta le dimensioni, il titolo, la modalità di chiusura e la posizione del frame.
- * Rende il frame visibile all'utente.
+ * Inizializza il JFrame per l'applicazione.
+ * Imposta il titolo, le dimensioni, l'icona e le dimensioni minime, l'operazione di chiusura predefinita
+ * chiude la connessione al server in caso di chiusura del frame.
  */
     public void initialize() {
         frame.setTitle("Login");

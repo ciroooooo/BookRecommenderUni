@@ -8,9 +8,10 @@
 package parametri;
 import java.io.Serializable;
 
-
-
-
+/**
+ * Classe ValutazioniLibro per la gestione delle valutazioni di un libro fatte da un certo utente
+ * La classe presenta vari parametri per la valutazioni e vari metodi per la modifica o l'ottenimento di tali parametri.
+ */
 public class ValutazioniLibro implements Serializable{
     private int stile;
     private final Utente u;
@@ -27,7 +28,7 @@ public class ValutazioniLibro implements Serializable{
     private String noteVotoFinale;
     private final Libro l;
     
-    /**
+/**
  * Costruisce un nuovo oggetto ValutazioniLibro associato a un utente e a un libro specificati.
  *
  * @param u L'utente associato alla valutazione del libro.
@@ -40,7 +41,6 @@ public class ValutazioniLibro implements Serializable{
     }
 /**
  * Inserisce le valutazioni di vari aspetti di un libro e le relative note.
- * Verifica anche la lunghezza delle note per evitare superamenti dei limiti consentiti.
  *
  * @param stile Valutazione dello stile del libro.
  * @param noteStile Note sulla valutazione dello stile.
@@ -52,7 +52,7 @@ public class ValutazioniLibro implements Serializable{
  * @param noteOriginalita Note sulla valutazione dell'originalità.
  * @param edizione Valutazione dell'edizione del libro.
  * @param noteEdizione Note sulla valutazione dell'edizione.
- * @param votoFinale Voto finale complessivo del libro.
+ * @param votoFinale Voto finale complessivo del libro, dato dalla media arrotondata degli altri voti
  * @param noteVotoFinale Note sul voto finale.
  */
     public void inserisciValutazioneLibro(int stile,String noteStile,int contenuto,String noteContenuto,int gradevolezza,String noteGradevolezza,int originalita,String noteOriginalita,int edizione,String noteEdizione,int votoFinale,String noteVotoFinale){
@@ -71,7 +71,6 @@ public class ValutazioniLibro implements Serializable{
     }
     /**
  * Restituisce la valutazione dello stile del libro.
- *
  * @return La valutazione dello stile del libro.
  */
     public int getStile(){
@@ -79,7 +78,6 @@ public class ValutazioniLibro implements Serializable{
     }
 /**
  * Restituisce la valutazione del contenuto del libro.
- *
  * @return La valutazione del contenuto del libro.
  */
     public int getContenuto(){
@@ -87,7 +85,6 @@ public class ValutazioniLibro implements Serializable{
     }
 /**
  * Restituisce la valutazione della gradevolezza del libro.
- *
  * @return La valutazione della gradevolezza del libro.
  */
     public int getGradevolezza(){
@@ -95,7 +92,6 @@ public class ValutazioniLibro implements Serializable{
     }
 /**
  * Restituisce la valutazione dell'originalità del libro.
- *
  * @return La valutazione dell'originalità del libro.
  */
     public int getOriginalita(){
@@ -103,7 +99,6 @@ public class ValutazioniLibro implements Serializable{
     }
 /**
  * Restituisce il numero di edizione del libro.
- *
  * @return Il numero di edizione del libro.
  */
     public int getEdizione(){
@@ -111,7 +106,6 @@ public class ValutazioniLibro implements Serializable{
     }
 /**
  * Restituisce il voto finale assegnato al libro.
- *
  * @return Il voto finale assegnato al libro.
  */
     public int getVotoFinale(){
@@ -119,7 +113,6 @@ public class ValutazioniLibro implements Serializable{
     }
 /**
  * Restituisce le note sulla valutazione dello stile del libro.
- *
  * @return Le note sulla valutazione dello stile del libro.
  */
     public String getNoteStile(){
@@ -127,7 +120,6 @@ public class ValutazioniLibro implements Serializable{
     }
 /**
  * Restituisce le note sulla valutazione del contenuto del libro.
- *
  * @return Le note sulla valutazione del contenuto del libro.
  */
     public String getNoteContenuto(){
@@ -135,7 +127,6 @@ public class ValutazioniLibro implements Serializable{
     }
 /**
  * Restituisce le note sulla valutazione della gradevolezza del libro.
- *
  * @return Le note sulla valutazione della gradevolezza del libro.
  */
     public String getNoteGradevolezza(){
@@ -143,7 +134,6 @@ public class ValutazioniLibro implements Serializable{
     }
 /**
  * Restituisce le note sulla valutazione dell'originalità del libro.
- *
  * @return Le note sulla valutazione dell'originalità del libro.
  */
     public String getNoteOriginalita(){
@@ -151,7 +141,6 @@ public class ValutazioniLibro implements Serializable{
     }
 /**
  * Restituisce le note sulla valutazione dell'edizione del libro.
- *
  * @return Le note sulla valutazione dell'edizione del libro.
  */
     public String getNoteEdizione(){
@@ -159,7 +148,6 @@ public class ValutazioniLibro implements Serializable{
     }
 /**
  * Restituisce le note sulla valutazione finale del libro.
- *
  * @return Le note sulla valutazione finale del libro.
  */
     public String getNoteVotoFinale(){
@@ -167,7 +155,6 @@ public class ValutazioniLibro implements Serializable{
     }
 /**
  * Restituisce il libro associato a questa valutazione.
- *
  * @return Il libro associato a questa valutazione.
  */
     public Libro getLibro(){
@@ -175,7 +162,6 @@ public class ValutazioniLibro implements Serializable{
     }
 /**
  * Restituisce l'utente associato a questa valutazione.
- *
  * @return L'utente associato a questa valutazione.
  */
     public Utente getUtente(){
