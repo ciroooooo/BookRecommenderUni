@@ -46,7 +46,6 @@ public class LgMainFrame {
         File fileSfondo = new File(".");
         String pathSfondo = fileSfondo.getAbsolutePath().substring(0,fileSfondo.getAbsolutePath().length()-1);
         pathSfondo = pathSfondo+"src\\immagini\\sfondoLG.jpg";
-        System.out.println(pathSfondo);
         try {
             sfondo = ImageIO.read(new File(pathSfondo));
         } catch (IOException e) {}

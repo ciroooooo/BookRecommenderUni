@@ -4,7 +4,7 @@
 //Matteo Corda 757928 (VA)
 //Gabriele Schioppa 756634 (VA)
 
-import frames.Proxy;
+import bookrecommender.Proxy;
 import java.io.*;
 import java.time.LocalDate;
 import java.util.*;
