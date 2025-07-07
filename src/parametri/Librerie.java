@@ -8,13 +8,17 @@ package parametri;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+/**
+ * Classe Librerie per gestire le varie librerie degli utenti
+ * Fornisce metodi per la gestione dei libri contenuti in essa.
+*/ 
 public class Librerie implements Serializable{
     private final Utente utente;
     private final ArrayList<Libro> alLibri;
     private final String nome;
-    /**
- * Costruisce un oggetto Librerie con il nome, l'utente e la lista di libri fornita.
- *
+
+/**
+ * Costruisce un oggetto Librerie dato il nome della libreria, l'utente possessore della libreria e la lista dei libri
  * @param nome Il nome della libreria.
  * @param utente L'utente associato alla libreria.
  * @param alLibri Un ArrayList contenente i libri della libreria.
@@ -25,16 +29,7 @@ public class Librerie implements Serializable{
         this.nome=nome;    
     }
 /**
- * Aggiunge un libro alla lista dei libri della libreria.
- *
- * @param l Il libro da aggiungere alla libreria.
- */
-    public void aggiungiLibro(Libro l){
-        this.alLibri.add(l);
-    }
-/**
  * Restituisce l'utente associato alla libreria.
- *
  * @return L'oggetto Utente associato alla libreria.
  */
     public Utente getUtente(){
@@ -42,15 +37,14 @@ public class Librerie implements Serializable{
     }
 /**
  * Restituisce il nome della libreria.
- *
  * @return Il nome della libreria.
  */
     public String getNome(){
         return this.nome;
     }
+
 /**
  * Restituisce l'elenco dei libri presenti nella libreria.
- *
  * @return Un ArrayList contenente i libri presenti nella libreria.
  */
     public ArrayList<Libro> getAlLibri(){

@@ -7,21 +7,21 @@
 package parametri;
 
 import java.io.Serializable;
+
+//*Classe autore utilizzata per gestire gli autori dei vari libri */
 public class Autore implements Serializable{
     private final String nome;
-    /**
- * Costruisce un oggetto Autore con il nome.
- *
- * @param nome Il nome dell'autore.
- */
+/**
+* Costruisce un oggetto Autore con il nome.
+* @param nome Il nome dell'autore.
+*/
     public Autore(String nome){
         this.nome=nome;
     }
-    /**
- * Restituisce il nome dell'autore.
- *
- * @return Il nome dell'autore.
- */
+/**
+* Restituisce il nome dell'autore.
+* @return Il nome dell'autore.
+*/
     public String getNome()
     {
         return this.nome;

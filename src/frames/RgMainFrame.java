@@ -12,6 +12,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
+
 import javax.swing.*;
 import parametri.*;
 
@@ -263,6 +265,11 @@ public class RgMainFrame {
  */
     public void initialize() {
         frame.setTitle("Registrazione");
+        File fileIcona = new File(".");
+        String pathIcona= fileIcona.getAbsolutePath().substring(0,fileIcona.getAbsolutePath().length()-1);
+        pathIcona = pathIcona+"src\\immagini\\icona.png";
+        Image icona = (new ImageIcon(pathIcona)).getImage();
+        frame.setIconImage(icona);
         frame.setSize(350, 450);
         frame.setMinimumSize(new Dimension(1, 1)); 
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);

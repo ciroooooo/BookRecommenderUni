@@ -210,6 +210,11 @@ public class LgMainFrame {
  */
     public void initialize() {
         frame.setTitle("Login");
+        File fileIcona = new File(".");
+        String pathIcona= fileIcona.getAbsolutePath().substring(0,fileIcona.getAbsolutePath().length()-1);
+        pathIcona = pathIcona+"src\\immagini\\icona.png";
+        Image icona = (new ImageIcon(pathIcona)).getImage();
+        frame.setIconImage(icona);
         frame.setSize(350, 450);
         frame.setMinimumSize(new Dimension(350, 450));
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
