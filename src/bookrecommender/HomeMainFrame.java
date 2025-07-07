@@ -4,14 +4,16 @@
 //Matteo Corda 757928 (VA)
 //Gabriele Schioppa 756634 (VA)
 
-package frames;
+package bookrecommender;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.util.ArrayList;
 import javax.swing.*;
 import parametri.*;
-
+/**
+ * Classe HomeMainFrame, rappresenta la home del progetto, nella quale un utente può effettuare varie operazioni.
+ */
 public class HomeMainFrame {
     private boolean esisteValutazione;
     private JFrame frame;
@@ -34,7 +36,6 @@ public class HomeMainFrame {
 
 /**
  * Costruttore della classe HomeMainFrame.
- * 
  * @param proxy utilizzato per la connessione al Server
  * @param cf indica il codice fiscale della persona che ha effettuato l'accesso, altrimenti indica "Ospite" se si è entrati come ospite.
  */
@@ -118,20 +119,17 @@ public class HomeMainFrame {
                 }
             }
         });
-
-
-
         bottoneProfilo.addActionListener(new ActionListener(){
+            @Override
             public void actionPerformed(ActionEvent e){
                 if(cf.equals("Ospite")){
                     JOptionPane.showMessageDialog(null, "Impossibile effettuare questa operazione come ospite");
                 }else{
-                    // --- INIZIO MODIFICHE ESTETICHE ---
                     Color bgMain = new Color(245, 250, 255);
                     Color bgPanel = new Color(237, 245, 252);
                     Color blue = new Color(41, 128, 185);
                     Color blueLabel = new Color(33, 97, 140);
-                    Color borderBtn = new Color(120, 160, 200); // nuovo bordo per i bottoni laterali
+                    Color borderBtn = new Color(120, 160, 200); 
                     Font titleFont = new Font("Arial", Font.BOLD, 20);
                     Font labelFont = new Font("Arial", Font.BOLD, 14);
                     Font valueFont = new Font("Arial", Font.PLAIN, 14);
@@ -161,8 +159,6 @@ public class HomeMainFrame {
                         bottoneCambioPassword,
                         bottoneCambioEmail
                     };
-
-                    // --- bottoni laterali con bordo diverso ---
                     for (JButton b : bottoni) {
                         b.setFont(labelFont);
                         b.setBackground(Color.WHITE);
@@ -233,7 +229,7 @@ public class HomeMainFrame {
                     profiloPanel.add(panelDestra, BorderLayout.CENTER);
 
                     JDialog dialog = new JDialog(frame, "Profilo", false);
-                    dialog.setSize(520, 340);
+                    dialog.setSize(620, 340);
                     dialog.getContentPane().setBackground(bgMain);
                     dialog.setLayout(new BorderLayout());
                     dialog.setLocationRelativeTo(null);
@@ -322,9 +318,6 @@ public class HomeMainFrame {
                             dialog.getContentPane().repaint();
                         }
                     });
-
-
-
                     bottoneCambioPassword.addActionListener(new ActionListener() {
                         public void actionPerformed(ActionEvent e) {
                             dialog.getContentPane().removeAll();
@@ -349,9 +342,11 @@ public class HomeMainFrame {
                                 b.setAlignmentX(0.5f);
                                 b.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
                                 b.addMouseListener(new java.awt.event.MouseAdapter() {
+                                    @Override
                                     public void mouseEntered(java.awt.event.MouseEvent evt) {
                                         b.setBackground(new Color(220, 240, 255));
                                     }
+                                    @Override
                                     public void mouseExited(java.awt.event.MouseEvent evt) {
                                         b.setBackground(Color.WHITE);
                                     }
@@ -425,6 +420,7 @@ public class HomeMainFrame {
                             panelDestra2.add(applicaButton);
 
                             applicaButton.addActionListener(new ActionListener() {
+                                @Override
                                 public void actionPerformed(ActionEvent e) {
                                     String passwordVecchia = new String(vecchiaPasswordField.getPassword());
                                     String passwordNuova = new String(nuovaPasswordField.getPassword());
@@ -436,7 +432,6 @@ public class HomeMainFrame {
                                     }
                                 }
                             });
-
                             cambioPasswordPanel.add(panelSinistra2, BorderLayout.WEST);
                             cambioPasswordPanel.add(panelDestra2, BorderLayout.CENTER);
 
@@ -446,9 +441,8 @@ public class HomeMainFrame {
                         }
                     });
 
-
-
                     bottoneCambioUsername.addActionListener(new ActionListener() {
+                        @Override
                         public void actionPerformed(ActionEvent e) {
                             dialog.getContentPane().removeAll();
 
@@ -581,9 +575,11 @@ public class HomeMainFrame {
                                 b.setAlignmentX(0.5f);
                                 b.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
                                 b.addMouseListener(new java.awt.event.MouseAdapter() {
+                                    @Override
                                     public void mouseEntered(java.awt.event.MouseEvent evt) {
                                         b.setBackground(new Color(220, 240, 255));
                                     }
+                                    @Override
                                     public void mouseExited(java.awt.event.MouseEvent evt) {
                                         b.setBackground(Color.WHITE);
                                     }
@@ -828,8 +824,8 @@ public class HomeMainFrame {
     
 /**
  * Inizializza il JFrame per l'applicazione.
- * Imposta il titolo, le dimensioni, le dimensioni minime, l'operazione di chiusura predefinita,
- * e centra il frame nello schermo.
+ * Imposta il titolo, le dimensioni, l'icona e le dimensioni minime, l'operazione di chiusura predefinita
+ * chiude la connessione al server in caso di chiusura del frame.
  */
     public void initialize() {
         frame.setTitle("Home");
@@ -842,6 +838,7 @@ public class HomeMainFrame {
         frame.setMinimumSize(new Dimension(300, 400)); 
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         frame.addWindowListener(new WindowAdapter() {
+            @Override
             public void windowClosing(WindowEvent e){
                 proxy.fineComunicazione();
                 frame.dispose();

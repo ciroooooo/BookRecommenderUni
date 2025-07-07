@@ -1,26 +1,30 @@
 package server;
 
-import parametri.Utente;
-import parametri.Libro;
-import parametri.Autore;
-
 import java.io.*;
 import java.net.*;
 import java.sql.*;
 import java.sql.Date;
-
-import org.postgresql.*;
-import java.util.*;
 import java.time.LocalDate;
+import java.util.*;
+import parametri.Autore;
 import parametri.Librerie;
+import parametri.Libro;
+import parametri.Utente;
 import parametri.ValutazioniLibro;
-
+/**
+ * Classe ServerSlave per la gestione della comunicazione con un client.
+ * Per ogni client che vuole connettersi al server, ci sarà una nuova istanza di ServerSlave per gestire la comunicazione.
+ */
 public class ServerSlave extends Thread{
     private Socket socket;
     private ObjectInputStream in;
     private ObjectOutputStream out;
     private Connection con;
     private Statement stmt;
+    /**
+     * Costruttore della classe ServerSlave.
+     * @param socket socket associato alla comunicazione con un certo client, una volta inizializzati certi parametri, avvia il Thread.
+     */
     public ServerSlave(Socket socket){
         this.socket = socket;
         try{
@@ -37,7 +41,10 @@ public class ServerSlave extends Thread{
         } catch (IOException e) {
         }
     }
-    
+    /**
+     * Metodo run per l'avvio del thread, all'interno sono presenti tutti le possibili interazioni con il client.
+     * ad ogni richiesta del client, avviene una certa richiesta al database.
+    */
     public void run(){
         try {
             while(!socket.isClosed()){

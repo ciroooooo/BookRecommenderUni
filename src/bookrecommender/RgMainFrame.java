@@ -4,7 +4,7 @@
 //Matteo Corda 757928 (VA)
 //Gabriele Schioppa 756634 (VA)
 
-package frames;
+package bookrecommender;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,7 +16,9 @@ import java.io.File;
 
 import javax.swing.*;
 import parametri.*;
-
+/**
+ * Classe RgMainFrame per la registrazione di un utente al sistema.
+ */
 public class RgMainFrame {
     private JTextField nome;
     private JTextField cognome;
@@ -68,7 +70,7 @@ public class RgMainFrame {
         
         c.gridwidth = 1;
 
-        nome = new JTextField();   //Inserisce i TextField per poter inserire i vari campi, 
+        nome = new JTextField();    
         c.gridx = 0;
         c.gridy = 1;
         contentPanel.add(nomeLabel, c);
@@ -259,9 +261,9 @@ public class RgMainFrame {
         frame.setContentPane(contentPanel);
     }
 /**
- * Inizializza la finestra di registrazione.
- * Imposta il titolo della finestra, le dimensioni minime, l'operazione di chiusura predefinita,
- * la posizione relativa al centro dello schermo e rende la finestra visibile.
+ * Inizializza il JFrame per l'applicazione.
+ * Imposta il titolo, le dimensioni, l'icona e le dimensioni minime, l'operazione di chiusura predefinita
+ * chiude la connessione al server in caso di chiusura del frame.
  */
     public void initialize() {
         frame.setTitle("Registrazione");
@@ -286,7 +288,6 @@ public class RgMainFrame {
 }
 
 /**
- * 
  * Restituisce la password del TextField password nel caso in cui sia invisibile
  * @return La password inserita all'interno del TextField
  */

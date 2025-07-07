@@ -1,4 +1,4 @@
-package frames;
+package bookrecommender;
 
 import java.io.*;
 import java.net.*;

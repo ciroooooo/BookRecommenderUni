@@ -5,15 +5,16 @@
 //Gabriele Schioppa 756634 (VA)
 
 
-package frames;
+package bookrecommender;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import javax.swing.*;
 import parametri.*;
-
+/*
+*Classe LibrerieMainFrame per la gestione delle librerie, delle valutazioni e dei consigli di un certo utente
+*/
 public class LibrerieMainFrame {
     private Libro libroCorrente;
     private JFrame frame;
@@ -245,11 +246,8 @@ public class LibrerieMainFrame {
  * Questo metodo rimuove tutti i componenti esistenti dal pannello dei risultati
  * e aggiunge un nuovo pannello per ciascuna libreria nella lista filtrata.
  * Ogni pannello della libreria contiene un'etichetta con il nome della libreria e,
- * quando viene cliccata, mostra o nasconde i libri appartenenti alla libreria.
- *
- * @param listaLibrerieUtente la lista delle librerie filtrate da visualizzare.
- * 
- * @throws NullPointerException se {@code listaLibrerieUtente} è null.
+ * quando viene cliccata, mostra i libri appartenenti a quella libreria
+ * @param listaLibrerieUtente la lista delle librerie di un utente.
  */
 private void listaLibrerie(ArrayList<Librerie> listaLibrerieUtente) {
     resultsPanel.removeAll();
@@ -301,7 +299,6 @@ private void listaLibrerie(ArrayList<Librerie> listaLibrerieUtente) {
 
 /**
  * Apre un nuovo tab con l'elenco dei libri contenuti nella libreria selezionata.
- * 
  * @param libreria La libreria selezionata.
  */
 private void apriTabLibreria(Librerie libreria) {
@@ -310,21 +307,20 @@ private void apriTabLibreria(Librerie libreria) {
     Color hoverColor = new Color(93, 173, 226);
     Color libroBg = new Color(240, 248, 255);
 
-    JFrame tabFrame = new JFrame(libreria.getNome()); // Titolo della finestra con il nome della libreria
+    JFrame tabFrame = new JFrame(libreria.getNome()); 
     File fileIcona = new File(".");
     String pathIcona= fileIcona.getAbsolutePath().substring(0,fileIcona.getAbsolutePath().length()-1);
     pathIcona = pathIcona+"src\\immagini\\icona.png";
     Image icona = (new ImageIcon(pathIcona)).getImage();
     tabFrame.setIconImage(icona);
     tabFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-    tabFrame.setSize(350, 500); // stessa size di LibrerieMainFrame
+    tabFrame.setSize(350, 500); 
     tabFrame.setMinimumSize(new Dimension(300, 400));
     tabFrame.setLocationRelativeTo(null);
 
     JPanel mainPanel = new JPanel(new BorderLayout());
     mainPanel.setBackground(Color.WHITE);
 
-    // Titolo della libreria all'interno del pannello
     JLabel titoloInterno = new JLabel("Libreria \"" + libreria.getNome() + "\"");
     titoloInterno.setFont(new Font("Arial", Font.BOLD, 18));
     titoloInterno.setForeground(new Color(41, 128, 185));
@@ -332,19 +328,18 @@ private void apriTabLibreria(Librerie libreria) {
     titoloInterno.setBorder(BorderFactory.createEmptyBorder(16, 24, 12, 24)); // padding laterale aumentato
     mainPanel.add(titoloInterno, BorderLayout.NORTH);
 
-    // Lista libri
+
     JPanel listaLibriPanel = new JPanel();
     listaLibriPanel.setLayout(new BoxLayout(listaLibriPanel, BoxLayout.Y_AXIS));
     listaLibriPanel.setBackground(Color.WHITE);
 
     for (Libro libro : libreria.getAlLibri()) {
-        // Calcola la larghezza della stringa del libro
         String testoLibro = libro.getTitolo() + " - " + libro.getAutore() + " (" + libro.getDataPubblicazione().getYear() + ")";
         Font font = new Font("Arial", Font.PLAIN, 15);
         JLabel misuraLabel = new JLabel(testoLibro);
         misuraLabel.setFont(font);
         Dimension stringSize = misuraLabel.getPreferredSize();
-        int panelWidth = stringSize.width + 32 + 24; // padding extra per il bordo e hover e padding sfondo
+        int panelWidth = stringSize.width + 32 + 24; 
         int panelHeight = 36;
 
         JPanel libroPanel = new JPanel(new BorderLayout()) {
@@ -371,7 +366,6 @@ private void apriTabLibreria(Librerie libreria) {
         libroLabel.setBorder(BorderFactory.createEmptyBorder(6, 8, 6, 8));
         libroLabel.setOpaque(false);
 
-        // Effetto hover SOLO sul testo (come prima)
         libroLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -391,7 +385,7 @@ private void apriTabLibreria(Librerie libreria) {
 
         libroPanel.add(libroLabel, BorderLayout.CENTER);
         listaLibriPanel.add(libroPanel);
-        listaLibriPanel.add(Box.createVerticalStrut(16)); // spazio aumentato tra le righe
+        listaLibriPanel.add(Box.createVerticalStrut(16)); 
     }
 
     JScrollPane scrollPane = new JScrollPane(listaLibriPanel);
@@ -400,7 +394,6 @@ private void apriTabLibreria(Librerie libreria) {
     scrollPane.getVerticalScrollBar().setUnitIncrement(16);
     mainPanel.add(scrollPane, BorderLayout.CENTER);
 
-    // Bottone indietro in basso a sinistra
     JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
     bottomPanel.setBackground(Color.WHITE);
     JButton indietroButton = new JButton("Indietro");
@@ -433,11 +426,8 @@ private void apriTabLibreria(Librerie libreria) {
 
 /**
  * Personalizza l'aspetto di un pulsante.
- * <p>
  * Questo metodo imposta la dimensione, il font, i colori di sfondo e testo,
  * e gestisce gli eventi del mouse per un pulsante specificato.
- * </p>
- *
  * @param bottone il pulsante da personalizzare.
  */
     private void customizeButton(JButton bottone) { 
@@ -461,11 +451,9 @@ private void apriTabLibreria(Librerie libreria) {
         });
     }
 /**
- * Inizializza e visualizza il frame principale dell'applicazione Librerie.
- * <p>
- * Questo metodo imposta il titolo, le dimensioni, il comportamento di chiusura,
- * e la posizione del frame principale. Infine, rende visibile il frame.
- * </p>
+ * Inizializza il JFrame per l'applicazione.
+ * Imposta il titolo, le dimensioni, l'icona e le dimensioni minime, l'operazione di chiusura predefinita
+ * chiude la connessione al server in caso di chiusura del frame.
  */
     public void initialize() {
         frame.setTitle("Librerie");
@@ -491,7 +479,6 @@ private void apriTabLibreria(Librerie libreria) {
     }
   /**
  * Mostra un dialogo per inserire o modificare le valutazioni di un libro da parte di un utente.
- * 
  * @param libro libro per il quale si vogliono inserire o modificare le valutazioni
  */  
     @SuppressWarnings("Convert2Lambda")
@@ -671,7 +658,6 @@ private void apriTabLibreria(Librerie libreria) {
     }
   /**
  * Mostra i risultati della ricerca dei libri all'interno di un pannello.
- * 
  * @param risultati ArrayList dei libri da mostrare come risultato della ricerca.
  * @param n Indica il contesto in cui vengono mostrati i risultati:
  *          - 0 per la visualizzazione all'interno della lista delle librerie
@@ -736,7 +722,6 @@ private void apriTabLibreria(Librerie libreria) {
 /**
  * Mostra le informazioni dettagliate di un libro in un pannello.
  * Consente all'utente di aggiungere il libro alla propria collezione o ai suggerimenti.
- * 
  * @param libro Il libro di cui mostrare le informazioni dettagliate.
  * @param n Indica il contesto in cui viene mostrata l'informazione:
  *          - 0 per la visualizzazione nelle librerie dell'utente.
@@ -852,7 +837,6 @@ private void apriTabLibreria(Librerie libreria) {
     
 /**
  * Mostra l'interfaccia utente per inserire suggerimenti per un libro specifico.
- * 
  * @param libro Il libro per il quale si vogliono inserire i suggerimenti.
  */    
     @SuppressWarnings("Convert2Lambda")
@@ -960,7 +944,6 @@ private void apriTabLibreria(Librerie libreria) {
     }
 /**
  * Mostra una serie di opzioni per un libro, tra cui valutazioni e suggerimenti.
- * 
  * @param libro Il libro utilizzato per applicare le valutazioni o suggerimenti
  */
     @SuppressWarnings("Convert2Lambda")  
@@ -1017,7 +1000,6 @@ private void apriTabLibreria(Librerie libreria) {
 /**
  * Aggiunge i componenti grafici per la ricerca (bottone Titolo, Autore, Autore e Anno e campo di testo) al pannello specificato.
  * I componenti sono aggiunti solo alla prima chiamata.
- * 
  * @param panel Il pannello a cui aggiungere i componenti grafici.
  */
     private void AggiungiBottoniECampoRicerca(JPanel panel){

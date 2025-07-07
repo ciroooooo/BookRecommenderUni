@@ -1,4 +1,4 @@
-package frames;
+package bookrecommender;
 
 import java.awt.*;
 import javax.swing.JPanel;

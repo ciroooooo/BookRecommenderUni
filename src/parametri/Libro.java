@@ -7,7 +7,10 @@
 package parametri;
 import java.io.Serializable;
 import java.time.LocalDate;
-
+/**
+ * Classe Libro per la gestione dei vari libri 
+ * Permette di creare dei nuovi libri e di ottenere le varie informazioni associate ad esso
+ */
 public class Libro implements Serializable{
     private final  String titolo;
     private final Autore autore;
@@ -50,7 +53,6 @@ public class Libro implements Serializable{
     }
     /**
  * Restituisce il nome dell'autore del libro.
- *
  * @return Una stringa contenente il nome dell'autore del libro.
  */
     public String getAutore(){
@@ -58,7 +60,6 @@ public class Libro implements Serializable{
     }
     /**
  * Restituisce il titolo del libro.
- *
  * @return Una stringa contenente il titolo del libro.
  */
     public String getTitolo(){
@@ -66,7 +67,6 @@ public class Libro implements Serializable{
     }
     /**
  * Restituisce la descrizione del libro.
- *
  * @return Una stringa contenente la descrizione del libro.
  */
     public String getDescrizione(){
@@ -141,8 +141,7 @@ public class Libro implements Serializable{
         return l.getTitolo();
     }
     /**
- * Restituisce le informazioni di base del libro formattate in HTML.
- *
+ * Restituisce le informazioni di base del libro, ovvero il titolo, l'autore, l'anno di pubblicazione e se c'è, anche la descrizione
  * @param libro Il libro di cui si vogliono ottenere le informazioni di base.
  * @return Una stringa HTML che rappresenta le informazioni di base del libro, inclusi titolo, autore,
  *         anno di pubblicazione e, se disponibile, la descrizione del libro con un layout specifico.
