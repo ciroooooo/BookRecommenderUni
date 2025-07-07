@@ -19,7 +19,6 @@ public class Utente implements Serializable {
     private String username;
     private String password;
     private String cf;
-    private int codice;
 
 /**
  * Costruttore per la classe Utente che inizializza un nuovo utente.
